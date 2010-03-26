@@ -1,0 +1,8 @@
+The project:
+Create an internal intranet for Roskilde Festival performance projects division, where coordinators can report power usage and administrators can extract the information on a per project basis.
+
+Technical setup:
+Build on the CakePHP framework, with authentication and access control lists enabled among other features.
+
+Team:
+Søren Louv-Jansen and Lasse B. Andersen are the main developers, Nicolai is the representative from Roskilde Festival.

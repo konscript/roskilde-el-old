@@ -1,0 +1,15 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+[remote "origin"]
+	fetch = +refs/heads/*:refs/remotes/origin/*
+	url = git@github.com:Laander/roskilde.git
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+[remote "sqren"]
+	url = git://github.com/sqren/roskilde.git
+	fetch = +refs/heads/*:refs/remotes/sqren/*
