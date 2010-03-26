@@ -3,8 +3,9 @@
 class Project extends AppModel {
 
 	var $name = 'Project';
-	var $actsAs = array('Acl' => array('type' => 'controlled'));
-	
+	var $actsAs = array('Acl' => array('type' => 'controlled')); //controlled type is of type ACO  = Object to get
+
+        //Defines hierachy in the ACL/ACO structure
 	function parentNode() {
 		if (!$this->id && empty($this->data)) {
 			return null;
@@ -16,6 +17,7 @@ class Project extends AppModel {
 		if (!$data['Project']['group_id']) {
 			return null;
 		} else {
+                        //
 			$this->Group->id = $data['Project']['group_id'];
 			$groupNode = $this->Group->node();
 			return array('Group' => array('id' => $groupNode[0]['Aco']['foreign_key']));
