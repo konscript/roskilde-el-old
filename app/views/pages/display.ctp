@@ -1,4 +1,4 @@
-<h2>Frontpage</h2><br />
+<h2>Welcome</h2><br />
 
 <?php 
 	echo "Currently logged in as: <strong>";

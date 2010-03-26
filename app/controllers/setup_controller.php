@@ -15,6 +15,11 @@ class SetupController extends AppController {
 
 		echo "Setting permissions for ACL:<br /><br />";
 
+		// all users (requesters)
+		$allusers = "Requesters";
+		$this->Acl->allow($allusers, 'Application/Controllers/Pages/display');
+		echo "- All users setup done<br />";		
+
 		// administrators
 		$administrators = array('model'=>'Role','foreign_key'=>1);
 		$this->Acl->allow($administrators, 'Application');
@@ -123,6 +128,12 @@ class SetupController extends AppController {
 			}
 			echo "<br />";
 			$userid++;
+		}
+		
+		if ($this->Acl->check(array('model'=>'User','foreign_key'=>5), 'Application/Controllers/Pages/display') == true ) {
+			echo "All users have acces to the frontpage (Pages > display)!<br /><br />";
+		} else {
+			echo "The users doesnt have access to the frontpage (Pages > display) - something is wrong.<br /><br />";
 		}
 		
 		die('All done!');
