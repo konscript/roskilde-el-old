@@ -2,7 +2,7 @@
 class ProjectsController extends AppController {
 
 	var $name = 'Projects';
-	var $components = array('SpecificAcl');
+	var $components = array('SpecificAcl', 'Email', 'SwiftMailer');
 	
 	function index() {
 		$this->Project->recursive = 0;		
@@ -11,6 +11,9 @@ class ProjectsController extends AppController {
 
 		$allowed_projects = $this->Project->find('all', array('conditions' => array('Project.id' => $allowed_project_ids)));
 		$this->set('projects', $allowed_projects);
+		$users = $this->Project->User->find('list', array('fields' => array('User.id', 'User.username')));
+		$this->set(compact('users'));
+
 	}
 
 	function view($id = null) {
@@ -28,23 +31,87 @@ class ProjectsController extends AppController {
 		$this->set('projectItems', $this->Project->ProjectItem->find('all', array('conditions' => array('ProjectItem.project_id' => $id))));
 	}
 
+
+
+        function createRandomPassword() {
+
+            $chars = "abcdefghijkmnopqrstuvwxyz023456789";
+            srand((double)microtime()*1000000);
+            $i = 0;
+            $pass = '';
+
+            while ($i <= 10) {
+                $num = rand() % 33;
+                $tmp = substr($chars, $num, 1);
+                $pass = $pass . $tmp;
+                $i++;
+            }
+            return $pass;
+        } 
+
+
 	function add() {
 		if (!empty($this->data)) {
-			$this->Project->create();
-			if ($this->Project->save($this->data)) {			
-		        // SPECIFICACL: Reassigns permission for the chosen project manager
-				$this->SpecificAcl->allow("Project", $this->data);			
 
-				$this->Session->setFlash(sprintf(__('The %s has been saved', true), 'project'));
-				$this->redirect(array('action' => 'index'));
-				
+                    //echo"<pre>";
+                    //print_r($this->data);
+                        $this->Project->User->create();
+			$this->Project->create();
+
+                        //ASSIGN ROLE ID TO PROJECT MANAGER
+                        $this->data['User']['role_id'] = 4;
+                        $this->data['User']['password'] = $this->createRandomPassword();
+
+                        //ADD USER
+			if ($this->Project->User->save($this->data["User"])) {
+
+                            //PASS USERID TO PROJECT TABLE
+                            $this->data['Project']['user_id'] = $this->Project->User->id;
+
+                            //check if the project was saved - if it was: do the ACL thing!
+                            if ($this->Project->save($this->data["Project"])) {
+
+                                    //WORKAROUDN TO PASS PROJECT ID
+                                    $this->data['Project']['id'] = $this->Project->id;
+
+                                    // SPECIFICACL: Reassigns permission for the chosen project manager
+                                    $this->SpecificAcl->allow("Project", $this->data);
+                                    $this->Session->setFlash(sprintf(__('%s blev oprettet', true), 'Projektet'));
+                            } else {
+                                    $this->Session->setFlash(sprintf(__('%s kunne ikke oprettes. Prøv igen.', true), 'Projektet'));
+                            }
+
+                            //SEND EMAIL TO NEW USER
+                            $this->SwiftMailer->smtpType     = 'tls';
+                            $this->SwiftMailer->smtpHost     = 'smtp.gmail.com';
+                            $this->SwiftMailer->smtpPort     = 465;
+                            $this->SwiftMailer->smtpUsername = 'louv88';
+                            $this->SwiftMailer->smtpPassword = 'heyzan';
+                            $this->SwiftMailer->from         = 'louv88@gmail.com';
+                            $this->SwiftMailer->fromName     = 'My Name';
+                            $this->SwiftMailer->to           = "la@laander.com";
+
+                            $this->set(array(
+                                'username' => $this->data['User']['username'],
+                                'password' => $this->data['User']['password'],
+                            ));
+
+                            if (!$this->SwiftMailer->send('register', 'Thanks for Registering!')) {
+                                $this->log('Error sending email "register".', LOG_ERROR);
+                            }
+
+
+
+                            $this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(sprintf(__('The %s could not be saved. Please, try again.', true), 'project'));
-			}
+				$this->Session->setFlash(sprintf(__('%s kunne ikke oprettes.', true), 'Brugeren'));
+			}                       
 		}
 		$groups = $this->Project->Group->find('list');
 		$users = $this->Project->User->find('list', array('fields' => array('User.id', 'User.username'), 'conditions' => array('User.role_id' => 4)));
-		$this->set(compact('groups', 'users'));
+                $roles = $this->Project->User->Role->find('list');
+		$this->set(compact('groups', 'users', 'roles'));
+
 	}
 
 	function edit($id = null) {

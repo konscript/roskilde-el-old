@@ -1,19 +1,21 @@
 <div class="projects form">
-<?php echo $this->Form->create('Project');?>
+<?php echo $this->Form->create('');?>
 	<fieldset>
  		<legend><?php printf(__('Add %s', true), __('Project', true)); ?></legend>
 	<?php
-		echo $this->Form->input('title');
-		echo $this->Form->input('body');
-		echo $this->Form->input('total_power_usage');
-		echo $this->Form->input('total_power_allowance');
-		echo $this->Form->input('build_start');
-		echo $this->Form->input('build_end');
-		echo $this->Form->input('items_start');
-		echo $this->Form->input('items_end');
-		echo $this->Form->input('status');
-		echo $this->Form->input('group_id');
-		echo $this->Form->input('user_id');
+		echo $this->Form->input('Project.title');
+		echo $this->Form->input('Project.body');
+		//echo $this->Form->input('total_power_usage');
+		echo $this->Form->input('Project.total_power_allowance');
+		echo $this->Form->input('Project.build_start');
+		echo $this->Form->input('Project.build_end');
+		echo $this->Form->input('Project.items_start');
+		echo $this->Form->input('Project.items_end');
+		//echo $this->Form->input('status');
+		echo $this->Form->input('Project.group_id');
+		//echo $this->Form->input('user_id');
+                echo $this->Form->input('User.username');
+                //echo $this->Form->input('User.password');
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>

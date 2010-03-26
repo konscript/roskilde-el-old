@@ -39,6 +39,7 @@ class SpecificAclComponent extends Object {
     }
 
 	function allow($model, $data) {
+
 		if ($data[$model]['user_id'] != 0) {
 			$user = array('model'=>'User','foreign_key'=>$data[$model]['user_id']);
 			$element = array('model'=>$model,'foreign_key'=>$data[$model]['id']);
@@ -55,5 +56,4 @@ class SpecificAclComponent extends Object {
 	}
 
 }
-
 ?>

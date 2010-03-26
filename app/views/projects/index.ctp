@@ -41,7 +41,7 @@
 			<?php echo $this->Html->link($project['Group']['title'], array('controller' => 'groups', 'action' => 'view', $project['Group']['id'])); ?>
 		</td>
 		<td>
-			<?php echo $this->Html->link($project['User']['id'], array('controller' => 'users', 'action' => 'view', $project['User']['id'])); ?>
+			<?php echo $this->Html->link($users[$project['Project']['user_id']], array('controller' => 'users', 'action' => 'view', $project['User']['id'])); ?>
 		</td>
 		<td><?php echo $project['Project']['created']; ?>&nbsp;</td>
 		<td><?php echo $project['Project']['modified']; ?>&nbsp;</td>
