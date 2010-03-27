@@ -13,8 +13,9 @@
 		echo $this->Form->input('Project.items_end');
 		//echo $this->Form->input('status');
 		echo $this->Form->input('Project.group_id');
-		//echo $this->Form->input('user_id');
-                echo $this->Form->input('User.username');
+                echo $this->Form->input('User.createNew', array('label' => 'Opret ny projektleder ', 'type' => 'checkbox', 'checked'=>'true'));
+		echo $this->Form->input('User.user_id');
+                echo $this->Form->input('User.username', array( 'label' => 'Projektleders email:'));
                 //echo $this->Form->input('User.password');
 	?>
 	</fieldset>

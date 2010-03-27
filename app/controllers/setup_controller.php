@@ -96,7 +96,7 @@ class SetupController extends AppController {
 		echo "Checking permissions for users:<br /><br />";
 		
 		$userid = 5;
-		while ($userid <= 10) {
+		while ($userid <= 84) {
 			$stop = false;
 			$username = $this->User->findById($userid);
 			if ($this->Acl->check(array('model'=>'User','foreign_key'=>$userid), array('model'=>'Section','foreign_key'=>1)) == true ) {
@@ -114,7 +114,7 @@ class SetupController extends AppController {
 				$groupid++;
 			}
 			$projectid = 1;
-			while ($projectid <= 3 && $stop == false) {
+			while ($projectid <= 42 && $stop == false) {
 				$projectname = $this->Project->findById($projectid);						
 				if ($this->Acl->check(array('model'=>'User','foreign_key'=>$userid), array('model'=>'Project','foreign_key'=>$projectid)) == true ) {
 					echo "User " . $userid .' "'. $username['User']['username'] .'"'. " is project manager for Project " . $projectname['Project']['id'] .' "'. $projectname['Project']['title'] .'"'. "<br >";
