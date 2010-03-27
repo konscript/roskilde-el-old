@@ -8,11 +8,16 @@
 		echo $this->Form->input('description');
 		echo $this->Form->input('power_usage');
 		echo $this->Form->input('item_id');
-		echo $this->Form->input('project_id');
+		if (isset($parameters['project_id'])) {			
+			echo $this->Form->input('project_id', array('options' => array($parameters['project_id'] => $projects[$parameters['project_id']])));
+		} else {
+			echo $this->Form->input('project_id', array('options' => array($allowed_projects)));
+		}	
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>
 </div>
+
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>

@@ -13,15 +13,14 @@
 		echo $this->Form->input('Project.items_end');
 		//echo $this->Form->input('status');
 		echo $this->Form->input('Project.group_id');
-                echo $this->Form->input('User.createNew', array('label' => 'Opret ny projektleder ', 'type' => 'checkbox', 'checked'=>'true', 'class'=>'toggleClass'));
-                echo $this->Form->input('User.username', array( 'label' => 'Projektleders email:'));
-                echo $this->Form->input('User.user_id');
-                //echo $this->Form->input('User.password');
+        echo $this->Form->input('User.createNew', array('label' => 'Opret ny projektleder ', 'type' => 'checkbox', 'checked'=>'true', 'class'=>'toggleClass'));
+        echo $this->Form->input('User.username', array( 'label' => 'Projektleders email:'));
+        echo $this->Form->input('User.user_id');
+        //echo $this->Form->input('User.password');
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>
 </div>
-
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>

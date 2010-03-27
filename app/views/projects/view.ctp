@@ -126,7 +126,7 @@
 			<?php } ?>
 			<td class="actions">
 				<?php echo $this->Html->link(__('View', true), array('controller' => 'project_items', 'action' => 'view', $projectItem['id'])); ?>
-				<?php echo $this->Html->link(__('Edit', true), array('controller' => 'project_items', 'action' => 'edit', $projectItem['id'])); ?>
+				<?php echo $this->Html->link(__('Edit', true), array('controller' => 'project_items', 'action' => 'edit', $projectItem['id'], '?' => array('project_id' => $project['Project']['id']))); ?>
 				<?php echo $this->Html->link(__('Delete', true), array('controller' => 'project_items', 'action' => 'delete', $projectItem['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $projectItem['id'])); ?>
 			</td>
 		</tr>
