@@ -1,26 +1,26 @@
+ function toggleOptions(checkbox){
+
+    var checkboxContainer = $(checkbox).parent();
+    var primary = $(checkboxContainer).next('div');
+    var secondary = $(primary).next('div');
+
+    //If checkbox is checked = show primary
+    if($(checkbox).is(':checked')){
+        $(primary).fadeIn();
+        $(secondary).hide();
+    }else{
+        $(primary).hide();
+        $(secondary).fadeIn();
+    }
+}
+
+
  $(document).ready(function() {
 
-    //
-    
-
-
-
-    /*** Hide selectbox initially ***/
-    $("form#ProjectAddForm select#UserUserId").parent().hide(); //skal måske gøres via css?
-
-    //On checkbox change
-    $('form#ProjectAddForm input#UserCreateNew').click(function(){
-
-        //If checkbox is checked = create new!
-        if($('form#ProjectAddForm input#UserCreateNew').is(':checked')){
-            $("form#ProjectAddForm select#UserUserId").parent().hide(); //hide select
-            $('form#ProjectAddForm input#UserUsername').parent().fadeIn(); //show input field
-        }else{ //select projectmanager from lsit
-            $("form#ProjectAddForm select#UserUserId").parent().fadeIn(); //show select
-            $('form#ProjectAddForm input#UserUsername').parent().hide(); //hide input field
-        }
-
+    //Toggle between two divs
+    toggleOptions('div.input.checkbox input.toggleClass');
+    $('div.input.checkbox input.toggleClass').click(function(){
+        toggleOptions(this);
     });
-
 
  });

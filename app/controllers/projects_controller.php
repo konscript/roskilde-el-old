@@ -13,7 +13,6 @@ class ProjectsController extends AppController {
 		$this->set('projects', $allowed_projects);
 		$users = $this->Project->User->find('list', array('fields' => array('User.id', 'User.username')));
 		$this->set(compact('users'));
-
 	}
 
 	function view($id = null) {
@@ -108,6 +107,12 @@ class ProjectsController extends AppController {
 
 	function edit($id = null) {
 		// SPECIFICACL: Project-based permission check
+
+                //Only admin and sectionmanager are allowed to set the following fields
+                if($this->Auth->user('role_id')>=2){
+
+                }
+
 		if (!$this->SpecificAcl->check("Project", $id)) {
 			$this->Session->setFlash('You dont have access to this project!');
 			$this->redirect(array('action' => 'index'));			
