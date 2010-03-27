@@ -6,15 +6,20 @@
 		echo $this->Form->input('id');
 		echo $this->Form->input('title');
 		echo $this->Form->input('body');
-		echo $this->Form->input('total_power_usage');
-		echo $this->Form->input('total_power_allowance');
-		echo $this->Form->input('build_start');
+		//echo $this->Form->input('total_power_usage');
+                if($role_id<=2){
+                    echo $this->Form->input('total_power_allowance');
+                }
+		//echo $datePicker->picker('build_start');
+                echo $this->Form->input('build_start');
 		echo $this->Form->input('build_end');
 		echo $this->Form->input('items_start');
 		echo $this->Form->input('items_end');
-		echo $this->Form->input('status');
-		echo $this->Form->input('group_id');
-		echo $this->Form->input('user_id');
+                if($role_id<=2){
+                    echo $this->Form->input('status');
+                    echo $this->Form->input('group_id');
+                    echo $this->Form->input('user_id');
+                }
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>

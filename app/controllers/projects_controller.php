@@ -2,7 +2,8 @@
 class ProjectsController extends AppController {
 
 	var $name = 'Projects';
-	var $components = array('SpecificAcl', 'Email');	
+	var $components = array('SpecificAcl', 'Email');
+        var $helpers = array('DatePicker');
 
 	function index() {
 		$this->Project->recursive = 0;		
@@ -107,7 +108,8 @@ class ProjectsController extends AppController {
 
 	function edit($id = null) {	
                 //Only admin and sectionmanager are allowed to set the following fields
-                if($this->Auth->user('role_id')>=2){                   
+                $role_id = $this->Auth->user('role_id');
+                if($role_id<=2){
                 }
 
                 // SPECIFICACL: Project-based permission check
@@ -140,7 +142,7 @@ class ProjectsController extends AppController {
 		}
 		$groups = $this->Project->Group->find('list');
 		$users = $this->Project->User->find('list', array('fields' => array('User.id', 'User.username'), 'conditions' => array('User.role_id' => 4)));
-		$this->set(compact('groups', 'users'));
+		$this->set(compact('groups', 'users', 'role_id'));
 		$this->set('project', $this->Project->read(null, $id));
 		$this->set('projectItems', $this->Project->ProjectItem->find('all', array('conditions' => array('ProjectItem.project_id' => $id))));
 		$this->set('items', $this->Project->ProjectItem->Item->find('all'));
