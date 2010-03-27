@@ -109,14 +109,12 @@ function createProject($object, $data){
 		$this->set(compact('groups', 'users', 'roles'));
 	}
 
-	function edit($id = null) {
-		// SPECIFICACL: Project-based permission check
-
+	function edit($id = null) {	
                 //Only admin and sectionmanager are allowed to set the following fields
-                if($this->Auth->user('role_id')>=2){
-
+                if($this->Auth->user('role_id')>=2){                   
                 }
 
+                // SPECIFICACL: Project-based permission check
 		if (!$this->SpecificAcl->check("Project", $id)) {
 			$this->Session->setFlash('You dont have access to this project!');
 			$this->redirect(array('action' => 'index'));			
@@ -126,6 +124,7 @@ function createProject($object, $data){
 			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'project'));
 			$this->redirect(array('action' => 'index'));
 		}
+
 		if (!empty($this->data)) {
 	        // SPECIFICACL: Removes permission for the old project manager
 			$this->SpecificAcl->deny("Project", $this->Project->read(null, $id));						
