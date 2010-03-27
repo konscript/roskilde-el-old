@@ -9,7 +9,11 @@
 		echo $this->Form->input('item_id', array('options' => $items, 'empty' => 'Custom'));
 		// echo $this->Form->select('item_id', array('options' => $items, 'empty' => 'Custom'), null, array(), 1);
 		// echo $this->Form->input('item_id');
-		echo $this->Form->input('project_id');
+		if (isset($parameters['project_id'])) {			
+			echo $this->Form->input('project_id', array('options' => array($parameters['project_id'] => $projects[$parameters['project_id']])));
+		} else {
+			echo $this->Form->input('project_id');
+		}	
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>

@@ -2,7 +2,7 @@
 class ProjectsController extends AppController {
 
 	var $name = 'Projects';
-	var $components = array('SpecificAcl', 'Email', 'SwiftMailer');
+	var $components = array('SpecificAcl', 'Email');
 	
 	function index() {
 		$this->Project->recursive = 0;		
@@ -29,6 +29,7 @@ class ProjectsController extends AppController {
 		}
 		$this->set('project', $this->Project->read(null, $id));
 		$this->set('projectItems', $this->Project->ProjectItem->find('all', array('conditions' => array('ProjectItem.project_id' => $id))));
+		$this->set('items', $this->Project->ProjectItem->Item->find('all'));
 	}
 
 

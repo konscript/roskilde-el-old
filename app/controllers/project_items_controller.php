@@ -28,7 +28,8 @@ class ProjectItemsController extends AppController {
 		}
 		$items = $this->ProjectItem->Item->find('list');
 		$projects = $this->ProjectItem->Project->find('list');
-		$this->set(compact('items', 'projects'));
+		$parameters = $this->params['url'];
+		$this->set(compact('items', 'projects', 'parameters'));
 	}
 
 	function edit($id = null) {
