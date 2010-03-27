@@ -6,6 +6,7 @@
 			<th><?php echo $this->Paginator->sort('title');?></th>
 			<th><?php echo $this->Paginator->sort('description');?></th>
 			<th><?php echo $this->Paginator->sort('power_usage');?></th>
+			<th><?php echo $this->Paginator->sort('type');?></th>
 			<th><?php echo $this->Paginator->sort('item_id');?></th>
 			<th><?php echo $this->Paginator->sort('project_id');?></th>
 			<th><?php echo $this->Paginator->sort('created');?></th>
@@ -21,13 +22,22 @@
 		}
 	?>
 	<tr<?php echo $class;?>>
-		<td><?php echo $projectItem['ProjectItem']['id']; ?>&nbsp;</td>
-		<td><?php echo $projectItem['ProjectItem']['title']; ?>&nbsp;</td>
-		<td><?php echo $projectItem['ProjectItem']['description']; ?>&nbsp;</td>
-		<td><?php echo $projectItem['ProjectItem']['power_usage']; ?>&nbsp;</td>
-		<td>
-			<?php echo $this->Html->link($projectItem['Item']['title'], array('controller' => 'items', 'action' => 'view', $projectItem['Item']['id'])); ?>
-		</td>
+		<td><?php echo $projectItem['ProjectItem']['id'];?></td>	
+		<?php if (!$projectItem['ProjectItem']['item_id']) { ?>
+			<td><?php echo $projectItem['ProjectItem']['title'];?></td>
+			<td><?php echo $projectItem['ProjectItem']['description'];?></td>
+			<td><?php echo $projectItem['ProjectItem']['power_usage'];?></td>
+			<td>Custom</td>
+			<td>N/A</td>
+		<?php } else { ?>
+			<td><?php echo $projectItem['Item']['title'];?></td>
+			<td><?php echo $projectItem['Item']['description'];?></td>
+			<td><?php echo $projectItem['Item']['power_usage'];?></td>
+			<td>Generic</td>	
+			<td>
+				<?php echo $this->Html->link($projectItem['Item']['title'], array('controller' => 'items', 'action' => 'view', $projectItem['Item']['id'])); ?>
+			</td>
+		<?php } ?>	
 		<td>
 			<?php echo $this->Html->link($projectItem['Project']['title'], array('controller' => 'projects', 'action' => 'view', $projectItem['Project']['id'])); ?>
 		</td>

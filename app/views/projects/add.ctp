@@ -21,9 +21,6 @@
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>
 </div>
-
-<?php print_r($parameters); ?>
-
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>

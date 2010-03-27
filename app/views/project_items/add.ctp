@@ -3,16 +3,22 @@
 	<fieldset>
  		<legend><?php printf(__('Add %s', true), __('Project Item', true)); ?></legend>
 	<?php
+	
+        echo $this->Form->input('', array('label' => 'Opret en ny enhed', 'type' => 'checkbox', 'checked' => 'true', 'class' => 'toggleClass'));
+		?><div><?php		
 		echo $this->Form->input('title');
 		echo $this->Form->input('description');
 		echo $this->Form->input('power_usage');
+		?></div><?php
+		?><div><?php		
 		echo $this->Form->input('item_id', array('options' => $items, 'empty' => 'Custom'));
+		?></div><?php
 		// echo $this->Form->select('item_id', array('options' => $items, 'empty' => 'Custom'), null, array(), 1);
 		// echo $this->Form->input('item_id');
 		if (isset($parameters['project_id'])) {			
 			echo $this->Form->input('project_id', array('options' => array($parameters['project_id'] => $projects[$parameters['project_id']])));
 		} else {
-			echo $this->Form->input('project_id');
+			echo $this->Form->input('project_id', array('options' => array($allowed_projects)));
 		}	
 	?>
 	</fieldset>

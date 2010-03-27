@@ -2,6 +2,7 @@
 class ProjectItemsController extends AppController {
 
 	var $name = 'ProjectItems';
+	var $components = array('SpecificAcl');		
 
 	function index() {
 		$this->ProjectItem->recursive = 0;
@@ -29,7 +30,11 @@ class ProjectItemsController extends AppController {
 		$items = $this->ProjectItem->Item->find('list');
 		$projects = $this->ProjectItem->Project->find('list');
 		$parameters = $this->params['url'];
-		$this->set(compact('items', 'projects', 'parameters'));
+		
+		$allowed_project_ids = $this->SpecificAcl->index("Project", $this->ProjectItem->Project->find('all'));
+		$allowed_projects = $this->ProjectItem->Project->find('list', array('conditions' => array('Project.id' => $allowed_project_ids))); 		
+		
+		$this->set(compact('items', 'projects', 'parameters', 'allowed_projects'));
 	}
 
 	function edit($id = null) {
@@ -50,7 +55,12 @@ class ProjectItemsController extends AppController {
 		}
 		$items = $this->ProjectItem->Item->find('list');
 		$projects = $this->ProjectItem->Project->find('list');
-		$this->set(compact('items', 'projects'));
+		$parameters = $this->params['url'];		
+
+		$allowed_project_ids = $this->SpecificAcl->index("Project", $this->ProjectItem->Project->find('all'));
+		$allowed_projects = $this->ProjectItem->Project->find('list', array('conditions' => array('Project.id' => $allowed_project_ids))); 		
+	
+		$this->set(compact('items', 'projects', 'parameters', 'allowed_projects'));
 	}
 
 	function delete($id = null) {
