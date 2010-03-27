@@ -2,8 +2,8 @@
 class ProjectsController extends AppController {
 
 	var $name = 'Projects';
-	var $components = array('SpecificAcl', 'Email');
-	
+	var $components = array('SpecificAcl', 'Email');	
+
 	function index() {
 		$this->Project->recursive = 0;		
 		// SPECIFICACL: Save only allowed project ids to array		
@@ -47,66 +47,65 @@ class ProjectsController extends AppController {
                 $pass = $pass . $tmp;
                 $i++;
             }
+            $pass = Security::hash($pass);
             return $pass;
-        } 
+        }
+
+function createProject($object, $data){
+    //check if the project was saved - if it was: do the ACL thing!
+    if ($object->save($data["Project"])) {
+
+            //WORKAROUDN TO PASS PROJECT ID
+            $data['Project']['id'] = $object->id;
+
+            // SPECIFICACL: Reassigns permission for the chosen project manager
+            $this->SpecificAcl->allow("Project", $data);
+
+            //send mail
+            //mail();
+            $msg = 'Projektet blev oprettet';
+    } else {
+            $msg = 'Projektet kunne ikke oprettes. Prøv igen.';
+    }
+    return $msg;
+}
 
 
 	function add() {
 		if (!empty($this->data)) {
 
                     //echo"<pre>";
-                    //print_r($this->data);
-                        $this->Project->User->create();
+                    //print_r($this);
 			$this->Project->create();
 
+                        
                         //ASSIGN ROLE ID TO PROJECT MANAGER
                         $this->data['User']['role_id'] = 4;
                         $this->data['User']['password'] = $this->createRandomPassword();
 
-                        //ADD USER
-			if ($this->Project->User->save($this->data["User"])) {
+                        //create new user
+                        if($this->data['User']['createNew']){
+                            //Create user
+                            $this->Project->User->create();
 
-                            //PASS USERID TO PROJECT TABLE
-                            $this->data['Project']['user_id'] = $this->Project->User->id;
-
-                            //check if the project was saved - if it was: do the ACL thing!
-                            if ($this->Project->save($this->data["Project"])) {
-
-                                    //WORKAROUDN TO PASS PROJECT ID
-                                    $this->data['Project']['id'] = $this->Project->id;
-
-                                    // SPECIFICACL: Reassigns permission for the chosen project manager
-                                    $this->SpecificAcl->allow("Project", $this->data);
-                                    $this->Session->setFlash(sprintf(__('%s blev oprettet', true), 'Projektet'));
-                            } else {
-                                    $this->Session->setFlash(sprintf(__('%s kunne ikke oprettes. Prøv igen.', true), 'Projektet'));
+                            //check if user was succesfully created
+                            if($this->Project->User->save($this->data["User"])){
+                                $this->Session->setFlash('Brugeren blev oprettet');
+                            }else{
+                                $this->Session->setFlash('Brugeren kunne ikke oprettes');
                             }
+                            
+                            $this->data['Project']['user_id'] = $this->Project->User->id; //set user_id
+                        }else {                                 
+                            $this->data['Project']['user_id'] = $this->data['User']['user_id']; //set user_id
+                        }
 
-                            //SEND EMAIL TO NEW USER
-                            $this->SwiftMailer->smtpType     = 'tls';
-                            $this->SwiftMailer->smtpHost     = 'smtp.gmail.com';
-                            $this->SwiftMailer->smtpPort     = 465;
-                            $this->SwiftMailer->smtpUsername = 'louv88';
-                            $this->SwiftMailer->smtpPassword = 'heyzan';
-                            $this->SwiftMailer->from         = 'louv88@gmail.com';
-                            $this->SwiftMailer->fromName     = 'My Name';
-                            $this->SwiftMailer->to           = "la@laander.com";
+                        //Create project
+                        $createProject = $this->createProject($this->Project, $this->data); //create project
+                        $this->Session->setFlash($createProject); //set status for project creation
+                        $this->redirect(array('action' => 'index'));    //redirect
 
-                            $this->set(array(
-                                'username' => $this->data['User']['username'],
-                                'password' => $this->data['User']['password'],
-                            ));
-
-                            if (!$this->SwiftMailer->send('register', 'Thanks for Registering!')) {
-                                $this->log('Error sending email "register".', LOG_ERROR);
-                            }
-
-
-
-                            $this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(sprintf(__('%s kunne ikke oprettes.', true), 'Brugeren'));
-			}                       
+     
 		}
 		$groups = $this->Project->Group->find('list');
 		$users = $this->Project->User->find('list', array('fields' => array('User.id', 'User.username'), 'conditions' => array('User.role_id' => 4)));
