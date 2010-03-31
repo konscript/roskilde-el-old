@@ -5,11 +5,13 @@ class SectionsController extends AppController {
 	var $components = array('SpecificAcl');
 
 	function index() {
+		$this->set('title_for_layout', 'Alle Sektioner');	
 		$this->Section->recursive = 0;
 		$this->set('sections', $this->paginate());
 	}
 
 	function view($id = null) {
+		$this->set('title_for_layout', 'Se Sektion');	
 		if (!$id) {
 			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'section'));
 			$this->redirect(array('action' => 'index'));
@@ -18,6 +20,7 @@ class SectionsController extends AppController {
 	}
 
 	function add() {
+		$this->set('title_for_layout', 'Opret ny Sektion');	
 		if (!empty($this->data)) {
 			$this->Section->create();
 			if ($this->Section->save($this->data)) {
@@ -35,6 +38,7 @@ class SectionsController extends AppController {
 	}
 
 	function edit($id = null) {
+		$this->set('title_for_layout', 'Rediger Sektion');	
 		if (!$id && empty($this->data)) {
 			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'section'));
 			$this->redirect(array('action' => 'index'));
@@ -61,6 +65,7 @@ class SectionsController extends AppController {
 	}
 
 	function delete($id = null) {
+		$this->set('title_for_layout', 'Slet Sektion');	
 		if (!$id) {
 			$this->Session->setFlash(sprintf(__('Invalid id for %s', true), 'section'));
 			$this->redirect(array('action'=>'index'));

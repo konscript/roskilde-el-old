@@ -1,23 +1,23 @@
 <div class="projects form">
 <?php echo $this->Form->create('Project');?>
 	<fieldset>
- 		<legend><?php printf(__('Edit %s', true), __('Project', true)); ?></legend>
+ 		<legend><?php printf(__('Rediger %s', true), __('Projekt', true)); ?></legend>
 	<?php
 		echo $this->Form->input('id');
-		echo $this->Form->input('title');
-		echo $this->Form->input('body');
-		echo $this->Form->input('total_power_usage');
-		echo $this->Form->input('total_power_allowance');
-		echo $this->Form->input('build_start');
-		echo $this->Form->input('build_end');
-		echo $this->Form->input('items_start');
-		echo $this->Form->input('items_end');
-		echo $this->Form->input('status');
-		echo $this->Form->input('group_id');
-		echo $this->Form->input('user_id');
+		echo $this->Form->input('title', array('label' => 'Navn'));
+		echo $this->Form->input('body', array('label' => 'Beskrivelse'));
+		//echo $this->Form->input('total_power_usage');
+		echo $this->Form->input('total_power_allowance', array('label' => 'Tilladt strømforbrug'));
+		echo $this->Form->input('build_start', array('label' => 'Byggestrøm - start:'));
+		echo $this->Form->input('build_end', array('label' => 'Byggestrøm - slut:'));
+		echo $this->Form->input('items_start', array('label' => 'Enhedsstrøm - start:'));
+		echo $this->Form->input('items_end', array('label' => 'Enhedsstrøm - slut:'));
+		echo $this->Form->input('status', array('label' => 'Status'));
+		//echo $this->Form->input('group_id');
+		echo $this->Form->input('user_id', array('label' => 'Projektleder'));
 	?>
 	</fieldset>
-<?php echo $this->Form->end(__('Submit', true));?>
+<?php echo $this->Form->end(__('Gem', true));?>
 </div>
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>

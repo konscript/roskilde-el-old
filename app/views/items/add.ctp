@@ -1,15 +1,15 @@
 <div class="items form">
 <?php echo $this->Form->create('Item');?>
 	<fieldset>
- 		<legend><?php printf(__('Add %s', true), __('Item', true)); ?></legend>
+ 		<legend><?php printf(__('Opret %s', true), __('Enhedsskabelon', true)); ?></legend>
 	<?php
-		echo $this->Form->input('title');
-		echo $this->Form->input('description');
-		echo $this->Form->input('power_usage');
-		echo $this->Form->input('Project');
+		echo $this->Form->input('title', array('label' => 'Navn'));
+		echo $this->Form->input('description', array('label' => 'Beskrivelse'));
+		echo $this->Form->input('power_usage', array('label' => 'Strømforbrug'));
+		echo $this->Form->input('Project', array('label' => 'Projekter'));
 	?>
 	</fieldset>
-<?php echo $this->Form->end(__('Submit', true));?>
+<?php echo $this->Form->end(__('Opret', true));?>
 </div>
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>

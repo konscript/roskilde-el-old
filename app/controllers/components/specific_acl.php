@@ -29,6 +29,14 @@ class SpecificAclComponent extends Object {
 		return $allowed_ids; 
     }
 
+	/**
+ 	* Check the if the current user has access to a specific id in a model (Project, Group, Section)
+ 	*
+ 	* @param string $model Name of current model, in camelcase like "Project"
+ 	* @param int $id The row-specific id number to check up on
+ 	* @return boolean
+ 	* @access public
+ 	*/
     function check($model, $id) {
     	$model = Inflector::camelize($model);
 		if ($this->Acl->check($this->Auth->user(), array('model'=>$model,'foreign_key'=>$id))) {
@@ -39,7 +47,6 @@ class SpecificAclComponent extends Object {
     }
 
 	function allow($model, $data) {
-
 		if ($data[$model]['user_id'] != 0) {
 			$user = array('model'=>'User','foreign_key'=>$data[$model]['user_id']);
 			$element = array('model'=>$model,'foreign_key'=>$data[$model]['id']);

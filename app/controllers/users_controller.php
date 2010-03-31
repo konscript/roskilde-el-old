@@ -7,41 +7,48 @@ class UsersController extends AppController {
 	    parent::beforeFilter(); 
 	    $this->Auth->allow('login');
 	    $this->Auth->allow('logout');
+	    $this->Auth->allow('profile');
 	}	
 	
 	function login() {
+		$this->set('title_for_layout', 'Log Ind');	
 		if ($this->Session->read('Auth.User')) {
-			$this->Session->setFlash('You are logged in!');
+			$this->Session->setFlash('Du er allerede logget ind.', 'default', array('class' => 'notice'));
 			$this->redirect('/', null, false);
 		}
 	}   
 	 
 	function logout() {
-		$this->Session->setFlash('Good-Bye');
+		$this->set('title_for_layout', 'Log Ud');	
+		$this->Session->setFlash('Du er nu logget ud.', 'default', array('class' => 'notice'));
 		$this->redirect($this->Auth->logout());
 	}
 
 	function index() {
+		$this->set('title_for_layout', 'Alle Brugere');	
 		$this->User->recursive = 0;
 		$this->set('users', $this->paginate());
 	}
 
 	function view($id = null) {
+		$this->set('title_for_layout', 'Se Bruger');	
 		if (!$id) {
-			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'user'));
+			$this->Session->setFlash(sprintf(__('Ugyldig %s.', true), 'bruger'), 'default', array('class' => 'notice'));
 			$this->redirect(array('action' => 'index'));
 		}
 		$this->set('user', $this->User->read(null, $id));
 	}
 
 	function add() {
+		$this->set('title_for_layout', 'Opret ny Bruger');	
 		if (!empty($this->data)) {
 			$this->User->create();
 			if ($this->User->save($this->data)) {
-				$this->Session->setFlash(sprintf(__('The %s has been saved', true), 'user'));
+				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Brugeren'), 'default', array('class' => 'success'));
+				
 				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(sprintf(__('The %s could not be saved. Please, try again.', true), 'user'));
+				$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Brugeren'), 'default', array('class' => 'error'));
 			}
 		}
 		$roles = $this->User->Role->find('list');
@@ -49,16 +56,19 @@ class UsersController extends AppController {
 	}
 
 	function edit($id = null) {
+		$this->set('title_for_layout', 'Rediger Bruger');	
 		if (!$id && empty($this->data)) {
-			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'user'));
+			$this->Session->setFlash(sprintf(__('Ugyldig %s.', true), 'bruger'), 'default', array('class' => 'notice'));
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->data)) {
 			if ($this->User->save($this->data)) {
-				$this->Session->setFlash(sprintf(__('The %s has been saved', true), 'user'));
+				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Brugeren'), 'default', array('class' => 'success'));
+				
 				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(sprintf(__('The %s could not be saved. Please, try again.', true), 'user'));
+				$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Brugeren'), 'default', array('class' => 'error'));
+				
 			}
 		}
 		if (empty($this->data)) {
@@ -68,16 +78,34 @@ class UsersController extends AppController {
 		$this->set(compact('roles'));
 	}
 
+	function profile() {
+		$this->set('title_for_layout', 'Rediger Profil');	
+		if (!empty($this->data)) {
+			$this->data['User']['role_id'] = $this->Auth->user('role_id');
+			if ($this->User->save($this->data)) {
+				$this->Session->setFlash(sprintf(__('Din %s er blevet opdateret', true), 'profil'), 'default', array('class' => 'success'));
+				$this->redirect(array('action' => 'index'));
+			} else {
+				$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Profilændringerne'), 'default', array('class' => 'error'));	
+			}
+		}
+		if (empty($this->data)) {
+			$this->data = $this->User->read(null, $this->Auth->user('id'));
+		}
+	}
+
 	function delete($id = null) {
+		$this->set('title_for_layout', 'Slet Bruger');	
 		if (!$id) {
-			$this->Session->setFlash(sprintf(__('Invalid id for %s', true), 'user'));
+			$this->Session->setFlash(sprintf(__('Ugyldigt ID for %s.', true), 'brugeren'), 'default', array('class' => 'notice'));
+			
 			$this->redirect(array('action'=>'index'));
 		}
 		if ($this->User->delete($id)) {
-			$this->Session->setFlash(sprintf(__('%s deleted', true), 'User'));
+			$this->Session->setFlash(sprintf(__('%s er slettet.', true), 'Brugeren'), 'default', array('class' => 'success'));
 			$this->redirect(array('action'=>'index'));
 		}
-		$this->Session->setFlash(sprintf(__('%s was not deleted', true), 'User'));
+		$this->Session->setFlash(sprintf(__('%s kunne ikke slettes. Forsøg igen.', true), 'Brugeren'), 'default', array('class' => 'error'));
 		$this->redirect(array('action' => 'index'));
 	}
 }
