@@ -3,7 +3,7 @@ class ProjectsController extends AppController {
 
 	var $name = 'Projects';
 	var $components = array('SpecificAcl', 'Email');
-        var $helpers = array('DatePicker');
+        //var $helpers = array('DatePicker');
 
 	function index() {
 		$this->set('title_for_layout', 'Mine Projekter');
