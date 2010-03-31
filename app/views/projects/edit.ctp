@@ -1,9 +1,10 @@
 <div class="projects form">
 <?php echo $this->Form->create('Project');?>
 	<fieldset>
- 		<legend><?php printf(__('Edit %s', true), __('Project', true)); ?></legend>
+ 		<legend><?php printf(__('Rediger %s', true), __('Projekt', true)); ?></legend>
 	<?php
 		echo $this->Form->input('id');
+
 		echo $this->Form->input('title');
 		echo $this->Form->input('body');
 		//echo $this->Form->input('total_power_usage');
@@ -22,7 +23,7 @@
                 }
 	?>
 	</fieldset>
-<?php echo $this->Form->end(__('Submit', true));?>
+<?php echo $this->Form->end(__('Gem', true));?>
 </div>
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>

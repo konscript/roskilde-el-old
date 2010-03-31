@@ -7,6 +7,7 @@
         <?php
 
 
+
              echo $this->Html->meta('icon');
                 echo $this->Html->css('cake.generic');
                 echo $this->Html->css('style.css');
@@ -21,31 +22,56 @@
         ?>
 </head>
 <body>
-    <div id="container">
-    	<div id="wrapper">
-	        <div id="header">
 
-				<h1 style="float: left;"><?php echo $this->Html->link(__('Roskilde Festival - El Booking', true), '/'); ?></h1>
-				<div style="float:right">
-					<em><?php echo $session->read('Auth.User.username'); ?></em> - 
-					<?php echo $html->link("login", array('controller'=>'users', 'action'=>'login')); ?>
-					<?php echo " / "; ?> 
-					<?php echo $html->link("logout", array('controller'=>'users', 'action'=>'logout')); ?>
+<?php // global view variables
+$user = $session->read('Auth.User'); ?>
+
+	<div id="container">
+		<div id="header">
+			<div class="inside">
+				<h1 style="float: left;">
+					<?php echo $html->image('logo.png', array('alt' => "Roskilde Festival - EL Booking", 'border' => "0", 'url' => "/"));?>
+				</h1>
+				<div id="user" style="float: right">
+					<?php echo $this->element('usermeta', array('user' => $user)); ?>
 				</div>
-
+				<ul id="menu" style="float: right; clear: right;">
+					<?php echo $this->element('menu', array('user' => $user)); ?>
+				</ul>
 			</div>
-			<div id="content">
-	
-				<?php echo $this->Session->flash(); ?>
-				<?php echo $this->Session->flash('auth'); ?>
+		</div>
+		<div id="subheader">
+			<div class="inside">
+				<h2 style="float: left;">
+					<?php echo $title_for_layout; ?>
+				</h2>
+				<div style="float: right">
+					<?php echo $this->Session->flash(); ?>
+					<?php echo $this->Session->flash('auth'); ?>
+
+					<?php 
+					//if($this->params['action'] == 'add' || $this->params['action'] == 'edit') { 
+					//	echo $html->link("Annuller", array('controller'=>$this->params['controller'], 'action' => 'index'));
+					//} else if($this->params['action'] != 'index') {
+					//	echo $html->link("Gå tilbage", array('controller'=>$this->params['controller'], 'action' => 'index')); 
+					//} ?>
+				</div>
+			</div>
+		</div>
+		<div id="content">
+			<div class="inside">
 	
 				<?php echo $content_for_layout; ?>
-	
 			</div>
-			<div id="footer">
+		</div>
+		<div id="footer">
+			<div class="inside">
+				El Booking for Roskilde Festival 2010
 			</div>
-    	</div>
-    </div>
-	<?php echo $this->element('sql_dump'); ?>
+		</div>
+	<?php //echo $this->element('sql_dump'); ?>
+		
+	</div>
+
 </body>
 </html>

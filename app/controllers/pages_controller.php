@@ -10,6 +10,7 @@ class PagesController extends AppController {
 	}
 
 	function display() {
+		$this->redirect(array('controller' => 'projects', 'action' => 'index'));				
 	}
 
 }

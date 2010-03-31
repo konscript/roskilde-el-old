@@ -6,6 +6,7 @@ class ProjectsController extends AppController {
         var $helpers = array('DatePicker');
 
 	function index() {
+		$this->set('title_for_layout', 'Mine Projekter');
 		$this->Project->recursive = 0;		
 		// SPECIFICACL: Save only allowed project ids to array		
 		$allowed_project_ids = $this->SpecificAcl->index("Project", $this->paginate());
@@ -17,14 +18,14 @@ class ProjectsController extends AppController {
 	}
 
 	function view($id = null) {
+		$this->set('title_for_layout', 'Se Projekt');
 		// SPECIFICACL: Project-based permission check
 		if (!$this->SpecificAcl->check("Project", $id)) {
-			$this->Session->setFlash('You dont have access to this project!');
+			$this->Session->setFlash('Du har ikke adgang til projektet');			
 			$this->redirect(array('action' => 'index'));			
 		}	
-
 		if (!$id) {
-			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'project'));
+			$this->Session->setFlash(sprintf(__('Ugyldigt %s.', true), 'projekt'), 'default', array('class' => 'notice'));
 			$this->redirect(array('action' => 'index'));
 		}
 		$this->set('project', $this->Project->read(null, $id));
@@ -52,22 +53,22 @@ class ProjectsController extends AppController {
 	    //check if the project was saved - if it was: do the ACL thing!
 	    if ($object->save($data["Project"])) {
 	
-	            //WORKAROUDN TO PASS PROJECT ID
-	            $data['Project']['id'] = $object->id;
-	
-	            // SPECIFICACL: Reassigns permission for the chosen project manager
-	            $this->SpecificAcl->allow("Project", $data);
-	
-	            //send mail
-	            //mail();
-	            $msg = 'Projektet blev oprettet';
+            //WORKAROUDN TO PASS PROJECT ID
+            $data['Project']['id'] = $object->id;
+
+            // SPECIFICACL: Reassigns permission for the chosen project manager
+            $this->SpecificAcl->allow("Project", $data);
+
+            //send mail
+            //mail();
+            return true;
 	    } else {
-	            $msg = 'Projektet kunne ikke oprettes. Prøv igen.';
+            return false;
 	    }
-	    return $msg;
 	}
 
 	function add() {
+		$this->set('title_for_layout', 'Opret nyt Projekt');
 		if (!empty($this->data)) {
 
 	        //echo"<pre>";
@@ -85,9 +86,9 @@ class ProjectsController extends AppController {
 
                     //check if user was succesfully created
                     if($this->Project->User->save($this->data["User"])){
-                        $this->Session->setFlash('Brugeren blev oprettet');
+                        $this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Brugeren'), 'default', array('class' => 'success'));
                     }else{
-                        $this->Session->setFlash('Brugeren kunne ikke oprettes');
+                        $this->Session->setFlash(sprintf(__('%s kunne ikke gemmes.', true), 'Brugeren'), 'default', array('class' => 'error'));
                     }
                     
                     $this->data['Project']['user_id'] = $this->Project->User->id; //set user_id
@@ -97,7 +98,11 @@ class ProjectsController extends AppController {
 
                 //Create project
                 $createProject = $this->createProject($this->Project, $this->data); //create project
-                $this->Session->setFlash($createProject); //set status for project creation
+                if ($createProject == true) {
+					$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Projektet'), 'default', array('class' => 'success'));
+                } else if ($createProject == false) {
+					$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Projektet'), 'default', array('class' => 'error'));          
+                }
                 $this->redirect(array('action' => 'index'));    //redirect
 		}
 		$groups = $this->Project->Group->find('list');
@@ -106,7 +111,10 @@ class ProjectsController extends AppController {
 		$this->set(compact('groups', 'users', 'roles'));
 	}
 
-	function edit($id = null) {	
+	function edit($id = null) {
+		$this->set('title_for_layout', 'Rediger Projekt');	
+		// SPECIFICACL: Project-based permission check
+
                 //Only admin and sectionmanager are allowed to set the following fields
                 $role_id = $this->Auth->user('role_id');
                 if($role_id<=2){
@@ -114,12 +122,12 @@ class ProjectsController extends AppController {
 
                 // SPECIFICACL: Project-based permission check
 		if (!$this->SpecificAcl->check("Project", $id)) {
-			$this->Session->setFlash('You dont have access to this project!');
+			$this->Session->setFlash('Du har ikke adgang til projektet');			
 			$this->redirect(array('action' => 'index'));			
 		}
 
 		if (!$id && empty($this->data)) {
-			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'project'));
+			$this->Session->setFlash(sprintf(__('Ugyldigt %s.', true), 'projekt'), 'default', array('class' => 'notice'));
 			$this->redirect(array('action' => 'index'));
 		}
 
@@ -131,10 +139,11 @@ class ProjectsController extends AppController {
 		        // SPECIFICACL: Reassigns permission for the chosen project manager
 				$this->SpecificAcl->allow("Project", $this->data);			
 
-				$this->Session->setFlash(sprintf(__('The %s has been saved', true), 'project'));
+				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Projektet'), 'default', array('class' => 'success'));
+				
 				$this->redirect(array('action' => 'index'));		
 			} else {
-				$this->Session->setFlash(sprintf(__('The %s could not be saved. Please, try again.', true), 'project'));
+				$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Projektet'), 'default', array('class' => 'error'));
 			}
 		}
 		if (empty($this->data)) {
@@ -142,28 +151,31 @@ class ProjectsController extends AppController {
 		}
 		$groups = $this->Project->Group->find('list');
 		$users = $this->Project->User->find('list', array('fields' => array('User.id', 'User.username'), 'conditions' => array('User.role_id' => 4)));
-		$this->set(compact('groups', 'users', 'role_id'));
-		$this->set('project', $this->Project->read(null, $id));
-		$this->set('projectItems', $this->Project->ProjectItem->find('all', array('conditions' => array('ProjectItem.project_id' => $id))));
-		$this->set('items', $this->Project->ProjectItem->Item->find('all'));
+		$project = $this->Project->read(null, $id);
+		$projectItems = $this->Project->ProjectItem->find('all', array('conditions' => array('ProjectItem.project_id' => $id)));
+		$items = $this->Project->ProjectItem->Item->find('all');
+		$this->set(compact('groups', 'users', 'role_id', 'project', 'projectItems', 'items'));
+
 	}
 
 	function delete($id = null) {
+		$this->set('title_for_layout', 'Slet Projekt');	
 		// SPECIFICACL: Project-based permission check
 		if (!$this->SpecificAcl->check("Project", $id)) {
-			$this->Session->setFlash('You dont have access to this project!');
+			$this->Session->setFlash('Du har ikke adgang til projektet');			
 			$this->redirect(array('action' => 'index'));			
 		}		
 
 		if (!$id) {
-			$this->Session->setFlash(sprintf(__('Invalid id for %s', true), 'project'));
+			$this->Session->setFlash(sprintf(__('Ugyldigt ID for %s.', true), 'projektet'), 'default', array('class' => 'notice'));
+			
 			$this->redirect(array('action'=>'index'));
 		}
 		if ($this->Project->delete($id)) {
-			$this->Session->setFlash(sprintf(__('%s deleted', true), 'Project'));
+			$this->Session->setFlash(sprintf(__('%s er slettet.', true), 'Projektet'), 'default', array('class' => 'success'));
 			$this->redirect(array('action'=>'index'));
 		}
-		$this->Session->setFlash(sprintf(__('%s was not deleted', true), 'Project'));
+		$this->Session->setFlash(sprintf(__('%s kunne ikke slettes. Forsøg igen.', true), 'Projektet'), 'default', array('class' => 'error'));
 		$this->redirect(array('action' => 'index'));
 	}
 }

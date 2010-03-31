@@ -1,14 +1,14 @@
 <div class="users form">
 <?php echo $this->Form->create('User');?>
 	<fieldset>
- 		<legend><?php printf(__('Add %s', true), __('User', true)); ?></legend>
+ 		<legend><?php printf(__('Opret %s', true), __('Bruger', true)); ?></legend>
 	<?php
-		echo $this->Form->input('username');
-		echo $this->Form->input('password');
-		echo $this->Form->input('role_id');
+		echo $this->Form->input('username', array('label' => 'Brugernavn (e-mail)'));
+		echo $this->Form->input('password', array('label' => 'Adgangskode'));
+		echo $this->Form->input('role_id', array('label' => 'Rolle'));
 	?>
 	</fieldset>
-<?php echo $this->Form->end(__('Submit', true));?>
+<?php echo $this->Form->end(__('Opret', true));?>
 </div>
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>

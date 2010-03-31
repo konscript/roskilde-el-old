@@ -4,11 +4,13 @@ class RolesController extends AppController {
 	var $name = 'Roles';
 
 	function index() {
+		$this->set('title_for_layout', 'Alle Roller');	
 		$this->Role->recursive = 0;
 		$this->set('roles', $this->paginate());
 	}
 
 	function view($id = null) {
+		$this->set('title_for_layout', 'Se Rolle');	
 		if (!$id) {
 			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'role'));
 			$this->redirect(array('action' => 'index'));
@@ -17,6 +19,7 @@ class RolesController extends AppController {
 	}
 
 	function add() {
+		$this->set('title_for_layout', 'Opret ny Rolle');	
 		if (!empty($this->data)) {
 			$this->Role->create();
 			if ($this->Role->save($this->data)) {
@@ -29,6 +32,7 @@ class RolesController extends AppController {
 	}
 
 	function edit($id = null) {
+		$this->set('title_for_layout', 'Rediger Rolle');	
 		if (!$id && empty($this->data)) {
 			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'role'));
 			$this->redirect(array('action' => 'index'));
@@ -47,6 +51,7 @@ class RolesController extends AppController {
 	}
 
 	function delete($id = null) {
+		$this->set('title_for_layout', 'Slet Rolle');	
 		if (!$id) {
 			$this->Session->setFlash(sprintf(__('Invalid id for %s', true), 'role'));
 			$this->redirect(array('action'=>'index'));
