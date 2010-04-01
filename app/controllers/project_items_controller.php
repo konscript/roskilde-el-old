@@ -36,7 +36,8 @@ class ProjectItemsController extends AppController {
 			if ($this->ProjectItem->save($this->data)) {
 				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Enheden'), 'default', array('class' => 'success'));
 				
-				$this->redirect(array('action' => 'index'));
+				//$this->redirect(array('action' => 'index'));
+                                $this->redirect('/projects/edit/'.$this->data['ProjectItem']['project_id']);
 			} else {
 				$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Enheden'), 'default', array('class' => 'error'));
 				

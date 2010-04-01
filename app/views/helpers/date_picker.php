@@ -23,6 +23,8 @@ class DatePickerHelper extends FormHelper {
         $options['minYear'] = isset($options['minYear']) ? $options['minYear'] : (date('Y') - 20);
         $options['maxYear'] = isset($options['maxYear']) ? $options['maxYear'] : (date('Y') + 20);
 
+        $options['after'] = $this->Html->link('Pick a date', '', array('class'=>'dp-choose-date'));
+
         $options['after'] = $this->Html->image('calendar.png', array('id'=> $htmlAttributes['id'],'style'=>'cursor:pointer'));
 
     if (isset($options['empty'])) {
