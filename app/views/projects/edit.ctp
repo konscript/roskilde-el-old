@@ -5,22 +5,22 @@
 	<?php
 		echo $this->Form->input('id');
 
-		echo $this->Form->input('title');
-		echo $this->Form->input('body');
+		echo $this->Form->input('title', array('label' => 'Navn'));
+		echo $this->Form->input('body', array('label' => 'Beskrivelse'));
 		//echo $this->Form->input('total_power_usage');
-                if($role_id<=2){
-                    echo $this->Form->input('total_power_allowance');
-                }
+        if($role_id<=2){
+            echo $this->Form->input('total_power_allowance', array('label' => 'Tilladt strømforbrug'));
+        }
 		//echo $datePicker->picker('build_start');
-                echo $datePicker->picker('build_start');
-		echo $datePicker->picker('build_end');
-		echo $datePicker->picker('items_start');
-		echo $datePicker->picker('items_end');
-                if($role_id<=2){
-                    echo $this->Form->input('status');
-                    echo $this->Form->input('group_id');
-                    echo $this->Form->input('user_id');
-                }
+        echo $datePicker->picker('build_start', array('label' => 'Byggestrøm, start'));
+		echo $datePicker->picker('build_end', array('label' => 'Byggestrøm, slut'));
+		echo $datePicker->picker('items_start', array('label' => 'Enhedsstrøm, start'));
+		echo $datePicker->picker('items_end', array('label' => 'Enhedsstrøm, slut'));
+        if($role_id<=2){
+            echo $this->Form->input('status', array('label' => 'Status'));
+            echo $this->Form->input('group_id', array('label' => 'Gruppe'));
+            echo $this->Form->input('user_id', array('label' => 'Projektleder'));
+        }
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Gem', true));?>
@@ -68,7 +68,7 @@
 				<td><?php echo $projectItem['description'];?></td>
 				<td><?php echo $projectItem['power_usage'];?></td>
 				<td>Custom</td>
-                                <?php $editButton = $this->Html->link(__('Edit', true), array('controller' => 'project_items', 'action' => 'edit', $projectItem['id'], '?' => array('project_id' => $project['Project']['id']))); ?>
+                <?php $editButton = $this->Html->link(__('Edit', true), array('controller' => 'project_items', 'action' => 'edit', $projectItem['id'], '?' => array('project_id' => $project['Project']['id']))); ?>
 			<?php } else { 
 				foreach ($items as $item): 
 					if ($item['Item']['id'] == $projectItem['item_id']) { ?>
@@ -76,7 +76,7 @@
 						<td><?php echo $item['Item']['description'];?></td>
 						<td><?php echo $item['Item']['power_usage'];?></td>
 						<td>Generic</td>
-                                                <?php $editButton = ''; ?>
+                        <?php $editButton = ''; ?>
 					<?php } ?> 							
 				<?php endforeach; ?>
 			<?php } ?>

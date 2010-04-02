@@ -5,20 +5,17 @@
         <title><?php echo $title_for_layout; ?></title>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
         <?php
+	        echo $this->Html->meta('icon');
 
-
-
-             echo $this->Html->meta('icon');
-                echo $this->Html->css('cake.generic');
-                echo $this->Html->css('style.css');
-                echo $this->Html->css('datePicker.css');
-
-                echo $this->Html->script('global.js');
-                echo $this->Html->script('date.js');
-                echo $this->Html->script('jquery.datePicker.js');
-                echo $this->Html->script('cake.datePicker.js');
-                echo $scripts_for_layout;
-
+	        //echo $this->Html->css('cake.generic');
+	        echo $this->Html->css('style.css');
+	        echo $this->Html->css('datePicker.css');
+	
+	        echo $this->Html->script('global.js');
+	        echo $this->Html->script('date.js');
+	        echo $this->Html->script('jquery.datePicker.js');
+	        echo $this->Html->script('cake.datePicker.js');
+	        echo $scripts_for_layout;
         ?>
 </head>
 <body>
