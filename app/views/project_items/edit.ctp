@@ -12,8 +12,9 @@
 		}
 		// echo $this->Form->select('item_id', array('options' => $items, 'empty' => 'Custom'), null, array(), 1);
 		// echo $this->Form->input('item_id');
-		if (isset($parameters['project_id'])) {			
-			echo $this->Form->input('project_id', array('label' => 'Projekt', 'options' => array($parameters['project_id'] => $projects[$parameters['project_id']])));
+		if (isset($parameters['project_id'])) {
+            echo "<strong>Tilknyttet til følgende projekt:</strong> ".$projects[$parameters['project_id']] ." (".$parameters['project_id'].")";
+            echo $this->Form->input('project_id', array('label' => 'Projekt', 'type'=>'hidden', 'value' => $parameters['project_id']));
 		} else {
 			echo $this->Form->input('project_id', array('label' => 'Projekt', 'options' => array($allowed_projects)));
 		}	

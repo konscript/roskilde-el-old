@@ -14,8 +14,12 @@
 		//echo $this->Form->input('status');
 		echo $this->Form->input('Project.group_id', array('label' => 'Gruppe'));
         echo $this->Form->input('User.createNew', array('label' => 'Opret ny projektleder ', 'type' => 'checkbox', 'checked'=>'true', 'class'=>'toggleClass'));
-        echo $this->Form->input('User.username', array('label' => 'Angiv projektlederens e-mail'));
-        echo $this->Form->input('User.user_id', array('label' => 'Tilknyt en eksisterende projektleder'));
+        ?><div><?php
+	        echo $this->Form->input('User.title', array('label' => 'Projektlederens navn'));
+	        echo $this->Form->input('User.username', array('label' => 'Projektlederens e-mail'));
+        ?></div><div><?php
+	        echo $this->Form->input('User.user_id', array('label' => 'Tilknyt en eksisterende projektleder'));
+        ?></div><?php
         //echo $this->Form->input('User.password');
 	?>
 	</fieldset>

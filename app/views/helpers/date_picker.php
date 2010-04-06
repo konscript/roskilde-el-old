@@ -19,17 +19,17 @@ class DatePickerHelper extends FormHelper {
         $divOptions['class'] = 'date';
         $options['type'] = 'date';
         $options['div']['class'] = 'date';
-    $options['dateFormat'] = 'DMY';
+    	$options['dateFormat'] = 'DMY';
         $options['minYear'] = isset($options['minYear']) ? $options['minYear'] : (date('Y') - 20);
         $options['maxYear'] = isset($options['maxYear']) ? $options['maxYear'] : (date('Y') + 20);
 
         $options['after'] = $this->Html->link('Pick a date', '', array('class'=>'dp-choose-date'));
-
         $options['after'] = $this->Html->image('calendar.png', array('id'=> $htmlAttributes['id'],'style'=>'cursor:pointer'));
 
-    if (isset($options['empty'])) {
-        $options['after'] .= $this->Html->image('b_drop.png', array('id'=> $htmlAttributes['id']."_drop",'style'=>'cursor:pointer'));
-    }
+	    if (isset($options['empty'])) {
+	        $options['after'] .= $this->Html->image('b_drop.png', array('id'=> $htmlAttributes['id']."_drop",'style'=>'cursor:pointer'));
+	    }
+
         $output = $this->input($fieldName, $options);
         $output .= $this->Javascript->codeBlock("datepick('" . $htmlAttributes['id'] . "','01/01/" . $options['minYear'] . "','31/12/" . $options['maxYear'] . "');");
         return $output;

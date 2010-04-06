@@ -7,36 +7,39 @@ class User extends AppModel {
 	var $actsAs = array('Acl' => 'requester');
 
 	var $validate = array(
-		'username' => array(
+		'title' => array(
 			'notempty' => array(
-				'rule' => array('notempty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => 'notEmpty',
+				'message' => 'Du skal angive et navn',
+				'allowEmpty' => false,
+			)
+		),
+		'username' => array(
+			'email' => array(
+				'rule' => array('email', true),
+				'message' => 'Den angivne e-mail er ikke en gyldig e-mail adresse',
+				'allowEmpty' => false,
+				'required' => false
 			),
+			'isunique' => array(
+				'rule' => 'isUnique',
+				'message' => 'Der eksisterer allerede en anden bruger med samme e-mail. Vælg venligst et andet.'
+			)
 		),
 		'password' => array(
 			'notempty' => array(
-				'rule' => array('notempty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => 'notempty',
+				'message' => 'Adgangskoden må ikke være tom',
+				'allowEmpty' => false
 			),
 		),
 		'role_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-		),
+				'rule' => 'numeric',
+				'message' => 'Brugeren skal være tilknyttet en rolle',
+				'allowEmpty' => false
+			)
+		)
 	);
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 

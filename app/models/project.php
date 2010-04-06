@@ -5,7 +5,7 @@ class Project extends AppModel {
 	var $name = 'Project';
 	var $actsAs = array('Acl' => array('type' => 'controlled')); //controlled type is of type ACO  = Object to get
 
-        //Defines hierachy in the ACL/ACO structure
+    //Defines hierachy in the ACL/ACO structure
 	function parentNode() {
 		if (!$this->id && empty($this->data)) {
 			return null;
@@ -39,67 +39,47 @@ class Project extends AppModel {
 	var $validate = array(
 		'title' => array(
 			'notempty' => array(
-				'rule' => array('notempty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => 'notempty',
+				'message' => 'Navnet på projektet må ikke være tomt',
+				'allowEmpty' => false
 			),
 		),
 		'total_power_usage' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => 'numeric',
+				'message' => 'Aktuelt strømforbrug skal være et tal',
+				'allowEmpty' => true
 			),
 		),
 		'total_power_allowance' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => 'numeric',
+				'message' => 'Tilladt strømforbrug skal være et tal',
+				'allowEmpty' => true				
 			),
 		),
 		'status' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => 'numeric',
+				'message' => 'Status angives som talkode og må ikke være tomt (benyt 0 som standard)',
+				'allowEmpty' => false
 			),
 		),
 		'group_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => 'numeric',
+				'allowEmpty' => true
 			),
 		),
 		'user_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-		),
+				'rule' => 'numeric',
+				'message' => 'Den pågældende bruger findes ikke'
+			)
+		)
 	);
+	
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
-
 	var $belongsTo = array(
 		'Group' => array(
 			'className' => 'Group',
