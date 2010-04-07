@@ -62,6 +62,7 @@ class UsersController extends AppController {
 						$this->Session->setFlash(sprintf(__('%s er blevet gemt og der er sendt en mail til '.$username.'!', true), 'Brugeren'), 'default', array('class' => 'success'));
 					} else { */
 						$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Brugeren'), 'default', array('class' => 'success'));
+						$this->redirect(array('action' => 'index'));
 					/*} 
 				} else {
 					$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Brugeren'), 'default', array('class' => 'success'));
