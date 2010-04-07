@@ -66,8 +66,12 @@ CREATE TABLE `aros` (
 -- Dumping data for table `aros`
 --
 
-INSERT INTO `aros` VALUES(1, NULL, NULL, NULL, 'Requesters', 1, 2);
-
+INSERT INTO `aros` VALUES(1, NULL, NULL, NULL, 'Requesters', 1, 12);
+INSERT INTO `aros` VALUES(2, 1, 'Role', 1, NULL, 2, 5);
+INSERT INTO `aros` VALUES(3, 1, 'Role', 2, NULL, 6, 7);
+INSERT INTO `aros` VALUES(4, 1, 'Role', 3, NULL, 8, 9);
+INSERT INTO `aros` VALUES(5, 1, 'Role', 4, NULL, 10, 11);
+INSERT INTO `aros` VALUES(6, 2, 'User', 1, NULL, 3, 4);
 
 -- --------------------------------------------------------
 
