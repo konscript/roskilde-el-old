@@ -1,0 +1,37 @@
+/* fancyform styles */
+.s label {
+	display: block;
+	padding: .5em;
+	padding-left: 32px;
+	clear: both;
+	cursor: pointer;
+}
+
+/* div wrappers */
+
+.select .checkbox input {
+	background-color: #fff;
+	background-image: url(../img/fancy_form/chk_off.png);
+	background-repeat: no-repeat;
+	background-position: center left;	
+}
+.select .checkbox input:checked {
+	background-color: #f5f5f5;
+	background-image: url(../img/fancy_form/chk_on.png);
+	background-repeat: no-repeat;
+	background-position: center left;
+} 
+
+/* labels 
+.selected {
+	background-color: #f5f5f5;
+	background-image: url(../img/fancy_form/rdo_on.png);
+	background-repeat: no-repeat;
+	background-position: center left;
+}
+
+.unselected {
+	background-image: url(../img/fancy_form/rdo_off.png);
+	background-repeat: no-repeat;
+	background-position: center left;
+} */

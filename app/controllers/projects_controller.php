@@ -2,7 +2,7 @@
 class ProjectsController extends AppController {
 
 	var $name = 'Projects';
-	var $components = array('SpecificAcl', 'Email');
+	var $components = array('SpecificAcl', 'MailUser');
     var $helpers = array('Form', 'DatePicker');
 
 	// Private method for creating random passwords (not used directly as an action)
@@ -46,17 +46,6 @@ class ProjectsController extends AppController {
 	    } else { return false; }
 	}
 	
-	// Private method for creating projects (not used directly as an action)
-	// Returns nothing
-	function mailUser($object, $data, $pass) {
-		$this->Email->from    = 'Roskilde Festival <somedude@roskilde-festival.dk>';
-		$this->Email->to      = 'Bruger <'.$data['User']['username'].'>';
-		$this->Email->subject = 'Du er blevet oprettet!';
-		if($this->Email->send("Brugernavn: ".$this['User']['username'].", Adgangskode: ".$pass)) {
-			return true;
-		} else { return false; }
-	}	
-
 	function index() {
 		$this->set('title_for_layout', 'Mine Projekter');
 		$this->Project->recursive = 0;		
@@ -68,10 +57,6 @@ class ProjectsController extends AppController {
 	    $this->paginate = array('conditions' => array('Project.id' => $allowed_project_ids), 'limit' => 10);
 	    $allowed_projects = $this->paginate('Project');
 		$this->set('projects', $allowed_projects);
-
-		// save to variable: all users
-		$users = $this->Project->User->find('list', array('fields' => array('User.id', 'User.username')));
-		$this->set(compact('users'));
 	}
 
 	function view($id = null) {
@@ -106,8 +91,9 @@ class ProjectsController extends AppController {
                         
             // set role_id to project manager (4) and create random password and assign variable (password array: 0 => hashed, 1 => cleartext)
             $this->data['User']['role_id'] = 4;
-			$password = $this->createRandomPassword();
-			$this->data['User']['password'] = $password[0];
+			
+			//$password = $this->createRandomPassword();
+			//$this->data['User']['password'] = $password[0];
 
 			$user_outcome = false;
 			
@@ -121,9 +107,9 @@ class ProjectsController extends AppController {
                 if ($this->Project->User->save($this->data["User"])) {
 					
 					// send email to user
-					if (!mailUser($this->Project, $this->data, $password[1])) {
+					/*if (!$this->MailUser->send($this->Project, $this->data, $password[1], 'Projektleder')) {
 	                    $this->Session->setFlash(sprintf(__('E-mail til %s kunne ikke sendes, men brugeren er blevet oprettet', true), 'brugeren'), 'default', array('class' => 'notice'));
-					}
+					}*/
 					
 	                $this->data['Project']['user_id'] = $this->Project->User->id; //set user_id				
                     $this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Brugeren'), 'default', array('class' => 'success'));
@@ -141,6 +127,7 @@ class ProjectsController extends AppController {
 
             // create project if user creation was succesful
             if ($user_outcome == true) {
+                $this->data['Project']['total_power_usage'] = 0;
             	$project_outcome = $this->createProject($this->Project, $this->data);
             	if ($project_outcome == true) {
 					$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Projektet'), 'default', array('class' => 'success'));            
@@ -152,9 +139,16 @@ class ProjectsController extends AppController {
 				$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Brugeren'), 'default', array('class' => 'error'));
 	        }
 	    }
+
+		// SPECIFICACL: Save only allowed project ids to array		
+		$allowed_group_ids = $this->SpecificAcl->index("Group", $this->Project->Group->find('all'));
+
+		// setup pagination for allowed projects only
+	  	$allowed_groups = $this->Project->Group->find('list', array('conditions' => array('Group.id' => $allowed_group_ids)));
+		$this->set('allowed_groups', $allowed_groups);
 		
 		// save to variable: groups, users and roles				
-		$groups = $this->Project->Group->find('list');
+		// $groups = $this->Project->Group->find('list');
 		$users = $this->Project->User->find('list', array('fields' => array('User.id', 'User.username'), 'conditions' => array('User.role_id' => 4)));
         $roles = $this->Project->User->Role->find('list');
 		$this->set(compact('groups', 'users', 'roles'));
@@ -162,14 +156,9 @@ class ProjectsController extends AppController {
 
 	function edit($id = null) {
 		$this->set('title_for_layout', 'Rediger Projekt');	
-		// SPECIFICACL: Project-based permission check
+		unset($this->data['Project']['modified']);
 
-                //Only admin and sectionmanager are allowed to set the following fields
-                $role_id = $this->Auth->user('role_id');
-                if($role_id<=2){
-                }
-
-                // SPECIFICACL: Project-based permission check
+        // SPECIFICACL: Project-based permission check
 		if (!$this->SpecificAcl->check("Project", $id)) {
 			$this->Session->setFlash('Du har ikke adgang til projektet');			
 			$this->redirect(array('action' => 'index'));			
@@ -182,7 +171,7 @@ class ProjectsController extends AppController {
 
 		if (!empty($this->data)) {
 	        // SPECIFICACL: Removes permission for the old project manager
-			$this->SpecificAcl->deny("Project", $this->Project->read(null, $id));						
+				$this->SpecificAcl->deny("Project", $this->Project->read(null, $id));						
 
 			if ($this->Project->save($this->data)) {
 		        // SPECIFICACL: Reassigns permission for the chosen project manager
@@ -198,13 +187,15 @@ class ProjectsController extends AppController {
 		if (empty($this->data)) {
 			$this->data = $this->Project->read(null, $id);
 		}
+        // pass current users role to view
+        $role_id = $this->Auth->user('role_id');
+        		
 		$groups = $this->Project->Group->find('list');
 		$users = $this->Project->User->find('list', array('fields' => array('User.id', 'User.username'), 'conditions' => array('User.role_id' => 4)));
 		$project = $this->Project->read(null, $id);
 		$projectItems = $this->Project->ProjectItem->find('all', array('conditions' => array('ProjectItem.project_id' => $id)));
 		$items = $this->Project->ProjectItem->Item->find('all');
 		$this->set(compact('groups', 'users', 'role_id', 'project', 'projectItems', 'items'));
-
 	}
 
 	function delete($id = null) {
@@ -220,7 +211,7 @@ class ProjectsController extends AppController {
 			
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->Project->delete($id)) {
+		if ($this->Project->delete($id, true)) {
 			$this->Session->setFlash(sprintf(__('%s er slettet.', true), 'Projektet'), 'default', array('class' => 'success'));
 			$this->redirect(array('action'=>'index'));
 		}

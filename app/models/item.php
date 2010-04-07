@@ -42,6 +42,10 @@ class Item extends AppModel {
 			'insertQuery' => ''
 		)
 	);
+	
+	var $virtualFields = array(
+    	'details' => 'CONCAT(Item.title, " (", Item.power_usage, ")")'
+	);	
 
 }
 ?>

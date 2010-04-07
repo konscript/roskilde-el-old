@@ -3,18 +3,24 @@
 <head>
         <?php echo $this->Html->charset(); ?>
         <title><?php echo $title_for_layout; ?></title>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+     	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
         <?php
-	        echo $this->Html->meta('icon');
+	        //echo $this->Html->meta('icon');
 
 	        //echo $this->Html->css('cake.generic');
 	        echo $this->Html->css('style.css');
 	        echo $this->Html->css('datePicker.css');
-	
+
+	        //echo $this->Html->css('fancyForm.css');
+	        //echo $this->Html->script('mootools.js');
+	        //echo $this->Html->script('moo.fancyForm.js');			
+			
 	        echo $this->Html->script('global.js');
 	        echo $this->Html->script('date.js');
 	        echo $this->Html->script('jquery.datePicker.js');
 	        echo $this->Html->script('cake.datePicker.js');
+
 	        echo $scripts_for_layout;
         ?>
 </head>
@@ -63,10 +69,11 @@ $user = $session->read('Auth.User'); ?>
 		</div>
 		<div id="footer">
 			<div class="inside">
-				El Booking for Roskilde Festival 2010
+				<span style="float: left;">El Booking for Roskilde Festival 2010</span>
+				<span style="float: right;">BETA v1.0</span>
 			</div>
 		</div>
-	<?php //echo $this->element('sql_dump'); ?>
+	<?php echo $this->element('sql_dump'); ?>
 		
 	</div>
 

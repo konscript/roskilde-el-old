@@ -48,14 +48,14 @@ class Project extends AppModel {
 			'numeric' => array(
 				'rule' => 'numeric',
 				'message' => 'Aktuelt strømforbrug skal være et tal',
-				'allowEmpty' => true
+				'allowEmpty' => false
 			),
 		),
 		'total_power_allowance' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
 				'message' => 'Tilladt strømforbrug skal være et tal',
-				'allowEmpty' => true				
+				'allowEmpty' => false				
 			),
 		),
 		'status' => array(
@@ -74,7 +74,8 @@ class Project extends AppModel {
 		'user_id' => array(
 			'numeric' => array(
 				'rule' => 'numeric',
-				'message' => 'Den pågældende bruger findes ikke'
+				'message' => 'Den pågældende bruger findes ikke',
+				'allowEmpty' => true				
 			)
 		)
 	);
@@ -101,7 +102,7 @@ class Project extends AppModel {
 		'ProjectItem' => array(
 			'className' => 'ProjectItem',
 			'foreignKey' => 'project_id',
-			'dependent' => false,
+			'dependent' => true,
 			'conditions' => '',
 			'fields' => '',
 			'order' => '',
@@ -112,6 +113,6 @@ class Project extends AppModel {
 			'counterQuery' => ''
 		)
 	);
-
+	
 }
 ?>

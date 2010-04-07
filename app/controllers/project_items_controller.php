@@ -7,7 +7,14 @@ class ProjectItemsController extends AppController {
 	function index() {
 		$this->set('title_for_layout', 'Alle Enheder');	
 		$this->ProjectItem->recursive = 0;
-		$this->set('projectItems', $this->paginate());
+
+		// SPECIFICACL: Save only allowed project ids to array		
+		$allowed_projectitem_ids = $this->SpecificAcl->index("Project", $this->ProjectItem->Project->find('all'));
+
+		// setup pagination for allowed projects only
+	    $this->paginate = array('conditions' => array('ProjectItem.project_id' => $allowed_projectitem_ids), 'limit' => 10);
+	    $allowed_projectitems = $this->paginate('ProjectItem');
+		$this->set('projectItems', $allowed_projectitems);
 	}
 
 	function view($id = null) {
@@ -25,7 +32,7 @@ class ProjectItemsController extends AppController {
 			$this->ProjectItem->create();
 
             //create new user
-            if($this->data['ProjectItem']['createNew']){
+            if(!$this->data['ProjectItem']['useTemplate']){
 	            $this->data['ProjectItem']['item_id'] = null;
             } else {                                 
 	            $this->data['ProjectItem']['title'] = "";
@@ -37,13 +44,13 @@ class ProjectItemsController extends AppController {
 				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Enheden'), 'default', array('class' => 'success'));
 				
 				//$this->redirect(array('action' => 'index'));
-                                $this->redirect('/projects/edit/'.$this->data['ProjectItem']['project_id']);
+                $this->redirect('/projects/edit/'.$this->data['ProjectItem']['project_id']);
 			} else {
 				$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Enheden'), 'default', array('class' => 'error'));
 				
 			}
 		}
-		$items = $this->ProjectItem->Item->find('list');
+		$items = $this->ProjectItem->Item->find('list', array('fields' => array('Item.id', 'Item.details')));
 		$projects = $this->ProjectItem->Project->find('list');
 		$parameters = $this->params['url'];
 		
@@ -70,7 +77,7 @@ class ProjectItemsController extends AppController {
 		if (empty($this->data)) {
 			$this->data = $this->ProjectItem->read(null, $id);
 		}
-		$items = $this->ProjectItem->Item->find('list');
+		$items = $this->ProjectItem->Item->find('list', array('fields' => array('Item.id', 'Item.details')));
 		$projects = $this->ProjectItem->Project->find('list');
 		$parameters = $this->params['url'];		
 

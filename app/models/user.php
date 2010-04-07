@@ -110,14 +110,6 @@ class User extends AppModel {
 	    }
 	}
 	
-	/**    
-	 * After save callback
-	 *
-	 * Update the aro for the user.
-	 *
-	 * @access public
-	 * @return void
-	 */
 	function afterSave($created) {
         if (!$created) {
             $parent = $this->parentNode();
@@ -128,5 +120,17 @@ class User extends AppModel {
             $this->Aro->save($aro);
         }
 	}
+	
+	/* function afterDelete() {
+
+		$id = $this->read('id');
+		$projects = $this->Project->find('all', array('conditions' => array('Project.user_id' => $id)));
+		
+		foreach($projects as $project) {
+			$this->Project->id = $project['Project']['id'];
+			$this->Project->set('user_id', 0);
+	        $this->Project->save(array('validate' => false));
+		}
+	} */		
 }
 ?>

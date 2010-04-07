@@ -7,22 +7,38 @@
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Title'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $projectItem['ProjectItem']['title']; ?>
+			<?php if (!$projectItem['ProjectItem']['item_id']) { 
+				echo $projectItem['ProjectItem']['title']; 
+			} else {
+				echo $projectItem['Item']['title']; 
+			} ?>
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Description'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $projectItem['ProjectItem']['description']; ?>
+			<?php if (!$projectItem['ProjectItem']['item_id']) { 
+				echo $projectItem['ProjectItem']['description']; 
+			} else {
+				echo $projectItem['Item']['description']; 
+			} ?>
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Power Usage'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $projectItem['ProjectItem']['power_usage']; ?>
+			<?php if (!$projectItem['ProjectItem']['item_id']) { 
+				echo $projectItem['ProjectItem']['power_usage']; 
+			} else {
+				echo $projectItem['Item']['power_usage']; 
+			} ?>
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Item'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $this->Html->link($projectItem['Item']['title'], array('controller' => 'items', 'action' => 'view', $projectItem['Item']['id'])); ?>
+			<?php if (!$projectItem['ProjectItem']['item_id']) { 
+				echo "N/A";
+			} else {
+				echo $this->Html->link($projectItem['Item']['title'], array('controller' => 'items', 'action' => 'view', $projectItem['Item']['id']));
+			} ?>
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Project'); ?></dt>
@@ -45,13 +61,7 @@
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(sprintf(__('Edit %s', true), __('Project Item', true)), array('action' => 'edit', $projectItem['ProjectItem']['id'])); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('Delete %s', true), __('Project Item', true)), array('action' => 'delete', $projectItem['ProjectItem']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $projectItem['ProjectItem']['id'])); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('List %s', true), __('Project Items', true)), array('action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('New %s', true), __('Project Item', true)), array('action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('List %s', true), __('Items', true)), array('controller' => 'items', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('New %s', true), __('Item', true)), array('controller' => 'items', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('List %s', true), __('Projects', true)), array('controller' => 'projects', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('New %s', true), __('Project', true)), array('controller' => 'projects', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(sprintf(__('Rediger %s', true), __('', true)), array('action' => 'edit', $projectItem['ProjectItem']['id']), array('class' => 'action_edit')); ?> </li>
+		<li><?php echo $this->Html->link(sprintf(__('Slet %s', true), __('', true)), array('action' => 'delete', $projectItem['ProjectItem']['id']), array('class' => 'action_delete'), sprintf(__('Er du sikker på du vil slette #%s?', true), $projectItem['ProjectItem']['id'])); ?> </li>
 	</ul>
 </div>

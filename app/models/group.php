@@ -31,16 +31,13 @@ class Group extends AppModel {
             $this->Aco->save($aco);
         }
 	}	
-
+	
 	var $validate = array(
 		'title' => array(
 			'notempty' => array(
-				'rule' => array('notempty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => 'notempty',
+				'message' => 'Navnet på gruppen må ikke være tom',
+				'allowEmpty' => false
 			),
 		),
 		'section_id' => array(
@@ -55,8 +52,8 @@ class Group extends AppModel {
 		),
 		'user_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
+				'rule' => 'numeric',
+				'message' => 'Der skal angives en projektleder',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
