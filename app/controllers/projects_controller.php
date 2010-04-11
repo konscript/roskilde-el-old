@@ -12,10 +12,12 @@ class ProjectsController extends AppController {
 		// SPECIFICACL: Save only allowed project ids to array		
 		$allowed_project_ids = $this->SpecificAcl->index("Project", $this->paginate());
 
-		$allowed_projects = $this->Project->find('all', array('conditions' => array('Project.id' => $allowed_project_ids)));
-		$this->set('projects', $allowed_projects);
+
+
+
+		$projects = $this->Project->find('all', array('conditions' => array('Project.id' => $allowed_project_ids)));
 		$users = $this->Project->User->find('list', array('fields' => array('User.id', 'User.username')));
-		$this->set(compact('users'));
+		$this->set(compact('users', 'projects'));
 	}
 
 	function view($id = null) {

@@ -1,3 +1,7 @@
+<?php
+
+
+?>
 <div class="projects index">
 	<table cellpadding="0" cellspacing="0">
 	<tr>
