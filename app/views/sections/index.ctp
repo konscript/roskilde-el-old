@@ -20,7 +20,7 @@
 		<td><?php echo $section['Section']['id']; ?>&nbsp;</td>
 		<td><?php echo $section['Section']['title']; ?>&nbsp;</td>
 		<td>
-			<?php echo $this->Html->link($section['User']['id'], array('controller' => 'users', 'action' => 'view', $section['User']['id'])); ?>
+			<?php echo $this->Html->link($section['User']['username'], array('controller' => 'users', 'action' => 'view', $section['User']['id'])); ?>
 		</td>
 		<td><?php echo $section['Section']['created']; ?>&nbsp;</td>
 		<td><?php echo $section['Section']['modified']; ?>&nbsp;</td>

@@ -24,7 +24,7 @@
 			<?php echo $this->Html->link($group['Section']['title'], array('controller' => 'sections', 'action' => 'view', $group['Section']['id'])); ?>
 		</td>
 		<td>
-			<?php echo $this->Html->link($group['User']['id'], array('controller' => 'users', 'action' => 'view', $group['User']['id'])); ?>
+			<?php echo $this->Html->link($group['User']['username'], array('controller' => 'users', 'action' => 'view', $group['User']['id'])); ?>
 		</td>
 		<td><?php echo $group['Group']['created']; ?>&nbsp;</td>
 		<td><?php echo $group['Group']['modified']; ?>&nbsp;</td>

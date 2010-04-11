@@ -4,8 +4,9 @@
  		<legend><?php printf(__('Rediger %s', true), __('Bruger', true)); ?></legend>
 	<?php
 		echo $this->Form->input('id');
-		echo $this->Form->input('username', array('label' => 'Brugernavn (e-mail)'));
-		echo $this->Form->input('password', array('label' => 'Adgangskode'));
+		echo $this->Form->input('title', array('label' => 'Navn'));
+		echo $this->Form->input('username', array('label' => 'E-mail'));
+		echo $this->Form->input('password', array('label' => 'Adgangskode', 'value' => ''));
 		echo $this->Form->input('role_id', array('label' => 'Rolle'));
 	?>
 	</fieldset>

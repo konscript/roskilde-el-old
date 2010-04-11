@@ -2,6 +2,7 @@
 class UsersController extends AppController {
 
 	var $name = 'Users';
+	var $components = array('MailUser', 'Email');	
 
 	function beforeFilter() {
 	    parent::beforeFilter(); 
@@ -43,10 +44,31 @@ class UsersController extends AppController {
 		$this->set('title_for_layout', 'Opret ny Bruger');	
 		if (!empty($this->data)) {
 			$this->User->create();
+			/* $name = $this->data['User']['title'];
+			$username = $this->data['User']['username'];
+			$password = $this->data['User']['password'];
+			if (!$this->MailUser->sendMail($name, $username, $password, 'bruger')) {
+	        	$this->Session->setFlash(sprintf(__('E-mail til %s kunne ikke sendes, men brugeren er blevet oprettet', true), 'brugeren'), 'default', array('class' => 'notice'));
+				$this->redirect(array('action' => 'index'));	        	
+			} */
 			if ($this->User->save($this->data)) {
-				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Brugeren'), 'default', array('class' => 'success'));
+				/*if($this->data['User']['sendEmail']) {
+					$this->Email->from    = 'Roskilde Festival <nicolai.johansen@roskilde-festival.dk>';
+					$this->Email->replyTo = 'Roskilde Festival <nicolai.johansen@roskilde-festival.dk>';
+					$this->Email->to      = 'Somedude <la@laander.com>';
+					$this->Email->subject = 'Roskilde Festival: Oprettet i el-system';
+					$mail_outcome = $this->Email->send("Det virker!");
+					if ($mail_outcome) {
+						$this->Session->setFlash(sprintf(__('%s er blevet gemt og der er sendt en mail til '.$username.'!', true), 'Brugeren'), 'default', array('class' => 'success'));
+					} else { */
+						$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Brugeren'), 'default', array('class' => 'success'));
+						$this->redirect(array('action' => 'index'));
+					/*} 
+				} else {
+					$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Brugeren'), 'default', array('class' => 'success'));
+				}
 				
-				$this->redirect(array('action' => 'index'));
+				$this->redirect(array('action' => 'index')); */
 			} else {
 				$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Brugeren'), 'default', array('class' => 'error'));
 			}

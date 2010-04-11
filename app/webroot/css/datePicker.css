@@ -1,97 +1,27 @@
-/* located in demo.css and creates a little calendar icon
- * instead of a text link for "Choose date"
- */
+/* Link to popup */
 a.dp-choose-date {
-	float: left;
+	/* float: right; */
 	width: 16px;
 	height: 16px;
-	padding: 0;
-	margin: 5px 3px 0;
-	display: block;
-	text-indent: -2000px;
+	padding: 0 0 0 20px;
+	margin: 0 0 5px 5px;
+	/* display: block; */
+	text-indent: -9999px;
 	overflow: hidden;
-	background: url(../img/calendar.png) no-repeat;
+	background: url(../img/icons/16/025.png) no-repeat;
 }
 a.dp-choose-date.dp-disabled {
 	background-position: 0 -20px;
 	cursor: default;
 }
-/* makes the input field shorter once the date picker code
- * has run (to allow space for the calendar icon
- */
-input.dp-applied {
-	width: 140px;
-	float: left;
-}
 
-
-
-table.jCalendar {
-	border: 1px solid #000;
-	background: #aaa;
-    border-collapse: separate;
-    border-spacing: 2px;
-}
-table.jCalendar th {
-	background: #333;
-	color: #fff;
-	font-weight: bold;
-	padding: 3px 5px;
-}
-
-table.jCalendar td {
-	background: #ccc;
-	color: #000;
-	padding: 3px 5px;
-	text-align: center;
-}
-table.jCalendar td.other-month {
-	background: #ddd;
-	color: #aaa;
-}
-table.jCalendar td.today {
-	background: #666;
-	color: #fff;
-}
-table.jCalendar td.selected {
-	background: #f66;
-	color: #fff;
-}
-table.jCalendar td.selected.dp-hover {
-	background: #f33;
-	color: #fff;
-}
-table.jCalendar td.dp-hover,
-table.jCalendar tr.activeWeekHover td {
-	background: #fff;
-	color: #000;
-}
-table.jCalendar tr.selectedWeek td {
-	background: #f66;
-	color: #fff;
-}
-table.jCalendar td.disabled, table.jCalendar td.disabled.dp-hover {
-	background: #bbb;
-	color: #888;
-}
-table.jCalendar td.unselectable,
-table.jCalendar td.unselectable:hover,
-table.jCalendar td.unselectable.dp-hover {
-	background: #bbb;
-	color: #888;
-}
-
-/* For the popup */
-
-/* NOTE - you will probably want to style a.dp-choose-date - see how I did it in demo.css */
+/* Calendar chrome */
 
 div.dp-popup {
 	position: relative;
-	background: #ccc;
-	font-size: 10px;
-	font-family: arial, sans-serif;
+	background: #e8e8e8;
 	padding: 2px;
-	width: 171px;
+	width: 200px;
 	line-height: 1.2em;
 }
 div#dp-popup {
@@ -99,7 +29,11 @@ div#dp-popup {
 	z-index: 199;
 }
 div.dp-popup h2 {
-	font-size: 12px;
+	font-family: arial, sans-serif;
+	font-weight: normal;
+	font-size: 100%;
+	text-shadow: none;
+	color: #ec5400;
 	text-align: center;
 	margin: 2px 0;
 	padding: 0;
@@ -153,3 +87,65 @@ div.dp-popup td {
 div.dp-popup td.disabled {
 	cursor: default;
 }
+
+
+/* Calendar table */
+
+table.jCalendar {
+    border-collapse: separate;
+    border-spacing: 2px;
+}
+table.jCalendar th {
+	font-weight: bold;
+	padding: 3px 5px;
+}
+
+table.jCalendar td {
+	background: #e8e8e8;
+	color: #000;
+	padding: 3px 5px;
+	text-align: center;
+}
+table.jCalendar td.other-month {
+	background: #fff;
+	color: #aaa;
+}
+table.jCalendar td.today {
+	background: #666;
+	color: #fff;
+}
+table.jCalendar td.selected {
+	background: #ec5400;
+	color: #fff;
+}
+table.jCalendar td.selected.dp-hover {
+	background: #cf2200;
+	color: #fff;
+}
+table.jCalendar td.dp-hover,
+table.jCalendar tr.activeWeekHover td {
+	background: #fff;
+	color: #000;
+}
+table.jCalendar tr.selectedWeek td {
+	background: #f66;
+	color: #fff;
+}
+table.jCalendar td.disabled, table.jCalendar td.disabled.dp-hover {
+	background: #bbb;
+	color: #888;
+}
+table.jCalendar td.unselectable,
+table.jCalendar td.unselectable:hover,
+table.jCalendar td.unselectable.dp-hover {
+	background: #bbb;
+	color: #888;
+}
+
+/* makes the input field shorter once the date picker code
+ * has run (to allow space for the calendar icon
+ */
+/* input.dp-applied {
+	width: 140px;
+	float: left;
+} */

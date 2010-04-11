@@ -8,6 +8,19 @@ class SetupController extends AppController {
 	    parent::beforeFilter(); 
 	    $this->Auth->allow('*');
 	}
+	
+	function acl_build() 
+	{
+		// the following commands should be executed through the cake console to initialize the basic ACL setup for ARO + ACO
+		// cake acl create aro root Requesters
+		// cake acl create aro Requesters Role.1
+		// cake acl create aro Requesters Role.2
+		// cake acl create aro Requesters Role.3
+		// cake acl create aro Requesters Role.4						
+		// cake acl create aco root Application
+		// cake acl create aco Application Controllers
+		// cake acl create aco Application Content				
+	}
 
 	function permissions_assign_controlleractions()
 	{
@@ -40,6 +53,7 @@ class SetupController extends AppController {
 		// group managers
 		$groupmanagers = array('model'=>'Role','foreign_key'=>3);				
 		$this->Acl->deny($groupmanagers, 'Application');
+		$this->Acl->allow($groupmanagers, 'Application/Controllers/Users/add');		
 		$this->Acl->allow($groupmanagers, 'Application/Controllers/Projects');
 		$this->Acl->allow($groupmanagers, 'Application/Controllers/ProjectItems');
 		$this->Acl->allow($groupmanagers, 'Application/Controllers/Items/index');

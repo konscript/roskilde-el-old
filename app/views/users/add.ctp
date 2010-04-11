@@ -3,9 +3,13 @@
 	<fieldset>
  		<legend><?php printf(__('Opret %s', true), __('Bruger', true)); ?></legend>
 	<?php
-		echo $this->Form->input('username', array('label' => 'Brugernavn (e-mail)'));
-		echo $this->Form->input('password', array('label' => 'Adgangskode'));
+		echo $this->Form->input('title', array('label' => 'Navn'));
+		echo $this->Form->input('username', array('label' => 'E-mail'));
+		echo $this->Form->input('password', array('label' => 'Adgangskode', 'value' => ''));
 		echo $this->Form->input('role_id', array('label' => 'Rolle'));
+        echo "<i>Vær opmærksom på at brugeren <b>IKKE</b> modtager nogen velkomst e-mail og at adgangskoden ikke kan hentes senere</i>";
+        //echo $this->Form->input('sendEmail', array('label' => 'Send en e-mail til brugeren med adgangskoden og information', 'type' => 'checkbox', 'checked' => 'true'));
+		
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Opret', true));?>
