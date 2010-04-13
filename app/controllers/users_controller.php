@@ -2,7 +2,7 @@
 class UsersController extends AppController {
 
 	var $name = 'Users';
-	var $components = array('MailUser', 'Email');	
+	var $components = array('Utils');	
 
 	function beforeFilter() {
 	    parent::beforeFilter(); 
@@ -39,40 +39,49 @@ class UsersController extends AppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		$this->set('user', $this->User->read(null, $id));
-		$this->set('projects', $this->User->Project->find('list', array('conditions' => array('Project.user_id' => $id))));		
 	}
 
 	function add() {
 		$this->set('title_for_layout', 'Opret ny Bruger');	
 		if (!empty($this->data)) {
 			$this->User->create();
-			/* $name = $this->data['User']['title'];
-			$username = $this->data['User']['username'];
-			$password = $this->data['User']['password'];
-			if (!$this->MailUser->sendMail($name, $username, $password, 'bruger')) {
-	        	$this->Session->setFlash(sprintf(__('E-mail til %s kunne ikke sendes, men brugeren er blevet oprettet', true), 'brugeren'), 'default', array('class' => 'notice'));
-				$this->redirect(array('action' => 'index'));	        	
-			} */
-			if ($this->User->save($this->data)) {
-				/*if($this->data['User']['sendEmail']) {
-					$this->Email->from    = 'Roskilde Festival <nicolai.johansen@roskilde-festival.dk>';
-					$this->Email->replyTo = 'Roskilde Festival <nicolai.johansen@roskilde-festival.dk>';
-					$this->Email->to      = 'Somedude <la@laander.com>';
-					$this->Email->subject = 'Roskilde Festival: Oprettet i el-system';
-					$mail_outcome = $this->Email->send("Det virker!");
-					if ($mail_outcome) {
-						$this->Session->setFlash(sprintf(__('%s er blevet gemt og der er sendt en mail til '.$username.'!', true), 'Brugeren'), 'default', array('class' => 'success'));
-					} else { */
-						$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Brugeren'), 'default', array('class' => 'success'));
+
+            // set role_id to project manager (4)
+            $this->data['User']['role_id'] = 4;
+
+            // generate password and send mail
+            if($this->data['User']['generatePassword']) {
+
+				// generate random password and assign variable (password array: 0 => hashed, 1 => cleartext)
+				$password = $this->Utils->createRandomPassword();
+				$this->data['User']['password'] = $password[0];
+                
+				if ($this->User->save($this->data)) {
+	                // sending e-mail to new user
+					$name = $this->data['User']['title'];
+					$email = $this->data['User']['username'];
+					$mail_result = $this->_userMail($name, $email, $password[1]);
+					// email is OK
+					if ($mail_result) {
+						$this->Session->setFlash(sprintf(__('%s er blevet gemt og der er sendt en e-mail til brugeren.', true), 'Brugeren'), 'default', array('class' => 'success'));
 						$this->redirect(array('action' => 'index'));
-					/*} 
+					// email failed
+					} else {				
+			        	$this->Session->setFlash(sprintf(__('%s er blevet gemt og brugeren er blevet oprettet, men der kunne ikke tilsendes en e-mail. Nulstil venligst adgangskoden manuelt og kontakt brugeren selv.', true), 'bruger'), 'default', array('class' => 'notice'));
+						$this->redirect(array('action' => 'index'));            		
+					}				
 				} else {
-					$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Brugeren'), 'default', array('class' => 'success'));
+					$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Brugeren'), 'default', array('class' => 'error'));
 				}
-				
-				$this->redirect(array('action' => 'index')); */
+            
+            // password is manually supplied, skipping mail    			
 			} else {
-				$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Brugeren'), 'default', array('class' => 'error'));
+				if ($this->User->save($this->data)) {
+					$this->Session->setFlash(sprintf(__('%s er blevet gemt.', true), 'Brugeren'), 'default', array('class' => 'success'));
+					$this->redirect(array('action' => 'index'));
+				} else {
+					$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Brugeren'), 'default', array('class' => 'error'));
+				}
 			}
 		}
 		$roles = $this->User->Role->find('list');

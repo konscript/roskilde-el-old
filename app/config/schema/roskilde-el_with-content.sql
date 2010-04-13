@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 07, 2010 at 11:57 PM
+-- Generation Time: Apr 14, 2010 at 12:51 AM
 -- Server version: 5.1.37
 -- PHP Version: 5.2.11
 
@@ -34,15 +34,15 @@ CREATE TABLE `acos` (
   `lft` int(10) DEFAULT NULL,
   `rght` int(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=95 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=97 ;
 
 --
 -- Dumping data for table `acos`
 --
 
-INSERT INTO `acos` VALUES(1, NULL, NULL, NULL, 'Application', 1, 160);
+INSERT INTO `acos` VALUES(1, NULL, NULL, NULL, 'Application', 1, 156);
 INSERT INTO `acos` VALUES(2, 1, NULL, NULL, 'Controllers', 2, 131);
-INSERT INTO `acos` VALUES(3, 1, NULL, NULL, 'Content', 132, 159);
+INSERT INTO `acos` VALUES(3, 1, NULL, NULL, 'Content', 132, 155);
 INSERT INTO `acos` VALUES(4, 2, NULL, NULL, 'Pages', 3, 16);
 INSERT INTO `acos` VALUES(5, 4, NULL, NULL, 'display', 4, 5);
 INSERT INTO `acos` VALUES(7, 4, NULL, NULL, 'add', 6, 7);
@@ -56,14 +56,14 @@ INSERT INTO `acos` VALUES(14, 12, NULL, NULL, 'view', 20, 21);
 INSERT INTO `acos` VALUES(15, 12, NULL, NULL, 'add', 22, 23);
 INSERT INTO `acos` VALUES(16, 12, NULL, NULL, 'edit', 24, 25);
 INSERT INTO `acos` VALUES(17, 12, NULL, NULL, 'delete', 26, 27);
-INSERT INTO `acos` VALUES(75, 71, 'Project', 1, NULL, 149, 150);
+INSERT INTO `acos` VALUES(75, 71, 'Project', 1, NULL, 147, 148);
 INSERT INTO `acos` VALUES(19, 2, NULL, NULL, 'Items', 29, 40);
 INSERT INTO `acos` VALUES(20, 19, NULL, NULL, 'index', 30, 31);
 INSERT INTO `acos` VALUES(21, 19, NULL, NULL, 'view', 32, 33);
 INSERT INTO `acos` VALUES(22, 19, NULL, NULL, 'add', 34, 35);
 INSERT INTO `acos` VALUES(23, 19, NULL, NULL, 'edit', 36, 37);
 INSERT INTO `acos` VALUES(24, 19, NULL, NULL, 'delete', 38, 39);
-INSERT INTO `acos` VALUES(74, 70, 'Group', 4, NULL, 142, 147);
+INSERT INTO `acos` VALUES(74, 70, 'Group', 4, NULL, 142, 145);
 INSERT INTO `acos` VALUES(26, 2, NULL, NULL, 'ProjectItems', 41, 52);
 INSERT INTO `acos` VALUES(27, 26, NULL, NULL, 'index', 42, 43);
 INSERT INTO `acos` VALUES(28, 26, NULL, NULL, 'view', 44, 45);
@@ -84,7 +84,7 @@ INSERT INTO `acos` VALUES(42, 40, NULL, NULL, 'view', 72, 73);
 INSERT INTO `acos` VALUES(43, 40, NULL, NULL, 'add', 74, 75);
 INSERT INTO `acos` VALUES(44, 40, NULL, NULL, 'edit', 76, 77);
 INSERT INTO `acos` VALUES(45, 40, NULL, NULL, 'delete', 78, 79);
-INSERT INTO `acos` VALUES(71, 70, 'Group', 1, NULL, 148, 157);
+INSERT INTO `acos` VALUES(71, 70, 'Group', 1, NULL, 146, 153);
 INSERT INTO `acos` VALUES(47, 2, NULL, NULL, 'Sections', 81, 92);
 INSERT INTO `acos` VALUES(48, 47, NULL, NULL, 'index', 82, 83);
 INSERT INTO `acos` VALUES(49, 47, NULL, NULL, 'view', 84, 85);
@@ -99,7 +99,7 @@ INSERT INTO `acos` VALUES(58, 54, NULL, NULL, 'view', 100, 101);
 INSERT INTO `acos` VALUES(59, 54, NULL, NULL, 'add', 102, 103);
 INSERT INTO `acos` VALUES(60, 54, NULL, NULL, 'edit', 104, 105);
 INSERT INTO `acos` VALUES(61, 54, NULL, NULL, 'delete', 106, 107);
-INSERT INTO `acos` VALUES(70, 3, 'Section', 1, NULL, 133, 158);
+INSERT INTO `acos` VALUES(70, 3, 'Section', 1, NULL, 133, 154);
 INSERT INTO `acos` VALUES(63, 2, NULL, NULL, 'Setup', 111, 130);
 INSERT INTO `acos` VALUES(64, 63, NULL, NULL, 'aco_build_controlleractions', 112, 113);
 INSERT INTO `acos` VALUES(65, 63, NULL, NULL, 'add', 114, 115);
@@ -107,7 +107,7 @@ INSERT INTO `acos` VALUES(66, 63, NULL, NULL, 'edit', 116, 117);
 INSERT INTO `acos` VALUES(67, 63, NULL, NULL, 'index', 118, 119);
 INSERT INTO `acos` VALUES(68, 63, NULL, NULL, 'view', 120, 121);
 INSERT INTO `acos` VALUES(69, 63, NULL, NULL, 'delete', 122, 123);
-INSERT INTO `acos` VALUES(76, 71, 'Project', 2, NULL, 151, 152);
+INSERT INTO `acos` VALUES(76, 71, 'Project', 2, NULL, 149, 150);
 INSERT INTO `acos` VALUES(77, 74, 'Project', 3, NULL, 143, 144);
 INSERT INTO `acos` VALUES(79, 33, NULL, NULL, 'createRandomPassword', 64, 65);
 INSERT INTO `acos` VALUES(80, 33, NULL, NULL, 'createProject', 66, 67);
@@ -117,9 +117,7 @@ INSERT INTO `acos` VALUES(83, 63, NULL, NULL, 'permissions_check', 128, 129);
 INSERT INTO `acos` VALUES(84, 54, NULL, NULL, 'profile', 108, 109);
 INSERT INTO `acos` VALUES(85, 73, 'Project', 4, NULL, 137, 138);
 INSERT INTO `acos` VALUES(86, 73, 'Project', 5, NULL, 139, 140);
-INSERT INTO `acos` VALUES(93, 74, 'Project', 12, NULL, 145, 146);
-INSERT INTO `acos` VALUES(94, 71, 'Project', 13, NULL, 155, 156);
-INSERT INTO `acos` VALUES(89, 71, 'Project', 8, NULL, 153, 154);
+INSERT INTO `acos` VALUES(89, 71, 'Project', 8, NULL, 151, 152);
 
 -- --------------------------------------------------------
 
@@ -136,27 +134,23 @@ CREATE TABLE `aros` (
   `lft` int(10) DEFAULT NULL,
   `rght` int(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=33 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=48 ;
 
 --
 -- Dumping data for table `aros`
 --
 
-INSERT INTO `aros` VALUES(1, 15, 'Role', 1, NULL, 2, 11);
-INSERT INTO `aros` VALUES(2, 15, 'Role', 2, NULL, 12, 15);
-INSERT INTO `aros` VALUES(3, 15, 'Role', 3, NULL, 16, 23);
-INSERT INTO `aros` VALUES(4, 15, 'Role', 4, NULL, 24, 29);
-INSERT INTO `aros` VALUES(10, 2, 'User', 6, NULL, 13, 14);
+INSERT INTO `aros` VALUES(1, 15, 'Role', 1, NULL, 2, 5);
+INSERT INTO `aros` VALUES(2, 15, 'Role', 2, NULL, 6, 9);
+INSERT INTO `aros` VALUES(3, 15, 'Role', 3, NULL, 10, 15);
+INSERT INTO `aros` VALUES(4, 15, 'Role', 4, NULL, 16, 21);
+INSERT INTO `aros` VALUES(10, 2, 'User', 6, NULL, 7, 8);
 INSERT INTO `aros` VALUES(9, 1, 'User', 5, NULL, 3, 4);
-INSERT INTO `aros` VALUES(11, 3, 'User', 7, NULL, 17, 18);
-INSERT INTO `aros` VALUES(12, 4, 'User', 8, NULL, 25, 26);
-INSERT INTO `aros` VALUES(13, 4, 'User', 9, NULL, 27, 28);
-INSERT INTO `aros` VALUES(14, 3, 'User', 10, NULL, 19, 20);
-INSERT INTO `aros` VALUES(15, NULL, NULL, NULL, 'Requesters', 1, 30);
-INSERT INTO `aros` VALUES(31, 1, 'User', 26, NULL, 7, 8);
-INSERT INTO `aros` VALUES(27, 3, 'User', 22, NULL, 21, 22);
-INSERT INTO `aros` VALUES(29, 1, 'User', 24, NULL, 5, 6);
-INSERT INTO `aros` VALUES(32, 1, 'User', 27, NULL, 9, 10);
+INSERT INTO `aros` VALUES(11, 3, 'User', 7, NULL, 11, 12);
+INSERT INTO `aros` VALUES(12, 4, 'User', 8, NULL, 17, 18);
+INSERT INTO `aros` VALUES(13, 4, 'User', 9, NULL, 19, 20);
+INSERT INTO `aros` VALUES(14, 3, 'User', 10, NULL, 13, 14);
+INSERT INTO `aros` VALUES(15, NULL, NULL, NULL, 'Requesters', 1, 22);
 
 -- --------------------------------------------------------
 
@@ -174,7 +168,7 @@ CREATE TABLE `aros_acos` (
   `_delete` varchar(2) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `ARO_ACO_KEY` (`aro_id`,`aco_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=51 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=54 ;
 
 --
 -- Dumping data for table `aros_acos`
@@ -214,9 +208,7 @@ INSERT INTO `aros_acos` VALUES(43, 12, 86, '1', '1', '1', '1');
 INSERT INTO `aros_acos` VALUES(41, 13, 89, '1', '1', '1', '1');
 INSERT INTO `aros_acos` VALUES(42, 12, 85, '1', '1', '1', '1');
 INSERT INTO `aros_acos` VALUES(38, 12, 89, '-1', '-1', '-1', '-1');
-INSERT INTO `aros_acos` VALUES(48, 13, 93, '1', '1', '1', '1');
 INSERT INTO `aros_acos` VALUES(47, 3, 59, '1', '1', '1', '1');
-INSERT INTO `aros_acos` VALUES(50, 13, 94, '1', '1', '1', '1');
 
 -- --------------------------------------------------------
 
@@ -290,7 +282,7 @@ CREATE TABLE `projects` (
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
 
 --
 -- Dumping data for table `projects`
@@ -302,8 +294,6 @@ INSERT INTO `projects` VALUES(3, 'Skateboard Parken', 'Chill out i vest!', 600, 
 INSERT INTO `projects` VALUES(4, 'Stripklub', 'Direkte fra downtown Amsterdam', 0, 1231, '2010-04-07 00:00:00', '2010-04-07 00:00:00', '2010-04-07 00:00:00', '2010-04-07 00:00:00', 0, 3, 8, '2010-04-06 15:02:09', '2010-04-06 15:02:09');
 INSERT INTO `projects` VALUES(5, 'Pornobiks', 'LÃ¦kkert bebs', 0, 5432, '2010-04-07 00:00:00', '2010-04-07 00:00:00', '2010-04-07 00:00:00', '2010-04-07 00:00:00', 2, 3, 8, '2010-04-06 15:13:00', '2010-04-06 15:13:00');
 INSERT INTO `projects` VALUES(8, 'Aktiebar', 'For de rige', 0, 0, '2010-04-07 00:00:00', '2010-04-07 00:00:00', '2010-04-07 00:00:00', '2010-04-07 00:00:00', 0, 1, 9, '2010-04-06 19:47:18', '2010-04-06 19:47:18');
-INSERT INTO `projects` VALUES(12, 'Somethingyx', 'Nah nah nah ja! Naj naj DOOH! Changed!', 0, 999, '2010-04-07 00:00:00', '2010-04-09 00:00:00', '2010-04-07 00:00:00', '2010-04-10 00:00:00', 0, 4, 9, '2010-04-07 20:07:49', '2010-04-07 20:07:49');
-INSERT INTO `projects` VALUES(13, 'New stuff!', '', 0, 3123, '2010-04-07 00:00:00', '2010-04-07 00:00:00', '2010-04-07 00:00:00', '2010-04-07 00:00:00', 0, 1, 9, '2010-04-07 20:55:24', '2010-04-07 20:55:24');
 
 -- --------------------------------------------------------
 
@@ -409,19 +399,15 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   KEY `role_id` (`role_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=28 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=43 ;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` VALUES(5, 'Laander', 'admin@admin.com', '080e8122480a972ec29561e7466539745ed9d223', 1, '2010-03-18 20:59:20', '2010-04-06 20:39:16');
+INSERT INTO `users` VALUES(5, 'Admin', 'admin@admin.com', '080e8122480a972ec29561e7466539745ed9d223', 1, '2010-03-18 20:59:20', '2010-04-14 00:46:47');
 INSERT INTO `users` VALUES(6, 'sectiondude', 'sectiondude', '080e8122480a972ec29561e7466539745ed9d223', 2, '2010-03-18 21:03:45', '2010-03-18 21:03:45');
 INSERT INTO `users` VALUES(7, 'groupdude', 'groupdude', '080e8122480a972ec29561e7466539745ed9d223', 3, '2010-03-18 21:04:01', '2010-03-18 21:04:01');
 INSERT INTO `users` VALUES(8, 'projectdude', 'projectdude', '080e8122480a972ec29561e7466539745ed9d223', 4, '2010-03-18 21:04:15', '2010-03-18 21:04:15');
 INSERT INTO `users` VALUES(9, 'projectmatey', 'projectmatey', '080e8122480a972ec29561e7466539745ed9d223', 4, '2010-03-22 17:14:04', '2010-03-31 03:04:49');
 INSERT INTO `users` VALUES(10, 'groupmate', 'groupmate', '080e8122480a972ec29561e7466539745ed9d223', 3, '2010-03-22 19:40:44', '2010-03-22 19:40:44');
-INSERT INTO `users` VALUES(22, 'Someguy', 'lasseandersen1901@hotmail.com', '080e8122480a972ec29561e7466539745ed9d223', 3, '2010-04-07 21:16:13', '2010-04-07 21:16:13');
-INSERT INTO `users` VALUES(24, 'Las', 'la@konscript.com', '080e8122480a972ec29561e7466539745ed9d223', 1, '2010-04-07 21:43:34', '2010-04-07 21:43:34');
-INSERT INTO `users` VALUES(26, 'Las', 'la@laander.com', '080e8122480a972ec29561e7466539745ed9d223', 1, '2010-04-07 23:05:34', '2010-04-07 23:05:34');
-INSERT INTO `users` VALUES(27, 'Migyaki', 'catch@laander.com', '080e8122480a972ec29561e7466539745ed9d223', 1, '2010-04-07 23:14:59', '2010-04-07 23:14:59');
