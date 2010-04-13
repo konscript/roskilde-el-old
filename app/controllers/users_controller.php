@@ -38,6 +38,7 @@ class UsersController extends AppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		$this->set('user', $this->User->read(null, $id));
+		$this->set('projects', $this->User->Project->find('list', array('conditions' => array('Project.user_id' => $id))));		
 	}
 
 	function add() {
@@ -120,10 +121,15 @@ class UsersController extends AppController {
 		$this->set('title_for_layout', 'Slet Bruger');	
 		if (!$id) {
 			$this->Session->setFlash(sprintf(__('Ugyldigt ID for %s.', true), 'brugeren'), 'default', array('class' => 'notice'));
-			
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->User->delete($id)) {
+		$projects = $this->User->Project->find('list', array('conditions' => array('Project.user_id' => $id)));
+		$groups = $this->User->Group->find('list', array('conditions' => array('Group.user_id' => $id)));
+		$sections = $this->User->Section->find('list', array('conditions' => array('Section.user_id' => $id)));
+		if (!empty($projects) || !empty($groups) || !empty($sections)) {
+			$this->Session->setFlash(sprintf(__('%s har tilknyttede projekter/grupper/sektioner og kan ikke slettes.', true), 'Brugeren'), 'default', array('class' => 'error'));
+			$this->redirect(array('action'=>'index'));			
+		} else if ($this->User->delete($id)) {
 			$this->Session->setFlash(sprintf(__('%s er slettet.', true), 'Brugeren'), 'default', array('class' => 'success'));
 			$this->redirect(array('action'=>'index'));
 		}

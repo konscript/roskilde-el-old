@@ -70,7 +70,11 @@ class SectionsController extends AppController {
 			$this->Session->setFlash(sprintf(__('Invalid id for %s', true), 'section'));
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->Section->delete($id)) {
+		$groups = $this->Section->Group->find('list', array('conditions' => array('Group.section_id' => $id)));
+		if (!empty($groups)) {
+			$this->Session->setFlash(sprintf(__('%s har tilknyttede grupper og kan ikke slettes.', true), 'Sektionen'), 'default', array('class' => 'error'));
+			$this->redirect(array('action'=>'index'));		
+		} else if ($this->Section->delete($id)) {
 			$this->Session->setFlash(sprintf(__('%s deleted', true), 'Section'));
 			$this->redirect(array('action'=>'index'));
 		}

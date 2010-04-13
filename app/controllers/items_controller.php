@@ -60,7 +60,11 @@ class ItemsController extends AppController {
 			$this->Session->setFlash(sprintf(__('Ugyldigt ID for %s.', true), 'enhedsskabelonen'), 'default', array('class' => 'notice'));
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->Item->delete($id)) {
+		$projectitems = $this->Item->ProjectItem->find('list', array('conditions' => array('ProjectItem.item_id' => $id)));
+		if (!empty($projectitems)) {
+			$this->Session->setFlash(sprintf(__('%s er anvendt af enheder og kan ikke slettes.', true), 'Enhedsskabelonen'), 'default', array('class' => 'error'));
+			$this->redirect(array('action'=>'index'));				
+		} else if ($this->Item->delete($id)) {
 			$this->Session->setFlash(sprintf(__('%s er slettet.', true), 'Enhedsskabelonen'), 'default', array('class' => 'success'));
 			$this->redirect(array('action'=>'index'));
 		}

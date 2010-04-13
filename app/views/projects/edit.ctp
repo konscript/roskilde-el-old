@@ -8,7 +8,7 @@
 		echo $this->Form->input('title', array('label' => 'Navn'));
 		echo $this->Form->input('body', array('label' => 'Beskrivelse'));
 		// echo $this->Form->input('total_power_usage');
-        if($role_id<=2){
+        if ($role_id <= 2) {
             echo $this->Form->input('total_power_allowance', array('label' => 'Tilladt strømforbrug'));
         }
 		//echo $datePicker->picker('build_start');
@@ -16,14 +16,16 @@
 		echo $datePicker->picker('build_end', array('label' => 'Byggestrøm, slut'));
 		echo $datePicker->picker('items_start', array('label' => 'Enhedsstrøm, start'));
 		echo $datePicker->picker('items_end', array('label' => 'Enhedsstrøm, slut'));
-        if($role_id<=2){
+        if ($role_id <= 2) {
             echo $this->Form->input('status', array('label' => 'Status', 'options' => array(
             	'0'=>'Igangværende',
             	'1'=>'Godkendt',
             	'2'=>'Afvist')));
             echo $this->Form->input('group_id', array('label' => 'Gruppe'));
-            echo $this->Form->input('user_id', array('label' => 'Projektleder'));
         }
+       	if ($role_id <= 3) {
+			echo $this->Form->input('user_id', array('label' => 'Projektleder'));       	
+       	}
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Gem', true));?>
