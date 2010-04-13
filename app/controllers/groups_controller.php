@@ -72,7 +72,11 @@ class GroupsController extends AppController {
 			$this->Session->setFlash(sprintf(__('Ugyldigt ID for %s.', true), 'gruppen'), 'default', array('class' => 'notice'));
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->Group->delete($id)) {
+		$projects = $this->Group->Project->find('list', array('conditions' => array('Project.group_id' => $id)));
+		if (!empty($projects)) {
+			$this->Session->setFlash(sprintf(__('%s har tilknyttede projekter og kan ikke slettes.', true), 'Gruppen'), 'default', array('class' => 'error'));
+			$this->redirect(array('action'=>'index'));
+		} else if ($this->Group->delete($id)) {
 			$this->Session->setFlash(sprintf(__('%s er slettet.', true), 'Gruppen'), 'default', array('class' => 'success'));
 			$this->redirect(array('action'=>'index'));
 		}

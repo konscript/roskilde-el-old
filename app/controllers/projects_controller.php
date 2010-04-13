@@ -190,8 +190,13 @@ class ProjectsController extends AppController {
 		}
         // pass current users role to view
         $role_id = $this->Auth->user('role_id');
-        		
-		$groups = $this->Project->Group->find('list');
+
+		// SPECIFICACL: Save only allowed project ids to array		
+		$allowed_group_ids = $this->SpecificAcl->index("Group", $this->Project->Group->find('all'));
+		// setup pagination for allowed projects only
+		// $groups = $this->Project->Group->find('list');
+	  	$groups = $this->Project->Group->find('list', array('conditions' => array('Group.id' => $allowed_group_ids)));
+		
 		$users = $this->Project->User->find('list', array('fields' => array('User.id', 'User.username'), 'conditions' => array('User.role_id' => 4)));
 		$project = $this->Project->read(null, $id);
 		$projectItems = $this->Project->ProjectItem->find('all', array('conditions' => array('ProjectItem.project_id' => $id)));
