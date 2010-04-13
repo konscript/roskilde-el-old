@@ -2,8 +2,42 @@
 class ProjectsController extends AppController {
 
 	var $name = 'Projects';
-	var $components = array('SpecificAcl', 'MailUser', 'JqImgcrop');
-	var $helpers = array('Form', 'DatePicker', 'Cropimage');
+
+	var $components = array('SpecificAcl', 'MailUser');
+	var $helpers = array('Form', 'DatePicker');
+
+
+	function index() {
+		$this->set('title_for_layout', 'Mine Projekter');
+		$this->Project->recursive = 0;		
+		// SPECIFICACL: Save only allowed project ids to array		
+		$allowed_project_ids = $this->SpecificAcl->index("Project", $this->paginate());
+
+
+
+
+		$projects = $this->Project->find('all', array('conditions' => array('Project.id' => $allowed_project_ids)));
+		$users = $this->Project->User->find('list', array('fields' => array('User.id', 'User.username')));
+		$this->set(compact('users', 'projects'));
+	}
+
+	function view($id = null) {
+		$this->set('title_for_layout', 'Se Projekt');
+		// SPECIFICACL: Project-based permission check
+		if (!$this->SpecificAcl->check("Project", $id)) {
+			$this->Session->setFlash('Du har ikke adgang til projektet');			
+			$this->redirect(array('action' => 'index'));			
+		}	
+		if (!$id) {
+			$this->Session->setFlash(sprintf(__('Ugyldigt %s.', true), 'projekt'), 'default', array('class' => 'notice'));
+			$this->redirect(array('action' => 'index'));
+		}
+		$this->set('project', $this->Project->read(null, $id));
+		$this->set('projectItems', $this->Project->ProjectItem->find('all', array('conditions' => array('ProjectItem.project_id' => $id))));
+		$this->set('items', $this->Project->ProjectItem->Item->find('all'));
+	}
+
+
 
 	// Private method for creating random passwords (not used directly as an action)
 	// Returns array: 0 => hashed, 1 => cleartext
@@ -45,7 +79,7 @@ class ProjectsController extends AppController {
             return true;
 	    } else { return false; }
 	}
-
+	
 	function index() {
 		$this->set('title_for_layout', 'Mine Projekter');
 		$this->Project->recursive = 0;		
@@ -54,9 +88,9 @@ class ProjectsController extends AppController {
 		$allowed_project_ids = $this->SpecificAcl->index("Project", $this->Project->find('all'));
 
 		// setup pagination for allowed projects only
-	    	$this->paginate = array('conditions' => array('Project.id' => $allowed_project_ids), 'limit' => 10);
-	   	 $allowed_projects = $this->paginate('Project');
-		$this->set('projects', $allowed_projects);                
+	    $this->paginate = array('conditions' => array('Project.id' => $allowed_project_ids), 'limit' => 10);
+	    $allowed_projects = $this->paginate('Project');
+		$this->set('projects', $allowed_projects);
 	}
 
 	function view($id = null) {
@@ -154,30 +188,6 @@ class ProjectsController extends AppController {
 		$this->set(compact('groups', 'users', 'roles'));
 	}
 
-
-        //upload image function
-        function createimage_step2(){
-            if (!empty($this->data)) {
-                $uploaded = $this->JqImgcrop->uploadImage($this->data['Project']['image'], '/img/upload/', 'prefix_');
-                $this->set('uploaded',$uploaded);
-            }
-        }
-
-        //crop image
-        function createimage_step3(){
-            $this->JqImgcrop->cropImage(
-                    151, //thumb width
-                    $this->data['Project']['x1'], //x1 (coordinate)
-                    $this->data['Project']['x2'], //x2
-                    $this->data['Project']['y1'], //y1
-                    $this->data['Project']['y2'], //y2
-                    $this->data['Project']['w'],
-                    $this->data['Project']['h'],
-                    $this->data['Project']['imagePath'], //thumb location
-                    $this->data['Project']['imagePath'] //image location
-                    );
-        }
-
 	function edit($id = null) {
 		$this->set('title_for_layout', 'Rediger Projekt');	
 		unset($this->data['Project']['modified']);
@@ -200,7 +210,9 @@ class ProjectsController extends AppController {
 			if ($this->Project->save($this->data)) {
 		        // SPECIFICACL: Reassigns permission for the chosen project manager
 				$this->SpecificAcl->allow("Project", $this->data);			
-				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Projektet'), 'default', array('class' => 'success'));				
+
+				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Projektet'), 'default', array('class' => 'success'));
+				
 				$this->redirect(array('action' => 'index'));		
 			} else {
 				$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Projektet'), 'default', array('class' => 'error'));
@@ -211,13 +223,8 @@ class ProjectsController extends AppController {
 		}
         // pass current users role to view
         $role_id = $this->Auth->user('role_id');
-
-		// SPECIFICACL: Save only allowed project ids to array		
-		$allowed_group_ids = $this->SpecificAcl->index("Group", $this->Project->Group->find('all'));
-		// setup pagination for allowed projects only
-		// $groups = $this->Project->Group->find('list');
-	  	$groups = $this->Project->Group->find('list', array('conditions' => array('Group.id' => $allowed_group_ids)));
-		
+        		
+		$groups = $this->Project->Group->find('list');
 		$users = $this->Project->User->find('list', array('fields' => array('User.id', 'User.username'), 'conditions' => array('User.role_id' => 4)));
 		$project = $this->Project->read(null, $id);
 		$projectItems = $this->Project->ProjectItem->find('all', array('conditions' => array('ProjectItem.project_id' => $id)));

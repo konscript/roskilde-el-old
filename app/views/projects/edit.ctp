@@ -26,10 +26,20 @@
        	if ($role_id <= 3) {
 			echo $this->Form->input('user_id', array('label' => 'Projektleder'));       	
        	}
+
+        
+        echo "Billede: ". $project['Project']['image'];
 	?>
+
 	</fieldset>
 <?php echo $this->Form->end(__('Gem', true));?>
 </div>
+
+            <?php echo $form->create('Project', array('action' => 'createimage_step2', "enctype" => "multipart/form-data"));?>
+            <?php
+                echo $form->input('image',array("type" => "file"));
+                echo $form->end('Upload');
+            ?>
 
 <div class="related">
 	<h3><?php printf(__('%s', true), __('Enheder', true));?></h3>

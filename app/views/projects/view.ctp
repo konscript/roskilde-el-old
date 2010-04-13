@@ -72,11 +72,12 @@
 			<?php echo $project['Project']['created']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Redigeret'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Billede'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $project['Project']['modified']; ?>
+			<?php echo $project['Project']['image']; ?>
 			&nbsp;
 		</dd>
+
 	</dl>
 </div>
 
