@@ -6,38 +6,6 @@ class ProjectsController extends AppController {
 	var $components = array('SpecificAcl', 'MailUser');
 	var $helpers = array('Form', 'DatePicker');
 
-	function index() {
-		$this->set('title_for_layout', 'Mine Projekter');
-		$this->Project->recursive = 0;		
-		// SPECIFICACL: Save only allowed project ids to array		
-		$allowed_project_ids = $this->SpecificAcl->index("Project", $this->paginate());
-
-
-
-
-		$projects = $this->Project->find('all', array('conditions' => array('Project.id' => $allowed_project_ids)));
-		$users = $this->Project->User->find('list', array('fields' => array('User.id', 'User.username')));
-		$this->set(compact('users', 'projects'));
-	}
-
-	function view($id = null) {
-		$this->set('title_for_layout', 'Se Projekt');
-		// SPECIFICACL: Project-based permission check
-		if (!$this->SpecificAcl->check("Project", $id)) {
-			$this->Session->setFlash('Du har ikke adgang til projektet');			
-			$this->redirect(array('action' => 'index'));			
-		}	
-		if (!$id) {
-			$this->Session->setFlash(sprintf(__('Ugyldigt %s.', true), 'projekt'), 'default', array('class' => 'notice'));
-			$this->redirect(array('action' => 'index'));
-		}
-		$this->set('project', $this->Project->read(null, $id));
-		$this->set('projectItems', $this->Project->ProjectItem->find('all', array('conditions' => array('ProjectItem.project_id' => $id))));
-		$this->set('items', $this->Project->ProjectItem->Item->find('all'));
-	}
-
-
-
 	// Private method for creating random passwords (not used directly as an action)
 	// Returns array: 0 => hashed, 1 => cleartext
     function createRandomPassword() {
@@ -78,7 +46,7 @@ class ProjectsController extends AppController {
             return true;
 	    } else { return false; }
 	}
-	
+
 	function index() {
 		$this->set('title_for_layout', 'Mine Projekter');
 		$this->Project->recursive = 0;		
@@ -87,8 +55,8 @@ class ProjectsController extends AppController {
 		$allowed_project_ids = $this->SpecificAcl->index("Project", $this->Project->find('all'));
 
 		// setup pagination for allowed projects only
-	    $this->paginate = array('conditions' => array('Project.id' => $allowed_project_ids), 'limit' => 10);
-	    $allowed_projects = $this->paginate('Project');
+	    	$this->paginate = array('conditions' => array('Project.id' => $allowed_project_ids), 'limit' => 10);
+	   	 $allowed_projects = $this->paginate('Project');
 		$this->set('projects', $allowed_projects);
 	}
 
