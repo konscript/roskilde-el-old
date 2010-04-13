@@ -43,7 +43,3 @@
 		<li><?php echo $this->Html->link(sprintf(__('New %s', true), __('Role', true)), array('controller' => 'roles', 'action' => 'add')); ?> </li>
 	</ul>
 </div>
-
-<pre>
-<?php print_r($projects); ?>
-</pre>

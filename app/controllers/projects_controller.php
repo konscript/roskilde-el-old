@@ -2,49 +2,8 @@
 class ProjectsController extends AppController {
 
 	var $name = 'Projects';
-	var $components = array('SpecificAcl', 'MailUser');
+	var $components = array('SpecificAcl', 'Utils');
     var $helpers = array('Form', 'DatePicker');
-
-	// Private method for creating random passwords (not used directly as an action)
-	// Returns array: 0 => hashed, 1 => cleartext
-    function createRandomPassword() {
-        // generate random string and save to variable
-        $chars = "abcdefghijkmnopqrstuvwxyz023456789";
-        srand((double)microtime()*1000000);
-        $i = 0;
-        $pass = '';
-        while ($i <= 10) {
-            $num = rand() % 33;
-            $tmp = substr($chars, $num, 1);
-            $pass = $pass . $tmp;
-            $i++;
-        }
-        
-        // encrypt the password using CakePHP hash function
-        $hash = Security::hash($pass);
-        
-        // return array of hashed password and cleartext
-        $array = array($hash, $pass);
-        return $array;
-    }
-
-	// Private method for creating projects (not used directly as an action)
-	// Returns true/false if successful/failed
-	function createProject($object, $data){
-	    // check if the project was saved - if it was: do the ACL thing!
-	    if ($object->save($data["Project"])) {
-	
-            // workaround to pass project id
-            $data['Project']['id'] = $object->id;
-
-            // SPECIFICACL: Reassigns permission for the chosen project manager
-            $this->SpecificAcl->allow("Project", $data);
-
-            // send mail
-            // mail();
-            return true;
-	    } else { return false; }
-	}
 	
 	function index() {
 		$this->set('title_for_layout', 'Mine Projekter');
@@ -88,55 +47,84 @@ class ProjectsController extends AppController {
 			
 			// create new project entry
 			$this->Project->create();
-                        
-            // set role_id to project manager (4) and create random password and assign variable (password array: 0 => hashed, 1 => cleartext)
-            $this->data['User']['role_id'] = 4;
-			
-			//$password = $this->createRandomPassword();
-			//$this->data['User']['password'] = $password[0];
 
-			$user_outcome = false;
-			
+            $this->data['Project']['total_power_usage'] = 0;
+                        			
             // creating a new user if the option is chosen
             if($this->data['User']['createNew']) {
-                
-                // create new user entry
-                $this->Project->User->create();
 
-                // check if user was succesfully created
-                if ($this->Project->User->save($this->data["User"])) {
-					
-					// send email to user
-					/*if (!$this->MailUser->send($this->Project, $this->data, $password[1], 'Projektleder')) {
-	                    $this->Session->setFlash(sprintf(__('E-mail til %s kunne ikke sendes, men brugeren er blevet oprettet', true), 'brugeren'), 'default', array('class' => 'notice'));
-					}*/
-					
-	                $this->data['Project']['user_id'] = $this->Project->User->id; //set user_id				
-                    $this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Brugeren'), 'default', array('class' => 'success'));
-
-	                $user_outcome = true;
-                    
-                } else {
-                    $this->Session->setFlash(sprintf(__('%s kunne ikke gemmes.', true), 'Brugeren'), 'default', array('class' => 'error'));
-                }
-                
+				$this->Project->set($this->data);
+	            if ($this->Project->validates()) {
+	            
+		            // set role_id to project manager (4) and create random password and assign variable (password array: 0 => hashed, 1 => cleartext)
+		            $this->data['User']['role_id'] = 4;
+					$password = $this->Utils->createRandomPassword();
+					$this->data['User']['password'] = $password[0];
+	                
+	                // create new user entry
+	                $this->Project->User->create();
+	
+	                // check if user was succesfully created
+	                if ($this->Project->User->save($this->data["User"])) {			
+		                $this->data['Project']['user_id'] = $this->Project->User->id; //set user_id				
+		                $user_outcome = true;
+	                } else {
+		                $user_outcome = false;
+	                }
+	                
+	                if ($user_outcome == true) {
+		                // sending e-mail to new user
+						$name = $this->data['User']['title'];
+						$email = $this->data['User']['username'];
+						$mail_result = $this->_userMail($name, $email, $password[1]);
+						if ($mail_result) {
+			                $email_outcome = true;
+						} else {				
+			                $email_outcome = false;						
+						}
+					}
+				
+				} else {
+					$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Projektet'), 'default', array('class' => 'error'));	
+				}
+			
+			// using existing user
             } else {
                 $this->data['Project']['user_id'] = $this->data['User']['user_id']; //set user_id
-                $user_outcome = true;
             }
 
-            // create project if user creation was succesful
-            if ($user_outcome == true) {
-                $this->data['Project']['total_power_usage'] = 0;
-            	$project_outcome = $this->createProject($this->Project, $this->data);
+            // new user, user is OK
+            if (isset($user_outcome) && $user_outcome == true) {
+            	$project_outcome = $this->Utils->createProject($this->Project, $this->data);
+            	// project is OK
             	if ($project_outcome == true) {
-					$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Projektet'), 'default', array('class' => 'success'));            
-            		$this->redirect(array('action' => 'index'));    //redirect
+					// email is OK
+					if (isset($email_outcome) && $email_outcome == true) {
+						$this->Session->setFlash(sprintf(__('%s er blevet gemt, brugeren er blevet oprettet og har fået tilsendt en e-mail!', true), 'Projektet'), 'default', array('class' => 'success'));            
+            			$this->redirect(array('action' => 'index'));
+            		// email failed
+            		} else if (isset($email_outcome) && $email_outcome == false) {
+			        	$this->Session->setFlash(sprintf(__('%s er blevet gemt og brugeren er blevet oprettet, men der kunne ikke tilsendes en e-mail. Nulstil venligst adgangskoden manuelt og kontakt brugeren selv.', true), 'bruger'), 'default', array('class' => 'notice'));
+						$this->redirect(array('action' => 'index'));            		
+					}	
+				// project failed
 	            } else {
 					$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Projektet'), 'default', array('class' => 'error'));
 	            }
-	        } else {
+	        // new user, user failed
+	        } else if (isset($user_outcome) && $user_outcome == false) {
 				$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Brugeren'), 'default', array('class' => 'error'));
+	        // existing user
+	        } else if (!isset($user_outcome)) {
+            	$project_outcome = $this->Utils->createProject($this->Project, $this->data);
+            	// project is OK
+            	if ($project_outcome == true) {
+					$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Projektet'), 'default', array('class' => 'success')); 
+            		$this->redirect(array('action' => 'index'));            			
+				// project failed
+				} else {
+					$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Projektet'), 'default', array('class' => 'error'));
+				}
 	        }
 	    }
 
