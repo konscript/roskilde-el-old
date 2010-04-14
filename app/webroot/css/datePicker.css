@@ -1,4 +1,5 @@
 /* Link to popup */
+
 a.dp-choose-date {
 	/* float: right; */
 	width: 16px;
@@ -20,9 +21,14 @@ a.dp-choose-date.dp-disabled {
 div.dp-popup {
 	position: relative;
 	background: #e8e8e8;
-	padding: 2px;
+	padding: 4px;
 	width: 200px;
 	line-height: 1.2em;
+	border: 1px #000 solid;
+	margin-left: 20px;
+	margin-top: -4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;		
 }
 div#dp-popup {
 	position: absolute;

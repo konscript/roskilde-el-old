@@ -207,10 +207,12 @@ dl {
 }
 dl .altrow {
 	background: #f4f4f4;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;		
 }
 dt {
 	font-weight: bold;
-	padding-left: 4px;
+	padding: 2px 2px 2px 8px;
 	vertical-align: top;
 }
 dd {
