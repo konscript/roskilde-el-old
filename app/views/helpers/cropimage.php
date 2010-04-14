@@ -40,7 +40,7 @@ class CropimageHelper extends Helper {
             });
 
             $(window).load(function () {
-                $('#thumbnail').imgAreaSelect({ aspectRatio: '1:1', onSelectChange: preview });
+                $('#thumbnail').imgAreaSelect({ onSelectChange: preview });
             });
             </script>");
     }
@@ -53,11 +53,24 @@ class CropimageHelper extends Helper {
             $w =             $this->Form->hidden('w', array("value" => "", "id"=>"w"));
             $h =             $this->Form->hidden('h', array("value" => "", "id"=>"h"));
             $imgP =      $this->Form->hidden('imagePath', array("value" => $imagePath));
+
+            $imgTum = $this->Html->image($imagePath, array('style'=>'float: left; margin-right: 10px;', 'id'=>'thumbnail', 'alt'=>'Create Thumbnail'));
+            $imgTumPrev = $this->Html->image($imagePath, array('style'=>'position: relative;', 'id'=>'thumbnail', 'alt'=>'Thumbnail Preview'));
+
+
+            return $this->output("$imgTum
+            <div style=\"position:relative; overflow:hidden; width:151px; height:151px;\">
+                $imgTumPrev
+            </div>
+            <br style=\"clear:both;\"/>$x1 $y1 $x2 $y2 $w $h $imgP");
+            
+            /*
             return $this->output("<img src=\"$imagePath\" style=\"float: left; margin-right: 10px;\" id=\"thumbnail\" alt=\"Create Thumbnail\" />
             <div style=\"position:relative; overflow:hidden; width:".$tW."px; height:".$tH."px;\">
                 <img src=\"$imagePath\" style=\"position: relative;\" alt=\"Thumbnail Preview\" />
             </div>
             <br style=\"clear:both;\"/>$x1 $y1 $x2 $y2 $w $h $imgP");
-    }
+            */
+    } 
 }
 ?>

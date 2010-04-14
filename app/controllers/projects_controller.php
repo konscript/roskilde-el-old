@@ -1,6 +1,13 @@
 <?php
 class ProjectsController extends AppController {
 
+        //temp for testing image uplaoder
+	function beforeFilter() {
+	    parent::beforeFilter();
+	    $this->Auth->allow('createimage_step2');
+            $this->Auth->allow('createimage_step3');
+	}
+
 	var $name = 'Projects';
 	var $components = array('SpecificAcl', 'Utils', 'JqImgcrop');
 	var $helpers = array('Form', 'DatePicker', 'Cropimage');
