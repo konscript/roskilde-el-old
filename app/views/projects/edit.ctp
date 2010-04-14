@@ -25,6 +25,8 @@
         }
        	if ($role_id <= 3) {
 			echo $this->Form->input('user_id', array('label' => 'Projektleder'));       	
+       	} else {
+			echo $this->Form->hidden('user_id');
        	}
 	?>
 	</fieldset>

@@ -1,23 +1,17 @@
 <div class="projects view">
+	<h3><?php echo $project['Project']['title']; ?></h3><br />
+	<?php echo $project['Project']['body']; ?><br /><br />
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('ID'); ?></dt>
-		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $project['Project']['id']; ?>
-			&nbsp;
-		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Navn'); ?></dt>
-		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $project['Project']['title']; ?>
-			&nbsp;
-		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Beskrivelse'); ?></dt>
-		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $project['Project']['body']; ?>
-			&nbsp;
-		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Aktuelt Strømforbrug'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $project['Project']['total_power_usage']; ?>
+			<span class="icon_powerusage_<?php
+				 if ($project['Project']['total_power_allowance'] == 0) {
+				 	echo "0";			 	
+				 } else if ($project['Project']['total_power_usage'] < $project['Project']['total_power_allowance']) {
+				 	echo "1";
+				 } else if ($project['Project']['total_power_usage'] > $project['Project']['total_power_allowance']) {
+				 	echo "2"; }
+			?>"><?php echo $project['Project']['total_power_usage'] ."</span>"; ?>			
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Tilladt Strømforbrug'); ?></dt>
@@ -47,6 +41,7 @@
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Status'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
+		<div class="icon_status_<?php echo $project['Project']['status']; ?>" style="float: left; width: 20px;">&nbsp;</div>
 			<?php
 			 if ($project['Project']['status'] == 0) {
 			 	echo "Igangværende";			 	
@@ -72,7 +67,7 @@
 			<?php echo $project['Project']['created']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Redigeret'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Senest redigeret'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $project['Project']['modified']; ?>
 			&nbsp;

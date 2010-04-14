@@ -16,6 +16,13 @@ class ProjectsController extends AppController {
 	    $this->paginate = array('conditions' => array('Project.id' => $allowed_project_ids), 'limit' => 10);
 	    $allowed_projects = $this->paginate('Project');
 		$this->set('projects', $allowed_projects);
+		
+		if (empty($allowed_projects)) {
+			$this->set('no_projects', true);
+		} else if (count($allowed_projects) == 1) {
+			$this->redirect(array('action' => 'view', $allowed_projects["0"]["Project"]["id"]));
+		}
+
 	}
 
 	function view($id = null) {

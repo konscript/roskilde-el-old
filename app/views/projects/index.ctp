@@ -1,3 +1,9 @@
+<?php 
+	if (isset($no_projects) && $no_projects == true) {
+		echo "<p class='icon_noprojects'>Du har ikke adgang til nogle projekter.</p><br />
+		<p><i>Kontakt venligst din gruppeleder eller administratoren hvis du mener dette er en fejl</i></p>";	
+	} else { 
+?>
 <div class="projects index">
 	<table cellpadding="0" cellspacing="0">
 	<tr>
@@ -62,3 +68,5 @@
 		<li><?php echo $this->Html->link(sprintf(__('Opret nyt %s', true), __('Projekt', true)), array('action' => 'add'), array('class' => 'action_new')); ?></li>
 	</ul>
 </div>
+
+<?php } ?>
