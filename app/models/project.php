@@ -4,38 +4,8 @@ class Project extends AppModel {
 
 	var $name = 'Project';
 	var $actsAs = array('Acl' => array('type' => 'controlled')); //controlled type is of type ACO  = Object to get
-
-    //Defines hierachy in the ACL/ACO structure
-	function parentNode() {
-		if (!$this->id && empty($this->data)) {
-			return null;
-		}
-		$data = $this->data;
-		if (empty($this->data)) {
-			$data = $this->read();
-		} 
-		if (!$data['Project']['group_id']) {
-			return null;
-		} else {
-                        //
-			$this->Group->id = $data['Project']['group_id'];
-			$groupNode = $this->Group->node();
-			return array('Group' => array('id' => $groupNode[0]['Aco']['foreign_key']));
-		}
-	}
-	
-	function afterSave($created) {
-		// Updates the ACO entry if it's parent_id (Group) has been changed
-        if (!$created) {
-            $parent = $this->parentNode();
-            $parent = $this->node($parent);
-            $node = $this->node();
-            $aco = $node[0];
-            $aco['Aco']['parent_id'] = $parent[0]['Aco']['id'];
-            $this->Aco->save($aco);
-        }
-	}	
-		
+	var $recursive = 2;
+			
 	var $validate = array(
 		'title' => array(
 			'notempty' => array(
@@ -113,6 +83,56 @@ class Project extends AppModel {
 			'counterQuery' => ''
 		)
 	);
+
+    //Defines hierachy in the ACL/ACO structure
+	function parentNode() {
+		if (!$this->id && empty($this->data)) {
+			return null;
+		}
+		$data = $this->data;
+		if (empty($this->data)) {
+			$data = $this->read();
+		}
+		if (!isset($data['Project']['group_id'])) {
+			$groupdata = $this->read();
+			$data['Project']['group_id'] = $groupdata['Project']['group_id'];
+		}
+		if (!$data['Project']['group_id']) {
+			return null;
+		} else {
+			$this->Group->id = $data['Project']['group_id'];
+			$groupNode = $this->Group->node();
+			return array('Group' => array('id' => $groupNode[0]['Aco']['foreign_key']));
+		}
+	}
+	
+	// Updates the ACO entry if it's parent_id (Group) has been changed	
+	function afterSave($created) {
+        if (isset($data['Project']['group_id']) && !$created) {
+            $parent = $this->parentNode();
+            $parent = $this->node($parent);
+            $node = $this->node();
+            $aco = $node[0];
+            $aco['Aco']['parent_id'] = $parent[0]['Aco']['id'];
+            $this->Aco->save($aco);
+        }
+	}
+	
+	// Calculates total power usage from attached project items and saves to result array
+/*	function afterFind($results) {
+		if (isset($results[0]['Project']['id'])) {
+			foreach ($results as $key => $val) {
+				$results[$key]['Project']['total_power_usage'] = $this->ProjectItem->SumByProject($results[$key]['Project']['id']);
+			}
+		}
+		return $results;
+	}
+	
+	// Updates the DB field with the a calculated total power usage
+	function beforeSave() {
+	    $this->data['Project']['total_power_usage'] = $this->ProjectItem->SumByProject($this->data['Project']['id']);
+		return true;
+	} */
 	
 }
 ?>

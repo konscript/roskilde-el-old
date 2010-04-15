@@ -19,10 +19,9 @@ class ProjectsController extends AppController {
 		
 		if (empty($allowed_projects)) {
 			$this->set('no_projects', true);
-		} else if (count($allowed_projects) == 1) {
+		} else if (count($allowed_projects) == 1 && $this->Auth->user('role_id') == 4) {
 			$this->redirect(array('action' => 'view', $allowed_projects["0"]["Project"]["id"]));
 		}
-
 	}
 
 	function view($id = null) {
@@ -42,8 +41,6 @@ class ProjectsController extends AppController {
 
 		// save to variable: projects, project items and items		
 		$this->set('project', $this->Project->read(null, $id));
-		$this->set('projectItems', $this->Project->ProjectItem->find('all', array('conditions' => array('ProjectItem.project_id' => $id))));
-		$this->set('items', $this->Project->ProjectItem->Item->find('all'));
 	}
 
 	function add() {
@@ -151,7 +148,6 @@ class ProjectsController extends AppController {
 
 	function edit($id = null) {
 		$this->set('title_for_layout', 'Rediger Projekt');	
-		unset($this->data['Project']['modified']);
 
         // SPECIFICACL: Project-based permission check
 		if (!$this->SpecificAcl->check("Project", $id)) {
@@ -165,8 +161,11 @@ class ProjectsController extends AppController {
 		}
 
 		if (!empty($this->data)) {
+			
+			die("<pre>".print_r($this->data));
+	        
 	        // SPECIFICACL: Removes permission for the old project manager
-				$this->SpecificAcl->deny("Project", $this->Project->read(null, $id));						
+			$this->SpecificAcl->deny("Project", $this->Project->read(null, $id));						
 
 			if ($this->Project->save($this->data)) {
 		        // SPECIFICACL: Reassigns permission for the chosen project manager
@@ -200,6 +199,7 @@ class ProjectsController extends AppController {
 
 	function delete($id = null) {
 		$this->set('title_for_layout', 'Slet Projekt');	
+		
 		// SPECIFICACL: Project-based permission check
 		if (!$this->SpecificAcl->check("Project", $id)) {
 			$this->Session->setFlash('Du har ikke adgang til projektet');			
