@@ -28,18 +28,18 @@
        	}
 
         
-        echo "Billede: ". $project['Project']['image'];
+        //echo "Billede: ". $html->image('/attachments/photos/med/'.$project['Project']['file_path']);
 	?>
 
 	</fieldset>
 <?php echo $this->Form->end(__('Gem', true));?>
 </div>
 
-            <?php echo $form->create('Project', array('action' => 'createimage_step2', "enctype" => "multipart/form-data"));?>
-            <?php
-                echo $form->input('image',array("type" => "file"));
-                echo $form->end('Upload');
-            ?>
+<?php
+//upload form
+//echo $form->create('Project', array('type' => 'file'));
+//echo $form->file('Attachment');
+?>
 
 <div class="related">
 	<h3><?php printf(__('%s', true), __('Enheder', true));?></h3>

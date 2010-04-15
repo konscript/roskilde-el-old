@@ -1,16 +1,9 @@
 <?php
 class ProjectsController extends AppController {
 
-        //temp for testing image uplaoder
-	function beforeFilter() {
-	    parent::beforeFilter();
-	    $this->Auth->allow('createimage_step2');
-            $this->Auth->allow('createimage_step3');
-	}
-
 	var $name = 'Projects';
-	var $components = array('SpecificAcl', 'Utils', 'JqImgcrop');
-	var $helpers = array('Form', 'DatePicker', 'Cropimage');
+	var $components = array('SpecificAcl', 'Utils', 'Attachment');
+	var $helpers = array('Form', 'DatePicker');
 
 	// Private method for creating random passwords (not used directly as an action)
 	// Returns array: 0 => hashed, 1 => cleartext
@@ -192,32 +185,12 @@ class ProjectsController extends AppController {
 	}
 
 
-        //upload image function
-        function createimage_step2(){
-            if (!empty($this->data)) {
-                $uploaded = $this->JqImgcrop->uploadImage($this->data['Project']['image'], '/img/upload/', 'prefix_');
-                $this->set('uploaded',$uploaded);
-            }
-        }
-
-        //crop image
-        function createimage_step3(){
-            $this->JqImgcrop->cropImage(
-                    151, //thumb width
-                    $this->data['Project']['x1'], //x1 (coordinate)
-                    $this->data['Project']['x2'], //x2
-                    $this->data['Project']['y1'], //y1
-                    $this->data['Project']['y2'], //y2
-                    $this->data['Project']['w'],
-                    $this->data['Project']['h'],
-                    $this->data['Project']['imagePath'], //thumb location
-                    $this->data['Project']['imagePath'] //image location
-                    );
-        }
-
 	function edit($id = null) {
 		$this->set('title_for_layout', 'Rediger Projekt');	
 		unset($this->data['Project']['modified']);
+
+                //upload image
+                //$file_path = $this->Attachment->upload($this->data['Project']['Attachment']);
 
         // SPECIFICACL: Project-based permission check
 		if (!$this->SpecificAcl->check("Project", $id)) {
