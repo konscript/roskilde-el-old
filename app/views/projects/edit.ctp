@@ -1,5 +1,5 @@
 <div class="projects form">
-<?php echo $this->Form->create('Project');?>
+<?php echo $this->Form->create('Project', array('type' => 'file'));?>
 	<fieldset>
  		<legend><?php printf(__('Rediger %s', true), __('Projekt', true)); ?></legend>
 	<?php
@@ -25,20 +25,23 @@
         }
        	if ($role_id <= 3) {
 			echo $this->Form->input('user_id', array('label' => 'Projektleder'));       	
+       	} else {
+			echo $this->Form->hidden('user_id');
        	}
 
         
-        //echo "Billede: ". $html->image('/attachments/photos/med/'.$project['Project']['file_path']);
+        echo "Billede: ". $html->image('/attachments/photos/small/'.$project['Project']['file_path']);
 	?>
 
 	</fieldset>
+    <?php echo $form->file('Attachment'); ?>
 <?php echo $this->Form->end(__('Gem', true));?>
 </div>
 
 <?php
 //upload form
-//echo $form->create('Project', array('type' => 'file'));
-//echo $form->file('Attachment');
+//echo $form->create('Project', array());
+//echo $form->end(__('Gem', true));
 ?>
 
 <div class="related">

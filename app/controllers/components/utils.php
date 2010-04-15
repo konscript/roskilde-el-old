@@ -20,7 +20,7 @@ class UtilsComponent extends Object {
         }
         
         // encrypt the password using CakePHP hash function
-        $hash = Security::hash($pass);
+        $hash = Security::hash($pass, null, true);
         
         // return array of hashed password and cleartext
         $array = array($hash, $pass);

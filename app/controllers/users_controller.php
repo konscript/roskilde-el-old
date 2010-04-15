@@ -95,6 +95,9 @@ class UsersController extends AppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->data)) {
+			if (!$this->data['User']['changePassword']) {
+				unset($this->data['User']['password']);
+			}
 			if ($this->User->save($this->data)) {
 				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Brugeren'), 'default', array('class' => 'success'));
 				
@@ -115,9 +118,12 @@ class UsersController extends AppController {
 		$this->set('title_for_layout', 'Rediger Profil');	
 		if (!empty($this->data)) {
 			$this->data['User']['role_id'] = $this->Auth->user('role_id');
+			if (!$this->data['User']['changePassword']) {
+				unset($this->data['User']['password']);
+			}
 			if ($this->User->save($this->data)) {
 				$this->Session->setFlash(sprintf(__('Din %s er blevet opdateret', true), 'profil'), 'default', array('class' => 'success'));
-				$this->redirect(array('action' => 'index'));
+				$this->redirect('/', null, false);
 			} else {
 				$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Profilændringerne'), 'default', array('class' => 'error'));	
 			}

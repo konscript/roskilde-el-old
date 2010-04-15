@@ -207,10 +207,12 @@ dl {
 }
 dl .altrow {
 	background: #f4f4f4;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;		
 }
 dt {
 	font-weight: bold;
-	padding-left: 4px;
+	padding: 2px 2px 2px 8px;
 	vertical-align: top;
 }
 dd {
@@ -442,6 +444,13 @@ div.actions ul li a:hover {
 }
 
 /* !Icons and Column Styling */
+
+/* Status messages */
+p.icon_noprojects { /* No projects */
+	background: url(../img/icons/10/101.png) no-repeat;
+	background-position: 0 center;
+	padding: 4px 8px 4px 16px;	
+}
 
 /* Actions */
 td a.action_new, div.actions .action_new { /* New */

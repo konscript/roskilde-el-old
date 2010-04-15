@@ -11,7 +11,7 @@ class User extends AppModel {
 			'notempty' => array(
 				'rule' => 'notEmpty',
 				'message' => 'Du skal angive et navn',
-				'allowEmpty' => false,
+				'allowEmpty' => false
 			)
 		),
 		'username' => array(
@@ -28,10 +28,10 @@ class User extends AppModel {
 		),
 		'password' => array(
 			'notempty' => array(
-				'rule' => 'notempty',
+				'rule' => 'notEmpty',
 				'message' => 'Adgangskoden må ikke være tom',
 				'allowEmpty' => false
-			),
+			)
 		),
 		'role_id' => array(
 			'numeric' => array(
