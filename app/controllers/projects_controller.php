@@ -161,9 +161,7 @@ class ProjectsController extends AppController {
 		}
 
 		if (!empty($this->data)) {
-			
-			die("<pre>".print_r($this->data));
-	        
+				        
 	        // SPECIFICACL: Removes permission for the old project manager
 			$this->SpecificAcl->deny("Project", $this->Project->read(null, $id));						
 
