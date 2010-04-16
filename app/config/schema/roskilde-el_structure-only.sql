@@ -140,6 +140,7 @@ CREATE TABLE `projects` (
   `items_start` datetime DEFAULT NULL,
   `items_end` datetime DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
+  `file_path` varchar(255) NOT NULL,
   `group_id` int(11) NOT NULL DEFAULT '0',
   `user_id` int(11) NOT NULL DEFAULT '0',
   `created` datetime DEFAULT NULL,
@@ -228,4 +229,4 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` VALUES(1, 'Lasse Boisen Andersen', 'la@laander.com', '080e8122480a972ec29561e7466539745ed9d223', 1, '2010-03-18 20:59:20', '2010-04-06 20:39:16');
+INSERT INTO `users` VALUES(1, 'Administrator', 'la@laander.com', '080e8122480a972ec29561e7466539745ed9d223', 1, '2010-03-18 20:59:20', '2010-04-06 20:39:16');

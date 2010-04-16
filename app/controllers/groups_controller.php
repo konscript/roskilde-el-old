@@ -24,6 +24,10 @@ class GroupsController extends AppController {
 		if (!empty($this->data)) {
 			$this->Group->create();
 			if ($this->Group->save($this->data)) {
+			
+				// workaround to set created item's id in dataset for acl
+	            $this->data['Group']['id'] = $this->Group->id;
+			
 		        // SPECIFICACL: Reassigns permission for the chosen group manager
 				$this->SpecificAcl->allow("Group", $this->data);			
 			

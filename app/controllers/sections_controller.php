@@ -24,6 +24,10 @@ class SectionsController extends AppController {
 		if (!empty($this->data)) {
 			$this->Section->create();
 			if ($this->Section->save($this->data)) {
+			
+				// workaround to set created item's id in dataset for acl
+	            $this->data['Section']['id'] = $this->Section->id;
+			
 		        // SPECIFICACL: Reassigns permission for the chosen section manager
 				$this->SpecificAcl->allow("Section", $this->data);			
 			
