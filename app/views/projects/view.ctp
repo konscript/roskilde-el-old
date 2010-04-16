@@ -1,4 +1,5 @@
 <div class="projects view">
+
 	<h3><?php echo $project['Project']['title']; ?></h3><br />
 	<?php echo $project['Project']['body']; ?><br /><br />
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
@@ -62,22 +63,18 @@
 			<?php echo $this->Html->link($project['User']['username'], array('controller' => 'users', 'action' => 'view', $project['User']['id'])); ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Oprettet'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Kort'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $project['Project']['created']; ?>
-			&nbsp;
+			<?php if ($project['Project']['file_path'] != '') {
+				echo $html->link(
+							$html->image('/attachments/photos/thumb/'.$project['Project']['file_path']),
+							'/attachments/photos/default/'.$project['Project']['file_path'],
+							array('escape'=>false)); 
+			} else {
+				echo "<i>Der er endnu ikke vedhæftet noget kort til projektet</i>";
+			}
+			?>
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Billede'); ?></dt>
-		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $html->image('/attachments/photos/thumb/'.$project['Project']['file_path']); ?>
-			&nbsp;
-		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Download som excel'); ?></dt>
-		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $html->link('Download', 'createExcel/'.$project["Project"]["id"]); ?>
-			&nbsp;
-		</dd>
-
 	</dl>
 </div>
 
@@ -86,6 +83,7 @@
 	<ul>
 		<li><?php echo $this->Html->link(sprintf(__('Rediger %s', true), __('', true)), array('action' => 'edit', $project['Project']['id']), array('class' => 'action_edit')); ?> </li>
 		<li><?php echo $this->Html->link(sprintf(__('Slet %s', true), __('', true)), array('action' => 'delete', $project['Project']['id']), array('class' => 'action_delete'), sprintf(__('Er du sikker på du vil slette #%s?', true), $project['Project']['id'])); ?> </li>
+		<li><?php echo $this->Html->link('Eksport til Excel', array('action' => 'createExcel', $project['Project']['id']), array('class' => 'action_export')); ?> </li>
 	</ul>
 </div>
 
@@ -102,36 +100,29 @@
 	</tr>
 	<?php
 		$i = 0;
-		foreach ($project['ProjectItem'] as $projectItem):
+		foreach ($project['ProjectItem'] as $project_item):
 			$class = null;
 			if ($i++ % 2 == 0) {
 				$class = ' class="altrow"';
 			}
 		?>
 		<tr<?php echo $class;?>>
-
-			<?php
-            // custom item
-            if (!$projectItem['item_id']) { ?>
-				<td><?php echo $this->Html->link($projectItem['title'], array('controller' => 'project_items', 'action' => 'view', $projectItem['id']));?></td>
-				<td><?php echo $projectItem['description'];?></td>
-				<td><?php echo $projectItem['power_usage'];?></td>
-				<td>Custom</td>
-			<?php
-			// generic item
-			} else { 
-				foreach ($items as $item): 
-					if ($item['Item']['id'] == $projectItem['item_id']) { ?>
-						<td><?php echo $this->Html->link($item['Item']['title'], array('controller' => 'project_items', 'action' => 'view', $projectItem['id']));?></td>
-						<td><?php echo $item['Item']['description'];?></td>
-						<td><?php echo $item['Item']['power_usage'];?></td>
-						<td>Generisk</td>
-					<?php } ?> 							
-				<?php endforeach; ?>
+			<?php // custom item
+            if (!$project_item['item_id']) { ?>
+				<td><?php echo $this->Html->link($project_item['title'], array('controller' => 'project_items', 'action' => 'view', $project_item['id']));?></td>
+				<td><?php echo $project_item['description'];?></td>
+				<td><?php echo $project_item['power_usage'];?></td>
+				<td><?php __('Egen'); ?></td>
+			<?php // generic item
+			} else { ?>
+				<td><?php echo $this->Html->link($project_item['Item']['title'], array('controller' => 'project_items', 'action' => 'view', $project_item['id']));?></td>
+				<td><?php echo $project_item['Item']['description'];?></td>
+				<td><?php echo $project_item['Item']['power_usage'];?></td>
+				<td><?php __('Skabelon'); ?></td>
 			<?php } ?>
 			<td class="actions">
-				<?php echo $this->Html->link(__('Rediger', true), array('controller' => 'project_items', 'action' => 'edit', $projectItem['id'], '?' => array('project_id' => $project['Project']['id'])), array('class' => 'action_edit')); ?>
-				<?php echo $this->Html->link(__('Slet', true), array('controller' => 'project_items', 'action' => 'delete', $projectItem['id']), array('class' => 'action_delete'), sprintf(__('Are you sure you want to delete # %s?', true), $projectItem['id'])); ?>
+				<?php echo $this->Html->link(__('Rediger', true), array('controller' => 'project_items', 'action' => 'edit', $project_item['id'], '?' => array('project_id' => $project['Project']['id'])), array('class' => 'action_edit')); ?>
+				<?php echo $this->Html->link(__('Slet', true), array('controller' => 'project_items', 'action' => 'delete', $project_item['id']), array('class' => 'action_delete'), sprintf(__('Are you sure you want to delete # %s?', true), $project_item['id'])); ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>

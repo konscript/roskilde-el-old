@@ -12,8 +12,8 @@ class AttachmentComponent extends Object
 		'allow_non_image_files' => false,
 		'images_size' => array(
 			/* You may define as many options as you like
-                         * 'folder_name' => array($width, $height, $do_crop)
-                         */
+             * 'folder_name' => array($width, $height, $do_crop)
+             */             
             'original'    => array(2000, 1000, false),
 			'default'    => array(800, 600, true),
 			'thumb'  => array( 100,  100, true)
@@ -115,7 +115,7 @@ class AttachmentComponent extends Object
 		$ds = (strcmp('\\', DS) == 0) ? '\\\\' : DS;
 		$file_name = end(split($ds, $tmpfile));
 		$action = ($crop ? 'resizeCrop' : 'resize');
-		$this->resize_image($action, $tmpfile, $upload_dir, $file_name, $maxw, $maxh, 85);
+		$this->resize_image($action, $tmpfile, $upload_dir, $file_name, $maxw, $maxh, 90);
 	}
 
 
@@ -148,7 +148,7 @@ class AttachmentComponent extends Object
 	*	newHeight: the max height or crop height
 	*	quality: the quality of the image
 	*/
-	function resize_image($cType = 'resize', $tmpfile, $dstfolder, $dstname = false, $newWidth=false, $newHeight=false, $quality = 75) {
+	function resize_image($cType = 'resize', $tmpfile, $dstfolder, $dstname = false, $newWidth=false, $newHeight=false, $quality = 90) {
 		$srcimg = $tmpfile;
 		list($oldWidth, $oldHeight, $type) = getimagesize($srcimg);
 		$ext = $this->image_type_to_extension($type);

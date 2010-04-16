@@ -284,7 +284,6 @@ select {
 }
 .select label {
 	display: block;
-	margin-bottom:15px;
 }
 
 select[multiple=multiple] {
@@ -465,6 +464,11 @@ td a.action_edit, div.actions .action_edit { /* Edit */
 }
 td a.action_delete, div.actions .action_delete { /* Delete */
 	background: url(../img/icons/10/101.png) no-repeat;
+	background-position: 5px center;
+	padding: 4px 8px 4px 22px;	
+}
+td a.action_export, div.actions .action_export { /* Export */
+	background: url(../img/icons/10/139.png) no-repeat;
 	background-position: 5px center;
 	padding: 4px 8px 4px 22px;	
 }

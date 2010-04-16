@@ -1,7 +1,12 @@
 <?php 
 	if (isset($no_projects) && $no_projects == true) {
-		echo "<p class='icon_noprojects'>Du har ikke adgang til nogle projekter.</p><br />
-		<p><i>Kontakt venligst din gruppeleder eller administratoren hvis du mener dette er en fejl</i></p>";	
+		if ($user_role == 4) {
+			echo "<p class='icon_noprojects'>Du har ikke adgang til nogle projekter.</p><br />
+			<p><i>Kontakt venligst din gruppeleder hvis du mener dette er en fejl</i></p>";
+		} else if ($user_role <= 3) {
+			echo "<p class='icon_noprojects'>Der er ingen projekter i din gruppe.</p><br />
+			<p><i>Opret et ny projekt eller kontakt venligst administratoren hvis du mener dette er en fejl</i></p>";
+		}
 	} else { 
 ?>
 <div class="projects index">
@@ -62,6 +67,8 @@
 	</div>
 </div>
 
+<?php } ?>
+
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
@@ -69,4 +76,3 @@
 	</ul>
 </div>
 
-<?php } ?>

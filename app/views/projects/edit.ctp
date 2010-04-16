@@ -25,15 +25,26 @@
         }
        	if ($role_id <= 3) {
 			echo $this->Form->input('user_id', array('label' => 'Projektleder'));       	
-       	} else {
-			echo $this->Form->hidden('user_id');
-       	}
-        
-        echo 'Billede: '. $html->link($project['Project']['file_path'], '/attachments/photos/default/'.$project['Project']['file_path'], array('target'=>'_blank'));
-	?>
-
+       	} ?>
+       	<div>
+			<?php if ($project['Project']['file_path'] != '') { ?>
+	       		<label>Nuværende vedhæftede kort:</label>
+				<?php echo $html->link(
+							$html->image('/attachments/photos/thumb/'.$project['Project']['file_path']),
+							'/attachments/photos/default/'.$project['Project']['file_path'],
+							array('escape'=>false)); 
+			} else {
+				echo "<i>Der er endnu ikke vedhæftet noget kort til projektet</i>";
+			}
+			?>
+       	</div>
+		<?php
+        echo $this->Form->input('uploadAttachment', array('label' => 'Upload nyt kort', 'type' => 'checkbox', 'checked' => 'false', 'class'=>'toggleClass'));
+        ?><div><?php
+	        echo $form->file('Attachment');
+			echo "<br /><br /><i>Følgende filtyper er tilladt: JPEG, PNG og GIF. Billedet vil automatisk blive beskæret og skaleret.</i>";	                
+        ?></div><div></div>
 	</fieldset>
-    <?php echo $form->file('Attachment'); ?>
 <?php echo $this->Form->end(__('Gem', true));?>
 </div>
 

@@ -9,6 +9,15 @@ class SetupController extends AppController {
 	    $this->Auth->allow('*');
 	}
 	
+	// New setup:
+	// 1. Create database from scheme: roskilde-el_structure-only.sql
+	// 2. Run: http://site.com/setup/aco_build_controlleractions (to build the aco structure based on controllers/actions)
+	// 3. Run: http://site.com/setup/permissions_assign_controlleractions (to build the permissions aros_acos for ACL)
+	// 4. Login with the predifined admin user: la@laander.com + admin
+	
+	// If a new controller/action is created:
+	// 1. Run: http://site.com/setup/aco_build_controlleractions (to build the aco structure based on controllers/actions)
+	
 	function acl_build() 
 	{
 		// the following commands should be executed through the cake console to initialize the basic ACL setup for ARO + ACO
@@ -152,7 +161,6 @@ class SetupController extends AppController {
 		
 		die('All done!');
 	}
-	
 
     // Builds the Aco structure (Controllers > Actions)
 	function aco_build_controlleractions() {
