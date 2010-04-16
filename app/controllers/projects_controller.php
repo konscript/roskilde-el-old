@@ -1,9 +1,14 @@
 <?php
 class ProjectsController extends AppController {
 
+	function beforeFilter() {
+	    parent::beforeFilter();
+	    $this->Auth->allow('createExcel');
+	}	
+
     var $name = 'Projects';
-    var $components = array('SpecificAcl', 'Utils', 'Attachment');
-    var $helpers = array('Form', 'DatePicker');
+    var $components = array('SpecificAcl', 'Utils', 'Attachment', 'Excel');
+    var $helpers = array('Form', 'DatePicker', 'Time');
 
     // Private method for creating random passwords (not used directly as an action)
     // Returns array: 0 => hashed, 1 => cleartext
@@ -68,6 +73,17 @@ class ProjectsController extends AppController {
         }
 
 
+    }
+
+    function createExcel($id = null){
+
+        if($id){
+            $this->Project->recursive=2;
+            $data = $this->Project->read(null, $id);
+            $this->Excel->createExcel($data);
+
+            //$this->set('project', $data);
+        }
     }
 
     function view($id = null) {

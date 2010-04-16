@@ -28,9 +28,8 @@
        	} else {
 			echo $this->Form->hidden('user_id');
        	}
-
         
-        echo "Billede: ". $html->image('/attachments/photos/small/'.$project['Project']['file_path']);
+        echo 'Billede: '. $html->link($project['Project']['file_path'], '/attachments/photos/default/'.$project['Project']['file_path'], array('target'=>'_blank'));
 	?>
 
 	</fieldset>

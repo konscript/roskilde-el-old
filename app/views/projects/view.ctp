@@ -69,7 +69,12 @@
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Billede'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $project['Project']['file_path']; ?>
+			<?php echo $html->image('/attachments/photos/thumb/'.$project['Project']['file_path']); ?>
+			&nbsp;
+		</dd>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Download som excel'); ?></dt>
+		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
+			<?php echo $html->link('Download', 'createExcel/'.$project["Project"]["id"]); ?>
 			&nbsp;
 		</dd>
 
