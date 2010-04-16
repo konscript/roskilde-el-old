@@ -1,3 +1,4 @@
 app/tmp/*
 app/config/database.php
 nbproject/*
+.DS_Store
