@@ -3,7 +3,7 @@
 class Project extends AppModel {
 
 	var $name = 'Project';
-	var $actsAs = array('Acl' => array('type' => 'controlled')); //controlled type is of type ACO  = Object to get
+	var $actsAs = array('Acl' => array('type' => 'controlled'), 'Containable'); //controlled type is of type ACO  = Object to get
 	var $recursive = 2;
 			
 	var $validate = array(
@@ -117,22 +117,6 @@ class Project extends AppModel {
             $this->Aco->save($aco);
         }
 	}
-	
-	// Calculates total power usage from attached project items and saves to result array
-/*	function afterFind($results) {
-		if (isset($results[0]['Project']['id'])) {
-			foreach ($results as $key => $val) {
-				$results[$key]['Project']['total_power_usage'] = $this->ProjectItem->SumByProject($results[$key]['Project']['id']);
-			}
-		}
-		return $results;
-	}
-	
-	// Updates the DB field with the a calculated total power usage
-	function beforeSave() {
-	    $this->data['Project']['total_power_usage'] = $this->ProjectItem->SumByProject($this->data['Project']['id']);
-		return true;
-	} */
-	
+		
 }
 ?>

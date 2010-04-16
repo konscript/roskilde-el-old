@@ -1,4 +1,5 @@
 <div class="projects view">
+
 	<h3><?php echo $project['Project']['title']; ?></h3><br />
 	<?php echo $project['Project']['body']; ?><br /><br />
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
@@ -62,15 +63,17 @@
 			<?php echo $this->Html->link($project['User']['username'], array('controller' => 'users', 'action' => 'view', $project['User']['id'])); ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Oprettet'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Kort'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $project['Project']['created']; ?>
-			&nbsp;
-		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Senest redigeret'); ?></dt>
-		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $project['Project']['modified']; ?>
-			&nbsp;
+			<?php if ($project['Project']['file_path'] != '') {
+				echo $html->link(
+							$html->image('/attachments/photos/thumb/'.$project['Project']['file_path']),
+							'/attachments/photos/default/'.$project['Project']['file_path'],
+							array('escape'=>false)); 
+			} else {
+				echo "<i>Der er endnu ikke vedhæftet noget kort til projektet</i>";
+			}
+			?>
 		</dd>
 	</dl>
 </div>

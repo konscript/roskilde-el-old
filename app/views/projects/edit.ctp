@@ -1,5 +1,5 @@
 <div class="projects form">
-<?php echo $this->Form->create('Project');?>
+<?php echo $this->Form->create('Project', array('type' => 'file'));?>
 	<fieldset>
  		<legend><?php printf(__('Rediger %s', true), __('Projekt', true)); ?></legend>
 	<?php
@@ -25,11 +25,34 @@
         }
        	if ($role_id <= 3) {
 			echo $this->Form->input('user_id', array('label' => 'Projektleder'));       	
-       	}
-	?>
+       	} ?>
+       	<div>
+			<?php if ($project['Project']['file_path'] != '') { ?>
+	       		<label>Nuværende vedhæftede kort:</label>
+				<?php echo $html->link(
+							$html->image('/attachments/photos/thumb/'.$project['Project']['file_path']),
+							'/attachments/photos/default/'.$project['Project']['file_path'],
+							array('escape'=>false)); 
+			} else {
+				echo "<i>Der er endnu ikke vedhæftet noget kort til projektet</i>";
+			}
+			?>
+       	</div>
+		<?php
+        echo $this->Form->input('uploadAttachment', array('label' => 'Upload nyt kort', 'type' => 'checkbox', 'checked' => 'false', 'class'=>'toggleClass'));
+        ?><div><?php
+	        echo $form->file('Attachment');
+			echo "<br /><br /><i>Følgende filtyper er tilladt: JPEG, PNG og GIF. Billedet vil automatisk blive beskæret og skaleret.</i>";	                
+        ?></div><div></div>
 	</fieldset>
 <?php echo $this->Form->end(__('Gem', true));?>
 </div>
+
+<?php
+//upload form
+//echo $form->create('Project', array());
+//echo $form->end(__('Gem', true));
+?>
 
 <div class="related">
 	<h3><?php printf(__('%s', true), __('Enheder', true));?></h3>

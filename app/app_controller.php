@@ -11,7 +11,7 @@ class AppController extends Controller {
         $this->Auth->logoutRedirect = array('controller' => 'users', 'action' => 'login');
         $this->Auth->loginRedirect = array('controller' => 'projects', 'action' => 'index');
         $this->Auth->authError = "Du har ikke rettigheder til den pågældende handling/ressource.";
-        $this->Auth->loginError = "Baahh, du har angivet et forkert brugernavn eller adgangskode.";    
+        $this->Auth->loginError = "Baahh, du har angivet et forkert brugernavn eller adgangskode.";
     }
 
 	// Private method for sending a welcome e-mail to new users
@@ -36,6 +36,6 @@ class AppController extends Controller {
 		} else { return false; }
 		
 	}	
-    
+	  
 }
 ?>

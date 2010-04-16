@@ -284,7 +284,6 @@ select {
 }
 .select label {
 	display: block;
-	margin-bottom:15px;
 }
 
 select[multiple=multiple] {
