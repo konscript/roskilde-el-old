@@ -5,7 +5,7 @@
 		<?php
         echo $this->Form->input('useTemplate', array('label' => 'Benyt en eksisterende Enhedsskabelon', 'type' => 'checkbox', 'checked' => 'false', 'class' => 'toggleClass'));
 		?><div><?php		
-			echo $this->Form->input('item_id', array('label' => 'Vælg enhedsskabelonen', 'options' => $items));
+			echo $this->Form->input('item_id', array('label' => 'Vælg enhedsskabelonen (strømforbrug er angivet i parantesen)', 'options' => $items));
 		?></div><?php
 		?><div><?php		
 			echo $this->Form->input('title', array('label' => 'Navn'));

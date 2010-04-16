@@ -1,3 +1,4 @@
+<div class="projects index">
 <?php 
 	if (isset($no_projects) && $no_projects == true) {
 		if ($user_role == 4) {
@@ -9,15 +10,15 @@
 		}
 	} else { 
 ?>
-<div class="projects index">
 	<table cellpadding="0" cellspacing="0">
 	<tr>
-		<th><?php echo $this->Paginator->sort(' ', 'status');?></th>
+		<th><?php echo $this->Paginator->sort('Status', 'status');?></th>
 		<th><?php echo $this->Paginator->sort('ID', 'id');?></th>
 		<th><?php echo $this->Paginator->sort('Navn', 'title');?></th>
 		<th><?php echo $this->Paginator->sort('Strømforbrug', 'total_power_usage');?></th>
 		<th><?php echo $this->Paginator->sort('Gruppe', 'group_id');?></th>
 		<th><?php echo $this->Paginator->sort('Projektleder', 'user_id');?></th>
+		<th><?php echo $this->Paginator->sort('Redigeret', 'modified');?></th>		
 		<th class="actions"><?php __('Handlinger');?></th>
 	</tr>
 	<?php
@@ -49,9 +50,10 @@
 		<td>
 			<?php echo $this->Html->link($project['User']['username'], array('controller' => 'users', 'action' => 'view', $project['User']['id'])); ?>
 		</td>
+		<td><?php echo $project['Project']['modified']; ?>&nbsp;</td>		
 		<td class="actions">
-			<?php echo $this->Html->link(__('Rediger', true), array('action' => 'edit', $project['Project']['id']), array('class' => 'action_edit')); ?>
-			<?php echo $this->Html->link(__('Slet', true), array('action' => 'delete', $project['Project']['id']), array('class' => 'action_delete'), sprintf(__('Are you sure you want to delete #%s?', true), $project['Project']['id'])); ?>
+			<?php $this->Output->edit(null, null, $project['Project']['id']); ?>
+			<?php $this->Output->delete(null, null, $project['Project']['id']); ?>
 		</td>
 	</tr>
 <?php endforeach; ?>
@@ -65,14 +67,13 @@
 		<?php echo $this->Paginator->numbers();?>
 		<?php echo $this->Paginator->next(__('- næste', true).' >', array(), null, array('class' => 'disabled'));?>
 	</div>
-</div>
-
 <?php } ?>
-
+</div>
+<?php if ($user_role <= 3) { ?>
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(sprintf(__('Opret nyt %s', true), __('Projekt', true)), array('action' => 'add'), array('class' => 'action_new')); ?></li>
+		<li><?php $this->Output->add('Opret nyt Projekt'); ?></li>
 	</ul>
 </div>
-
+<?php } ?>

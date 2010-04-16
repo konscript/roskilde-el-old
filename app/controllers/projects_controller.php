@@ -8,7 +8,7 @@ class ProjectsController extends AppController {
 
     var $name = 'Projects';
     var $components = array('SpecificAcl', 'Utils', 'Attachment', 'Excel');
-    var $helpers = array('Form', 'DatePicker');
+    var $helpers = array('Form', 'DatePicker', 'Output');
 
     function createExcel($id = null){
         if($id){

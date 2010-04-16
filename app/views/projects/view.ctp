@@ -63,6 +63,16 @@
 			<?php echo $this->Html->link($project['User']['username'], array('controller' => 'users', 'action' => 'view', $project['User']['id'])); ?>
 			&nbsp;
 		</dd>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Oprettet'); ?></dt>
+		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
+			<?php echo $project['Project']['created']; ?>
+			&nbsp;
+		</dd>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Redigeret'); ?></dt>
+		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
+			<?php echo $project['Project']['modified']; ?>
+			&nbsp;
+		</dd>		
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Kort'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php if ($project['Project']['file_path'] != '') {
@@ -81,15 +91,15 @@
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(sprintf(__('Rediger %s', true), __('', true)), array('action' => 'edit', $project['Project']['id']), array('class' => 'action_edit')); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('Slet %s', true), __('', true)), array('action' => 'delete', $project['Project']['id']), array('class' => 'action_delete'), sprintf(__('Er du sikker på du vil slette #%s?', true), $project['Project']['id'])); ?> </li>
-		<li><?php echo $this->Html->link('Eksport til Excel', array('action' => 'createExcel', $project['Project']['id']), array('class' => 'action_export')); ?> </li>
+		<li><?php $this->Output->edit(); ?></li>
+		<li><?php $this->Output->delete(); ?></li>
+		<li><?php $this->Output->export(); ?></li>		
 	</ul>
 </div>
 
 <div class="related">
 	<h3><?php printf(__('%s', true), __('Enheder', true));?></h3>
-	<?php if (!empty($project['ProjectItem'])):?>
+	<?php if (!empty($project['ProjectItem'])) { ?>
 	<table cellpadding = "0" cellspacing = "0">
 	<tr>
 		<th><?php __('Navn'); ?></th>
@@ -121,18 +131,19 @@
 				<td><?php __('Skabelon'); ?></td>
 			<?php } ?>
 			<td class="actions">
-				<?php echo $this->Html->link(__('Rediger', true), array('controller' => 'project_items', 'action' => 'edit', $project_item['id'], '?' => array('project_id' => $project['Project']['id'])), array('class' => 'action_edit')); ?>
-				<?php echo $this->Html->link(__('Slet', true), array('controller' => 'project_items', 'action' => 'delete', $project_item['id']), array('class' => 'action_delete'), sprintf(__('Are you sure you want to delete # %s?', true), $project_item['id'])); ?>
+				<?php $this->Output->edit(null, array('controller' => 'project_items', 'action' => 'edit', $project_item['id'], '?' => array('project_id' => $project['Project']['id']))); ?>
+				<?php $this->Output->delete(null, array('controller' => 'project_items', 'action' => 'delete', $project_item['id'])); ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>
 	</table>
-<?php endif; ?>
-
+<?php } else { ?>
+	<p>Der er endnu ikke tilknyttet nogen enheder til projektet</P>
+<?php } ?>
 	<div class="actions">
 		<ul>
 			<li>
-			<?php echo $this->Html->link(sprintf(__('Opret ny %s', true), __('Enhed', true)), array('controller' => 'project_items', 'action' => 'add', '?' => array('project_id' => $project['Project']['id'])), array('class' => 'action_new'));?>
+			<?php $this->Output->add('Opret ny Enhed', array('controller' => 'project_items', 'action' => 'add', '?' => array('project_id' => $project['Project']['id']))); ?>
 			</li>
 		</ul>
 	</div>

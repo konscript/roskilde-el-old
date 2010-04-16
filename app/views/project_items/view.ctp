@@ -61,7 +61,7 @@
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(sprintf(__('Rediger %s', true), __('', true)), array('action' => 'edit', $projectItem['ProjectItem']['id']), array('class' => 'action_edit')); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('Slet %s', true), __('', true)), array('action' => 'delete', $projectItem['ProjectItem']['id']), array('class' => 'action_delete'), sprintf(__('Er du sikker på du vil slette #%s?', true), $projectItem['ProjectItem']['id'])); ?> </li>
+		<li><?php $this->Output->edit(); ?></li>
+		<li><?php $this->Output->delete(); ?></li>
 	</ul>
 </div>

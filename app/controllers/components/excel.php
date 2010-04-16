@@ -26,7 +26,7 @@ class ExcelComponent extends Object {
                                      ->setTitle("Roskilde el bestilling")
                                      ->setSubject("Roskilde el bestilling for projekt")
                                      ->setDescription("Dette dokument blev oprettet af Søren og Lasse. I er cocks. Vi rocks!")
-                                     ->setKeywords("roskilde, 2010, musik, el, bestilling, booking")
+                                     ->setKeywords("roskilde, 2010, musik, el, bestilling, booking, beer")
                                      ->setCategory("roskilde");
 
 
@@ -89,21 +89,22 @@ class ExcelComponent extends Object {
                         ->setCellValue('J'.$no, $usage); //watt forbrug ialt
                         $no++;
                     }
-
-        //create drawing - instantiate new drawing object
-        $objDrawing = new PHPExcel_Worksheet_Drawing();
-        $objDrawing->setName('Logo');
-        $objDrawing->setDescription('Logo');
-        $objDrawing->setPath('../webroot/attachments/photos/default/'.$data["Project"]["file_path"]);
-        //$objDrawing->setHeight(36);
-        $objDrawing->setCoordinates('B3');
-
-        //Set to image worksheet
-        $objPHPExcel->setActiveSheetIndex(1);
-
-        //add the above drawing to the worksheet,
-        $objDrawing->setWorksheet($objPHPExcel->getActiveSheet());
-
+		
+		if (!empty($data["Project"]["file_path"])) {
+	        //create drawing - instantiate new drawing object
+	        $objDrawing = new PHPExcel_Worksheet_Drawing();
+	        $objDrawing->setName('Logo');
+	        $objDrawing->setDescription('Logo');
+	        $objDrawing->setPath('../webroot/attachments/photos/default/'.$data["Project"]["file_path"]);
+	        //$objDrawing->setHeight(36);
+	        $objDrawing->setCoordinates('B3');
+	
+	        //Set to image worksheet
+	        $objPHPExcel->setActiveSheetIndex(1);
+	
+	        //add the above drawing to the worksheet,
+	        $objDrawing->setWorksheet($objPHPExcel->getActiveSheet());
+		}
 
 
         // Rename sheet
@@ -119,7 +120,7 @@ class ExcelComponent extends Object {
 
         // Redirect output to a client’s web browser (Excel5)
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="01simple.xls"');
+        header('Content-Disposition: attachment;filename="roskilde_el-booking_'.$data["Project"]["id"].'.xls"');
 
         //excel 2007 (Excel2007)
         //header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

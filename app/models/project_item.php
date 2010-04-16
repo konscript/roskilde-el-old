@@ -60,8 +60,19 @@ class ProjectItem extends AppModel {
 		$this->Project->saveField('total_power_usage', $total);
 		// $data = array('Project' => array('id' => $project_id, 'total_power_usage'=> $total));
 		// $this->Project->save($data, false, array('Project.total_power_usage'));
+	}
 
-	}	
-		
+	// Updates the corresponding projects DB field with the a calculated total power usage of attached project items
+	/* function afterDelete() {
+		$data = $this->ProjectItem->read(null, $this->id);
+		$project_id = $data['ProjectItem']['project_id'];
+		die(print_r($data));
+		$total = $this->SumByProject($project_id);
+		$this->Project->id = $project_id;
+		$this->Project->saveField('total_power_usage', $total);
+		// $data = array('Project' => array('id' => $project_id, 'total_power_usage'=> $total));
+		// $this->Project->save($data, false, array('Project.total_power_usage'));
+	} */
+	
 }
 ?>

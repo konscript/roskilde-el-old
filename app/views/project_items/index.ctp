@@ -39,8 +39,8 @@
 			<?php echo $this->Html->link($projectItem['Project']['title'], array('controller' => 'projects', 'action' => 'view', $projectItem['Project']['id'])); ?>
 		</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__('Rediger', true), array('action' => 'edit', $projectItem['ProjectItem']['id']), array('class' => 'action_edit')); ?>
-			<?php echo $this->Html->link(__('Slet', true), array('action' => 'delete', $projectItem['ProjectItem']['id']), array('class' => 'action_delete'), sprintf(__('Are you sure you want to delete # %s?', true), $projectItem['ProjectItem']['id'])); ?>
+			<?php $this->Output->edit(null, null, $projectItem['ProjectItem']['id']); ?>
+			<?php $this->Output->delete(null, null, $projectItem['ProjectItem']['id']); ?>		
 		</td>
 	</tr>
 <?php endforeach; ?>
@@ -58,6 +58,6 @@
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(sprintf(__('Opret ny %s', true), __('Enhed', true)), array('action' => 'add'), array('class' => 'action_new')); ?></li>
+		<li><?php $this->Output->add('Opret ny Enhed'); ?></li>
 	</ul>
 </div>
