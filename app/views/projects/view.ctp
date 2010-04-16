@@ -83,6 +83,7 @@
 	<ul>
 		<li><?php echo $this->Html->link(sprintf(__('Rediger %s', true), __('', true)), array('action' => 'edit', $project['Project']['id']), array('class' => 'action_edit')); ?> </li>
 		<li><?php echo $this->Html->link(sprintf(__('Slet %s', true), __('', true)), array('action' => 'delete', $project['Project']['id']), array('class' => 'action_delete'), sprintf(__('Er du sikker på du vil slette #%s?', true), $project['Project']['id'])); ?> </li>
+		<li><?php echo $this->Html->link('Eksport til Excel', array('action' => 'createExcel', $project['Project']['id']), array('class' => 'action_export')); ?> </li>
 	</ul>
 </div>
 

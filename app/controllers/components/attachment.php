@@ -13,10 +13,10 @@ class AttachmentComponent extends Object
 		'images_size' => array(
 			/* You may define as many options as you like
              * 'folder_name' => array($width, $height, $do_crop)
-             */
-            'original' => array(2000, 1000, false),
-			'default'    => array(640, 480, false),
-			'thumb'  => array( 90,  90, true)
+             */             
+            'original'    => array(2000, 1000, false),
+			'default'    => array(800, 600, true),
+			'thumb'  => array( 100,  100, true)
 		)
 	);
 

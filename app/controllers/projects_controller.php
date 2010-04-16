@@ -1,9 +1,24 @@
 <?php
 class ProjectsController extends AppController {
 
+	function beforeFilter() {
+	    parent::beforeFilter();
+	    $this->Auth->allow('createExcel');
+	}	
+
     var $name = 'Projects';
-    var $components = array('SpecificAcl', 'Utils', 'Attachment');
+    var $components = array('SpecificAcl', 'Utils', 'Attachment', 'Excel');
     var $helpers = array('Form', 'DatePicker');
+
+    function createExcel($id = null){
+        if($id){
+            $this->Project->recursive = 2;
+            $data = $this->Project->read(null, $id);
+            $this->Excel->createExcel($data);
+
+            //$this->set('project', $data);
+        }
+    }
 	
 	function index() {
 		$this->set('title_for_layout', 'Mine Projekter');		

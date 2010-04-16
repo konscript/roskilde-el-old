@@ -467,6 +467,11 @@ td a.action_delete, div.actions .action_delete { /* Delete */
 	background-position: 5px center;
 	padding: 4px 8px 4px 22px;	
 }
+td a.action_delete, div.actions .action_export { /* Export */
+	background: url(../img/icons/10/193.png) no-repeat;
+	background-position: 5px center;
+	padding: 4px 8px 4px 22px;	
+}
 
 /* Project - Status */
 .icon_status_0 { /* Neutral */
