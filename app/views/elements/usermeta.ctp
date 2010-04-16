@@ -8,9 +8,9 @@ if($user) {
 	if ($user['role_id'] == 3) { echo "Gruppeleder"; } else
 	if ($user['role_id'] == 4) { echo "Projektleder"; }
 	echo ") - ";						
+	echo $html->link("Min Profil", array('controller'=>'users', 'action'=>'profile'));
+	echo " - ";
 	echo $html->link("Log Ud", array('controller'=>'users', 'action'=>'logout'));
-	echo " - ";						
-	echo $html->link("Profil", array('controller'=>'users', 'action'=>'profile'));
 
 // if not logged in
 } else {
