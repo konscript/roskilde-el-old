@@ -138,7 +138,7 @@ class ProjectsController extends AppController {
                         $this->redirect(array('action' => 'index'));
                         // email failed
                     } else if (isset($email_outcome) && $email_outcome == false) {
-                        $this->Session->setFlash(sprintf(__('%s er blevet gemt og brugeren er blevet oprettet, men der kunne ikke tilsendes en e-mail. Nulstil venligst adgangskoden manuelt og kontakt brugeren selv.', true), 'bruger'), 'default', array('class' => 'notice'));
+			        	$this->Session->setFlash(sprintf(__('%s er blevet gemt og brugeren er blevet oprettet, men der opstod en fejl ved afsendelse af e-mail.', true), 'Projektet'), 'default', array('class' => 'notice'));
                         $this->redirect(array('action' => 'index'));
                     }
                     // project failed

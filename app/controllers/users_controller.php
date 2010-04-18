@@ -7,9 +7,7 @@ class UsersController extends AppController {
 	function beforeFilter() {
 	    parent::beforeFilter(); 
 	    $this->Auth->allow('login');
-        $this->Auth->allow('add');
 	    $this->Auth->allow('logout');
-	    $this->Auth->allow('profile');
 	}	
 	
 	function login() {
@@ -46,9 +44,6 @@ class UsersController extends AppController {
 		if (!empty($this->data)) {
 			$this->User->create();
 
-            // set role_id to project manager (4)
-            $this->data['User']['role_id'] = 4;
-
             // generate password and send mail
             if($this->data['User']['generatePassword']) {
 
@@ -67,7 +62,7 @@ class UsersController extends AppController {
 						$this->redirect(array('action' => 'index'));
 					// email failed
 					} else {				
-			        	$this->Session->setFlash(sprintf(__('%s er blevet gemt og brugeren er blevet oprettet, men der kunne ikke tilsendes en e-mail. Nulstil venligst adgangskoden manuelt og kontakt brugeren selv.', true), 'bruger'), 'default', array('class' => 'notice'));
+			        	$this->Session->setFlash(sprintf(__('%s er blevet gemt, men der opstod en fejl ved afsendelse af e-mail.', true), 'Brugeren'), 'default', array('class' => 'notice'));
 						$this->redirect(array('action' => 'index'));            		
 					}				
 				} else {
