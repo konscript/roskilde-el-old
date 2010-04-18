@@ -3,6 +3,7 @@ class ProjectItemsController extends AppController {
 
 	var $name = 'ProjectItems';
 	var $components = array('SpecificAcl');		
+    var $helpers = array('Output');
 
 	function index() {
 		$this->set('title_for_layout', 'Alle Enheder');	

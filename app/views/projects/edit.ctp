@@ -48,15 +48,9 @@
 <?php echo $this->Form->end(__('Gem', true));?>
 </div>
 
-<?php
-//upload form
-//echo $form->create('Project', array());
-//echo $form->end(__('Gem', true));
-?>
-
 <div class="related">
 	<h3><?php printf(__('%s', true), __('Enheder', true));?></h3>
-	<?php if (!empty($project['ProjectItem'])):?>
+	<?php if (!empty($project['ProjectItem'])) { ?>
 	<table cellpadding = "0" cellspacing = "0">
 	<tr>
 		<th><?php __('Navn'); ?></th>
@@ -68,7 +62,7 @@
 	</tr>
 	<?php
 		$i = 0;
-		foreach ($project['ProjectItem'] as $projectItem):
+		foreach ($project['ProjectItem'] as $project_item):
 			$class = null;
 			if ($i++ % 2 == 0) {
 				$class = ' class="altrow"';
@@ -76,42 +70,36 @@
 		?>
 		<tr<?php echo $class;?>>
 
-			<?php
-            // custom item
-            if (!$projectItem['item_id']) { ?>
-				<td><?php echo $this->Html->link($projectItem['title'], array('controller' => 'project_items', 'action' => 'view', $projectItem['id']));?></td>
-				<td><?php echo $projectItem['description'];?></td>
-				<td><?php echo $projectItem['power_usage'];?></td>
+			<?php // custom item
+            if (!$project_item['item_id']) { ?>
+				<td><?php echo $this->Html->link($project_item['title'], array('controller' => 'project_items', 'action' => 'view', $project_item['id']));?></td>
+				<td><?php echo $project_item['description'];?></td>
+				<td><?php echo $project_item['power_usage'];?></td>
                 <td><?php echo $projectItem['quantity'];?></td>
-				<td>Custom</td>
-			<?php
-			// generic item
-			} else {
-  
+				<td><?php __('Egen'); ?></td>
+			<?php // generic item
+			} else { ?>
+				<td><?php echo $this->Html->link($project_item['Item']['title'], array('controller' => 'project_items', 'action' => 'view', $project_item['id']));?></td>
+				<td><?php echo $project_item['Item']['description'];?></td>
+				<td><?php echo $project_item['Item']['power_usage'];?></td>
+                <td><?php echo $projectItem['quantity'];?></td>
+				<td><?php __('Skabelon'); ?></td>
 
-				foreach ($items as $item): 
-					if ($item['Item']['id'] == $projectItem['item_id']) { ?>
-						<td><?php echo $this->Html->link($item['Item']['title'], array('controller' => 'project_items', 'action' => 'view', $projectItem['id']));?></td>
-						<td><?php echo $item['Item']['description'];?></td>
-						<td><?php echo $item['Item']['power_usage'];?></td>
-                        <td><?php echo $projectItem['quantity'];?></td>
-						<td>Generisk</td>
-					<?php } ?> 							
-				<?php endforeach; ?>
 			<?php } ?>
 			<td class="actions">
-				<?php echo $this->Html->link(__('Rediger', true), array('controller' => 'project_items', 'action' => 'edit', $projectItem['id'], '?' => array('project_id' => $project['Project']['id'])), array('class' => 'action_edit')); ?>
-				<?php echo $this->Html->link(__('Slet', true), array('controller' => 'project_items', 'action' => 'delete', $projectItem['id']), array('class' => 'action_delete'), sprintf(__('Are you sure you want to delete # %s?', true), $projectItem['id'])); ?>
+				<?php $this->Output->edit(null, array('controller' => 'project_items', 'action' => 'edit', $project_item['id'], '?' => array('project_id' => $project['Project']['id']))); ?>
+				<?php $this->Output->delete(null, array('controller' => 'project_items', 'action' => 'delete', $project_item['id'])); ?>
 			</td>
 		</tr>
 	<?php endforeach; ?>
 	</table>
-<?php endif; ?>
-
+<?php } else { ?>
+	<p>Der er endnu ikke tilknyttet nogen enheder til projektet</p>
+<?php } ?>
 	<div class="actions">
 		<ul>
 			<li>
-			<?php echo $this->Html->link(sprintf(__('Opret ny %s', true), __('Enhed', true)), array('controller' => 'project_items', 'action' => 'add', '?' => array('project_id' => $project['Project']['id'])), array('class' => 'action_new'));?>
+			<?php $this->Output->add('Opret ny Enhed', array('controller' => 'project_items', 'action' => 'add', '?' => array('project_id' => $project['Project']['id']))); ?>
 			</li>
 		</ul>
 	</div>

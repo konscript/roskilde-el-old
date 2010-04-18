@@ -22,13 +22,12 @@ class ExcelComponent extends Object {
 
         // Set properties
         $objPHPExcel->getProperties()->setCreator("Roskilde El WebService")
-                ->setLastModifiedBy("Roskilde El WebService")
-                ->setTitle("Roskilde el bestilling")
-                ->setSubject("Roskilde el bestilling for projekt")
-                ->setDescription("Dette dokument blev oprettet af Søren og Lasse. I er cocks. Vi rocks!")
-                ->setKeywords("roskilde, 2010, musik, el, bestilling, booking")
-                ->setCategory("roskilde");
-
+                                     ->setLastModifiedBy("Roskilde El WebService")
+                                     ->setTitle("Roskilde el bestilling")
+                                     ->setSubject("Roskilde el bestilling for projekt")
+                                     ->setDescription("Dette dokument blev oprettet af Søren og Lasse. I er cocks. Vi rocks!")
+                                     ->setKeywords("roskilde, 2010, musik, el, bestilling, booking, beer")
+                                     ->setCategory("roskilde");
 
         /*
          * b2: sektionnavn
@@ -59,15 +58,14 @@ class ExcelComponent extends Object {
         */
 
         $objPHPExcel->setActiveSheetIndex(0)
-            ->setCellValue('B2', 'Underholdning') //sektion
-            ->setCellValue('E2', $data["Group"]["title"]) //gruppenavn
-
-            //projekt
-            ->setCellValue('C9', $data["Project"]["title"]) //Projektnavn
-            ->setCellValue('H9', $data["Project"]["items_start"]) //start dato
-            ->setCellValue('J9', $data["Project"]["items_end"]) //slut dato
-            ->setCellValue('A10', $data["Project"]["build_start"]) //byggestrøm periode
-            ->setCellValue('A12', $data["Project"]["build_end"]); //billedekommentar
+		            ->setCellValue('B2', 'Underholdning') //sektion
+		            ->setCellValue('E2', $data["Group"]["title"]) //gruppenavn
+		            //projekt
+		            ->setCellValue('C9', $data["Project"]["title"]) //Projektnavn
+		            ->setCellValue('H9', $data["Project"]["items_start"]) //start dato
+		            ->setCellValue('J9', $data["Project"]["items_end"]) //slut dato
+		            ->setCellValue('A10', $data["Project"]["build_start"]) //byggestrøm periode
+		            ->setCellValue('A12', $data["Project"]["build_end"]); //billedekommentar
 
         //enheder
         $no = 28;
@@ -114,15 +112,13 @@ class ExcelComponent extends Object {
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         //$objPHPExcel->setActiveSheetIndex(0);
 
-
         //Create new sheet
         //$objWorksheet1 = $objPHPExcel->createSheet();
         //$objWorksheet1->setTitle('Another sheet');
 
-
         // Redirect output to a client’s web browser (Excel5)
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="01simple.xls"');
+        header('Content-Disposition: attachment;filename="roskilde_el-booking_'.$data["Project"]["id"].'.xls"');
 
         //excel 2007 (Excel2007)
         //header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
