@@ -130,7 +130,7 @@
 				<td><?php echo $this->Html->link($project_item['Item']['title'], array('controller' => 'project_items', 'action' => 'view', $project_item['id']));?></td>
 				<td><?php echo $project_item['Item']['description'];?></td>
 				<td><?php echo $project_item['Item']['power_usage'];?></td>
-                <td><?php echo $project_item['Item']['quantity'];?></td>
+                <td><?php echo $project_item['quantity'];?></td>
 				<td><?php __('Skabelon'); ?></td>
 			<?php } ?>
 			<td class="actions">

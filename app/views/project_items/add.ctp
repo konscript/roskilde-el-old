@@ -12,7 +12,7 @@
 			echo $this->Form->input('description', array('label' => 'Beskrivelse'));
 			echo $this->Form->input('power_usage', array('label' => 'Strømforbrug'));           
 		?></div><?php
-        echo $this->Form->input('quantity', array('label' => 'Antal'));
+        echo $this->Form->input('quantity', array('label' => 'Antal', 'value'=>'1'));
 		// echo $this->Form->select('item_id', array('options' => $items, 'empty' => 'Custom'), null, array(), 1);
 		// echo $this->Form->input('item_id');
 		if (isset($parameters['project_id'])) {

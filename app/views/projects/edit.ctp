@@ -75,14 +75,14 @@
 				<td><?php echo $this->Html->link($project_item['title'], array('controller' => 'project_items', 'action' => 'view', $project_item['id']));?></td>
 				<td><?php echo $project_item['description'];?></td>
 				<td><?php echo $project_item['power_usage'];?></td>
-                <td><?php echo $projectItem['quantity'];?></td>
+                <td><?php echo $project_item['quantity'];?></td>
 				<td><?php __('Egen'); ?></td>
 			<?php // generic item
 			} else { ?>
 				<td><?php echo $this->Html->link($project_item['Item']['title'], array('controller' => 'project_items', 'action' => 'view', $project_item['id']));?></td>
 				<td><?php echo $project_item['Item']['description'];?></td>
 				<td><?php echo $project_item['Item']['power_usage'];?></td>
-                <td><?php echo $projectItem['quantity'];?></td>
+                <td><?php echo $project_item['quantity'];?></td>
 				<td><?php __('Skabelon'); ?></td>
 
 			<?php } ?>
