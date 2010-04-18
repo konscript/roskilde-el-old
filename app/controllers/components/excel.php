@@ -60,15 +60,16 @@ class ExcelComponent extends Object {
         $objPHPExcel->setActiveSheetIndex(0)
 		            ->setCellValue('B2', 'Underholdning') //sektion
 		            ->setCellValue('E2', $data["Group"]["title"]) //gruppenavn
-		            //projekt
+                    ->setCellValue('J2', "5, 1509") //kontonummer
 		            ->setCellValue('C9', $data["Project"]["title"]) //Projektnavn
 		            ->setCellValue('H9', $data["Project"]["items_start"]) //start dato
 		            ->setCellValue('J9', $data["Project"]["items_end"]) //slut dato
-		            ->setCellValue('A10', $data["Project"]["build_start"]) //byggestrøm periode
-		            ->setCellValue('A12', $data["Project"]["build_end"]); //billedekommentar
+                    ->setCellValue('A10', $data["Project"]["build_start"].' til '.$data["Project"]["build_end"]) //byggestrøm periode
+		            ->setCellValue('A12', ''); //billedekommentar
 
         //enheder
         $no = 28;
+        $total_power_usage = 0;
         foreach($data["ProjectItem"] as $key=>$array) {
 
             if (!$array['item_id']) {
@@ -78,15 +79,30 @@ class ExcelComponent extends Object {
                 $title = $array["Item"]["title"];
                 $usage = $array["Item"]["power_usage"];
             }
+            $quantity = $array["quantity"];
 
 
+            
             $objPHPExcel->setActiveSheetIndex(0)
                 ->setCellValue('A'.$no, $title) //navn
                 ->setCellValue('H'.$no, $usage) //watt forbrug
-                ->setCellValue('I'.$no, '1') //antal enheder
-                ->setCellValue('J'.$no, $usage); //watt forbrug ialt
+                ->setCellValue('I'.$no, $quantity) //antal enheder
+                ->setCellValue('J'.$no, ($usage*$quantity)); //watt forbrug ialt
             $no++;
+            $total_power_usage += $usage*$quantity;
         }
+        
+        //add line breaks
+        $no+=2;
+
+        //total power_usage
+        $objPHPExcel->setActiveSheetIndex(0)
+                ->setCellValue('A'.$no, 'Forbrug i alt:') //label
+                ->setCellValue('J'.$no, $total_power_usage); //total usage
+
+        //do some styling
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$no)->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
+        $objPHPExcel->getActiveSheet()->getStyle('A'.$no)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 
         /** attach if image exists **/
         $image_path = '../webroot/attachments/photos/default/'.$data["Project"]["file_path"];
