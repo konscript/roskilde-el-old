@@ -277,6 +277,7 @@ CREATE TABLE `projects` (
   `items_start` datetime DEFAULT NULL,
   `items_end` datetime DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
+  `file_path` varchar(255) NOT NULL,
   `group_id` int(11) NOT NULL DEFAULT '0',
   `user_id` int(11) NOT NULL DEFAULT '0',
   `created` datetime DEFAULT NULL,

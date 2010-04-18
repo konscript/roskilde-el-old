@@ -377,9 +377,8 @@ div.actions ul {
 div.actions h3 {
 	display: none; }
 div.actions li {
-	margin:0 0 0.5em 0;
+	margin:0 5px 0.5em 0;
 	float: left;
-	clear: both;
 	list-style-type: none;
 	white-space: nowrap;
 	display: block;
@@ -394,7 +393,7 @@ div.actions ul li a:hover {
 	text-decoration: underline;
 }
 
-td.actions a {
+td.actions a, .action_button {
 	font-weight:normal;
 	padding: 4px 8px;
 	/* background:#d8d8d8;
@@ -409,7 +408,7 @@ td.actions a {
 	text-shadow: #fff 0px 1px 0px;
 	min-width: 0;
 }
-td.actions a:hover {
+td.actions a:hover, .action_button:hover {
 	/* background: #f0f09a;
 	background: -webkit-gradient(linear, left top, left bottom, from(#f7f7f7), to(#e6e6e6));
 	background-image: -moz-linear-gradient(top, #f7f7f7, #e6e6e6); */
@@ -452,22 +451,22 @@ p.icon_noprojects { /* No projects */
 }
 
 /* Actions */
-td a.action_new, div.actions .action_new { /* New */
+.action_new, td a.action_new, div.actions .action_new { /* New */
 	background: url(../img/icons/10/103.png) no-repeat;
 	background-position: 5px center;
 	padding: 4px 8px 4px 22px;	
 }
-td a.action_edit, div.actions .action_edit { /* Edit */
+.action_edit, td a.action_edit, div.actions .action_edit { /* Edit */
 	background: url(../img/icons/10/018.png) no-repeat;
 	background-position: 5px center;
 	padding: 4px 8px 4px 22px;	
 }
-td a.action_delete, div.actions .action_delete { /* Delete */
+.action_delete, td a.action_delete, div.actions .action_delete { /* Delete */
 	background: url(../img/icons/10/101.png) no-repeat;
 	background-position: 5px center;
 	padding: 4px 8px 4px 22px;	
 }
-td a.action_export, div.actions .action_export { /* Export */
+.action_export, td a.action_export, div.actions .action_export { /* Export */
 	background: url(../img/icons/10/139.png) no-repeat;
 	background-position: 5px center;
 	padding: 4px 8px 4px 22px;	
@@ -475,13 +474,13 @@ td a.action_export, div.actions .action_export { /* Export */
 
 /* Project - Status */
 .icon_status_0 { /* Neutral */
-	background: url(../img/icons/16/159.png) no-repeat center left; /* Neutral Pearl */
+	background: url(../img/icons/16/159.png) no-repeat center center; /* Neutral Pearl */
 	text-indent: -9999px; }
 .icon_status_1 { /* Confirmed */
-	background: url(../img/icons/16/152.png) no-repeat center left; /* Green Pearl */
+	background: url(../img/icons/16/152.png) no-repeat center center; /* Green Pearl */
 	text-indent: -9999px; }
 .icon_status_2 { /* Declined */
-	background: url(../img/icons/16/151.png) no-repeat center left; /* Red Pearl */
+	background: url(../img/icons/16/151.png) no-repeat center center; /* Red Pearl */
 	text-indent: -9999px; }
 
 /* Project - Power Usage */

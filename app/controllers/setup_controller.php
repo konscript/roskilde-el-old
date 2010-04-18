@@ -10,16 +10,17 @@ class SetupController extends AppController {
 	}
 	
 	// New setup:
-	// 1. Create database from scheme: roskilde-el_structure-only.sql
-	// 2. Run: http://site.com/setup/aco_build_controlleractions (to build the aco structure based on controllers/actions)
-	// 3. Run: http://site.com/setup/permissions_assign_controlleractions (to build the permissions aros_acos for ACL)
-	// 4. Login with the predifined admin user: la@laander.com + admin
+		// 1. Create database from scheme: roskilde-el_structure-only.sql
+		// 2. Run: http://site.com/setup/aco_build_controlleractions (to build the aco structure based on controllers/actions)
+		// 3. Run: http://site.com/setup/permissions_assign_controlleractions (to build the permissions aros_acos for ACL)
+		// 4. Login with the predifined admin user: la@laander.com + admin
+		// 5. Create users first, then sections, groups and projects. We need users in the system first to choose from when creating items
 	
 	// If a new controller/action is created:
-	// 1. Run: http://site.com/setup/aco_build_controlleractions (to build the aco structure based on controllers/actions)
-	
-	function acl_build() 
-	{
+		// 1. Run: http://site.com/setup/aco_build_controlleractions (to build the aco structure based on controllers/actions)
+		// 2. If you delete an action, it must be removed from ACO table manually. The above script only adds new actions!
+
+	// If you want to setup the ACL structure from scratch instead of using supplied database (not recommended!):	
 		// the following commands should be executed through the cake console to initialize the basic ACL setup for ARO + ACO
 		// cake acl create aro root Requesters
 		// cake acl create aro Requesters Role.1
@@ -29,11 +30,9 @@ class SetupController extends AppController {
 		// cake acl create aco root Application
 		// cake acl create aco Application Controllers
 		// cake acl create aco Application Content				
-	}
 
-	function permissions_assign_controlleractions()
-	{
-        // note: updates and deletes could be set at a user level (so only owners can edit or delete their items) instead!
+	// assign roles the correct permission to controllers/actions in the ACL - necessary for a new setup!
+	function permissions_assign_controlleractions() {
 
 		echo "Setting permissions for ACL:<br /><br />";
 
@@ -82,38 +81,8 @@ class SetupController extends AppController {
 		
 		die("<br />All done!");
  	}
- 	
-	function permissions_assign_content()
-	{
-        // note: updates and deletes could be set at a user level (so only owners can edit or delete their items) instead!
-
-		echo "Setting permissions for ACL:<br /><br />";
-
-		// admin
-		$user_a = array('model'=>'User','foreign_key'=>5);
-		$this->Acl->allow($user_a, 'Application/Content');
-		echo "- User 1 assigned<br />";
-
-		// sectiondude
-		$user_b = array('model'=>'User','foreign_key'=>6);
-		$this->Acl->allow($user_b, array('model'=>'Section','foreign_key'=>1));
-		echo "- User 2 assigned<br />";
-  		
-		// groupdude
-		$user_c = array('model'=>'User','foreign_key'=>7);
-		$this->Acl->allow($user_c, array('model'=>'Group','foreign_key'=>1));
-		echo "- User 3 assigned<br />";
-		
-		// projectdude
-		$user_d = array('model'=>'User','foreign_key'=>8);
-		$this->Acl->allow($user_d, array('model'=>'Project','foreign_key'=>1));
-		echo "- User 4 assigned<br />";
-		
-		die("<br />All done!");
- 	}
-
  	 
- 	// Checking permissions on certain users
+ 	// deprecated testscript for checking permissions on certain users (hardcoded, might not work anymore)
 	function permissions_check()
 	{
 		// remember, we can use the model/foreign key syntax for our user AROs
@@ -162,7 +131,7 @@ class SetupController extends AppController {
 		die('All done!');
 	}
 
-    // Builds the Aco structure (Controllers > Actions)
+    // builds the ACO structure (Controllers > Actions) and adds new if run again after a new action is created
 	function aco_build_controlleractions() {
 		if (!Configure::read('debug')) {
 			return $this->_stop();

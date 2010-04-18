@@ -1,13 +1,13 @@
 <div class="users index">
 	<table cellpadding="0" cellspacing="0">
 	<tr>
-			<th><?php echo $this->Paginator->sort('id');?></th>
-			<th><?php echo $this->Paginator->sort('title');?></th>
-			<th><?php echo $this->Paginator->sort('username');?></th>
-			<th><?php echo $this->Paginator->sort('role_id');?></th>
-			<th><?php echo $this->Paginator->sort('created');?></th>
-			<th><?php echo $this->Paginator->sort('modified');?></th>
-			<th class="actions"><?php __('Actions');?></th>
+			<th><?php echo $this->Paginator->sort('ID', 'id');?></th>
+			<th><?php echo $this->Paginator->sort('Navn', 'title');?></th>
+			<th><?php echo $this->Paginator->sort('E-mail', 'username');?></th>
+			<th><?php echo $this->Paginator->sort('Rolle', 'role_id');?></th>
+			<th><?php echo $this->Paginator->sort('Oprettet', 'created');?></th>
+			<th><?php echo $this->Paginator->sort('Redigeret', 'modified');?></th>
+			<th class="actions"><?php __('Handlinger');?></th>
 	</tr>
 	<?php
 	$i = 0;

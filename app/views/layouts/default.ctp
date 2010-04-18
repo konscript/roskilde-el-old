@@ -70,7 +70,7 @@ $user = $session->read('Auth.User'); ?>
 		<div id="footer">
 			<div class="inside">
 				<span style="float: left;">El Booking for Roskilde Festival 2010</span>
-				<span style="float: right;">BETA v1.0</span>
+				<span style="float: right;">Beta v1.1 'AC/DC'</span>
 			</div>
 		</div>
 	<?php echo $this->element('sql_dump'); ?>
