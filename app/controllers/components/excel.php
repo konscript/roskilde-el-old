@@ -92,8 +92,8 @@ class ExcelComponent extends Object {
 
         /** attach if image exists **/
         $image_path = '../webroot/attachments/photos/default/'.$data["Project"]["file_path"];
-        if(is_file($image_path)) {
 
+        if(is_file($image_path)) {
             //create drawing - instantiate new drawing object
             $objDrawing = new PHPExcel_Worksheet_Drawing();
             $objDrawing->setName('Logo');
@@ -107,7 +107,6 @@ class ExcelComponent extends Object {
 
             //add the above drawing to the worksheet,
             $objDrawing->setWorksheet($objPHPExcel->getActiveSheet());
-
         }
 
         // Rename sheet

@@ -32,6 +32,11 @@
 			} ?>
 			&nbsp;
 		</dd>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Antal'); ?></dt>
+		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
+				<?php echo $projectItem['ProjectItem']['quantity']; ?>
+			&nbsp;
+		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Enhedsskabelon'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php if (!$projectItem['ProjectItem']['item_id']) { 

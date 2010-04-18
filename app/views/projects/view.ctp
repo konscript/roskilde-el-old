@@ -95,6 +95,7 @@
 		<th><?php __('Navn'); ?></th>
 		<th><?php __('Beskrivelse'); ?></th>
 		<th><?php __('Strømforbrug'); ?></th>
+        <th><?php __('Antal'); ?></th>
 		<th><?php __('Type'); ?></th>
 		<th class="actions"><?php __('Handlinger');?></th>
 	</tr>
@@ -112,12 +113,14 @@
 				<td><?php echo $this->Html->link($project_item['title'], array('controller' => 'project_items', 'action' => 'view', $project_item['id']));?></td>
 				<td><?php echo $project_item['description'];?></td>
 				<td><?php echo $project_item['power_usage'];?></td>
+                <td><?php echo $project_item['quantity'];?></td>
 				<td><?php __('Egen'); ?></td>
 			<?php // generic item
 			} else { ?>
 				<td><?php echo $this->Html->link($project_item['Item']['title'], array('controller' => 'project_items', 'action' => 'view', $project_item['id']));?></td>
 				<td><?php echo $project_item['Item']['description'];?></td>
 				<td><?php echo $project_item['Item']['power_usage'];?></td>
+                <td><?php echo $project_item['Item']['quantity'];?></td>
 				<td><?php __('Skabelon'); ?></td>
 			<?php } ?>
 			<td class="actions">

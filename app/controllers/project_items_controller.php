@@ -31,7 +31,7 @@ class ProjectItemsController extends AppController {
 		if (!empty($this->data)) {
 			$this->ProjectItem->create();
 
-            //create new user
+            //create new item
             if(!$this->data['ProjectItem']['useTemplate']){
 	            $this->data['ProjectItem']['item_id'] = null;
             } else {                                 

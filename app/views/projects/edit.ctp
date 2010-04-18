@@ -62,6 +62,7 @@
 		<th><?php __('Navn'); ?></th>
 		<th><?php __('Beskrivelse'); ?></th>
 		<th><?php __('Strømforbrug'); ?></th>
+        <th><?php __('Antal'); ?></th>
 		<th><?php __('Type'); ?></th>
 		<th class="actions"><?php __('Handlinger');?></th>
 	</tr>
@@ -81,15 +82,19 @@
 				<td><?php echo $this->Html->link($projectItem['title'], array('controller' => 'project_items', 'action' => 'view', $projectItem['id']));?></td>
 				<td><?php echo $projectItem['description'];?></td>
 				<td><?php echo $projectItem['power_usage'];?></td>
+                <td><?php echo $projectItem['quantity'];?></td>
 				<td>Custom</td>
 			<?php
 			// generic item
-			} else { 
+			} else {
+  
+
 				foreach ($items as $item): 
 					if ($item['Item']['id'] == $projectItem['item_id']) { ?>
 						<td><?php echo $this->Html->link($item['Item']['title'], array('controller' => 'project_items', 'action' => 'view', $projectItem['id']));?></td>
 						<td><?php echo $item['Item']['description'];?></td>
 						<td><?php echo $item['Item']['power_usage'];?></td>
+                        <td><?php echo $projectItem['quantity'];?></td>
 						<td>Generisk</td>
 					<?php } ?> 							
 				<?php endforeach; ?>
