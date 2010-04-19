@@ -1,14 +1,14 @@
 <?php
 class ProjectsController extends AppController {
 
-	function beforeFilter() {
-	    parent::beforeFilter();
-	    $this->Auth->allow('createExcel');
-	}	
-
     var $name = 'Projects';
     var $components = array('SpecificAcl', 'Utils', 'Attachment', 'Excel');
     var $helpers = array('Form', 'DatePicker', 'Output');
+
+	function beforeFilter() {
+	    parent::beforeFilter();
+	    $this->Auth->allow('createExcel');
+	}
 
     function createExcel($id = null){
         if($id){

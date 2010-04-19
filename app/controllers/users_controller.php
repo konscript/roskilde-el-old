@@ -5,7 +5,8 @@ class UsersController extends AppController {
 	var $components = array('Utils');	
 
 	function beforeFilter() {
-	    parent::beforeFilter(); 
+	    parent::beforeFilter();
+	    $this->Auth->allow('profile');	     
 	    $this->Auth->allow('login');
 	    $this->Auth->allow('logout');
 	}	

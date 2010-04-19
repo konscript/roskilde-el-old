@@ -3,9 +3,11 @@
 class Project extends AppModel {
 
 	var $name = 'Project';
-	var $actsAs = array('Acl' => array('type' => 'controlled'), 'Containable'); //controlled type is of type ACO  = Object to get
+
+	//controlled type is of type ACO  = Object to get
+	var $actsAs = array('Acl' => array('type' => 'controlled'), 'Containable', 'WhoDidIt'); 
 	var $recursive = 2;
-			
+
 	var $validate = array(
 		'title' => array(
 			'notempty' => array(

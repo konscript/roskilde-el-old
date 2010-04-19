@@ -2,7 +2,8 @@
 class ProjectItem extends AppModel {
 
 	var $name = 'ProjectItem';
-
+	var $actsAs = array('WhoDidIt'); 
+	
 	/* var $validate = array(
 		'title' => array(
 			'notempty' => array(
