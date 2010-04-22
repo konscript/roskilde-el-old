@@ -28,6 +28,7 @@ class ProjectItemsController extends AppController {
 	}
 
 	function add() {
+			
 		$this->set('title_for_layout', 'Opret ny Enhed');	
 		if (!empty($this->data)) {
 			$this->ProjectItem->create();
@@ -43,22 +44,19 @@ class ProjectItemsController extends AppController {
 
 			if ($this->ProjectItem->save($this->data)) {
 				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Enheden'), 'default', array('class' => 'success'));
-				
-				//$this->redirect(array('action' => 'index'));
-                $this->redirect('/projects/edit/'.$this->data['ProjectItem']['project_id']);
+                $this->redirect(array('controller' => 'projects', 'action' => 'view', $this->data['ProjectItem']['project_id']));				
 			} else {
 				$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Enheden'), 'default', array('class' => 'error'));
 				
 			}
 		}
 		$items = $this->ProjectItem->Item->find('list', array('fields' => array('Item.id', 'Item.details')));
-		$projects = $this->ProjectItem->Project->find('list');
 		$parameters = $this->params['url'];
 		
 		$allowed_project_ids = $this->SpecificAcl->index("Project", $this->ProjectItem->Project->find('all'));
 		$allowed_projects = $this->ProjectItem->Project->find('list', array('conditions' => array('Project.id' => $allowed_project_ids))); 		
 		
-		$this->set(compact('items', 'projects', 'parameters', 'allowed_projects'));
+		$this->set(compact('items', 'parameters', 'allowed_projects'));
 	}
 
 	function edit($id = null) {
@@ -70,7 +68,7 @@ class ProjectItemsController extends AppController {
 		if (!empty($this->data)) {
 			if ($this->ProjectItem->save($this->data)) {
 				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Enheden'), 'default', array('class' => 'success'));
-				$this->redirect(array('action' => 'index'));
+                $this->redirect(array('controller' => 'projects', 'action' => 'view', $this->data['ProjectItem']['project_id']));				
 			} else {
 				$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Enheden'), 'default', array('class' => 'error'));
 			}
@@ -79,27 +77,27 @@ class ProjectItemsController extends AppController {
 			$this->data = $this->ProjectItem->read(null, $id);
 		}
 		$items = $this->ProjectItem->Item->find('list', array('fields' => array('Item.id', 'Item.details')));
-		$projects = $this->ProjectItem->Project->find('list');
 		$parameters = $this->params['url'];		
 
 		$allowed_project_ids = $this->SpecificAcl->index("Project", $this->ProjectItem->Project->find('all'));
 		$allowed_projects = $this->ProjectItem->Project->find('list', array('conditions' => array('Project.id' => $allowed_project_ids))); 		
-
-		$projectItem = $this->ProjectItem->read(null, $id);
 	
-		$this->set(compact('items', 'projects', 'parameters', 'allowed_projects', 'projectItem'));
+		$this->set(compact('items', 'parameters', 'allowed_projects'));
 	}
 
 	function delete($id = null) {
 		$this->set('title_for_layout', 'Slet Enhed');	
+
 		if (!$id) {
-			$this->Session->setFlash(sprintf(__('Ugyldigt ID for %s.', true), 'enheden'), 'default', array('class' => 'notice'));
-			
+			$this->Session->setFlash(sprintf(__('Ugyldigt ID for %s.', true), 'enheden'), 'default', array('class' => 'notice'));			
 			$this->redirect(array('action'=>'index'));
+		}
+		if (empty($this->data)) {
+			$this->data = $this->ProjectItem->read(null, $id);
 		}
 		if ($this->ProjectItem->delete($id)) {
 			$this->Session->setFlash(sprintf(__('%s er slettet.', true), 'Enheden'), 'default', array('class' => 'success'));
-			$this->redirect(array('action'=>'index'));
+            $this->redirect(array('controller' => 'projects', 'action' => 'view', $this->data['ProjectItem']['project_id']));				
 		}
 		$this->Session->setFlash(sprintf(__('%s kunne ikke slettes. Forsøg igen.', true), 'Enheden'), 'default', array('class' => 'error'));
 		$this->redirect(array('action' => 'index'));

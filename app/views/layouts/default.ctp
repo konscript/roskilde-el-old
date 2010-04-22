@@ -25,10 +25,6 @@
         ?>
 </head>
 <body>
-
-<?php // global view variables
-$user = $session->read('Auth.User'); ?>
-
 	<div id="container">
 		<div id="header">
 			<div class="inside">
@@ -36,10 +32,10 @@ $user = $session->read('Auth.User'); ?>
 					<?php echo $html->image('logo.png', array('alt' => "Roskilde Festival - EL Booking", 'border' => "0", 'url' => "/"));?>
 				</h1>
 				<div id="user" style="float: right">
-					<?php echo $this->element('usermeta', array('user' => $user)); ?>
+					<?php echo $this->element('usermeta'); ?>
 				</div>
 				<ul id="menu" style="float: right; clear: right;">
-					<?php echo $this->element('menu', array('user' => $user)); ?>
+					<?php echo $this->element('menu'); ?>
 				</ul>
 			</div>
 		</div>
@@ -70,7 +66,7 @@ $user = $session->read('Auth.User'); ?>
 		<div id="footer">
 			<div class="inside">
 				<span style="float: left;">El Booking for Roskilde Festival 2010</span>
-				<span style="float: right;">Beta v1.1 'AC/DC'</span>
+				<span style="float: right;">Beta v1.2 'AC/DC'</span>
 			</div>
 		</div>
 	<?php echo $this->element('sql_dump'); ?>

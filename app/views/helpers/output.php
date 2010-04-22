@@ -15,8 +15,19 @@
 
 class OutputHelper extends AppHelper {
 
-    var $helpers = array('Html');
+    var $helpers = array('Html', 'Paginator', 'Output');
 	
+	function __construct() {
+		App::import('Component', 'Acl');
+		$this->Acl = new AclComponent();
+	}
+	
+	// get current user
+	function _getUser() {
+		return ClassRegistry::getObject('view')->viewVars['currentuser'];
+	}
+	
+	// set id of current item
 	function _setId($id) {
     	if ($id == null) {
     		if (isset($this->params['pass'][0])) {
@@ -26,39 +37,197 @@ class OutputHelper extends AppHelper {
 		return $id;
 	}
 	
+	function _getController($url) {
+		if ($url == null) {
+    		return Inflector::camelize($this->params['controller']);
+    	} else {
+    		return Inflector::camelize($url['controller']);
+    	}	
+	}
+	
+	function index($header, $data, $paginate = true, $auto = true, $associated = '') {		
+				
+		if (!empty($data)) {
+
+			$out = '<table cellpadding="0" cellspacing="0">';
+			
+			// table header
+			$out .= '<tr>';	
+			foreach($header as $key => $val) {
+				if($key == 'actions') {
+					$out .= '<th class="actions">'.$val.'</th>';
+				} else {
+					$out .= '<th>';
+					if ($paginate) {
+						$out .= $this->Paginator->sort($val, $key);
+					} else {
+						$out .= $val;
+					} 
+					$out .= '</th>';			
+				}
+			}
+			$out .= '</tr>';
+			
+			// table content
+			$i = 0;
+			foreach($data as $val) {
+				$class = null;
+				if ($i++ % 2 == 0) {
+					$class = ' class="altrow"';
+				}
+				$out .= '<tr'.$class.'>';	
+								
+				if (is_array(current($val))) {
+					$values = current($val);
+				} else {
+					$values = $val;
+				}
+				
+				// if auto is on
+				if ($auto) {
+					if (!empty($associated)){
+						$associated = Inflector::tableize($associated);
+					}
+					foreach($header as $column => $na) {
+						if (array_key_exists($column, $values)) {
+							$out .= '<td>';
+							if ($column == 'title') {
+								if (!empty($associated)) {
+									$out .= $this->Html->link($values['title'], array('controller' => $associated, 'action' => 'view', $values['id']));
+								} else {
+									$out .= $this->Html->link($values['title'], array('action' => 'view', $values['id']));
+								}
+							} else if (strpos($column, '_id') && !empty($values[$column])) {
+								$name = substr($column, 0, strpos($column, '_id'));
+								$camelized = Inflector::camelize($name);
+								$tableized = Inflector::tableize($name);
+								
+								if ($name == 'user') {
+									$field = 'username';
+								} else {
+									$field = 'title';
+								}
+								
+								if (isset($val[$camelized]) && is_array($val[$camelized])) {
+									$out .= $this->Html->link($val[$camelized]['title'], array('controller' => $tableized, 'action' => 'view', $val[$camelized]['id']));
+								} else if (isset($values[$camelized]) && is_array($values[$camelized])) {
+									$out .= $this->Html->link($values[$camelized]['title'], array('controller' => $tableized, 'action' => 'view', $values[$camelized]['id']));
+								} else {
+									$out .= $values[$column];
+								}								
+							} else {
+								$out .= $values[$column];
+							}
+							$out .= '</td>';
+						}
+					}
+
+					$out .= '<td class="actions">';
+					if (!empty($associated)) {
+						$out .= 
+							$this->Output->edit(null, array('controller' => $associated, 'action' => 'edit', $values['id'])).
+							$this->Output->delete(null, array('controller' => $associated, 'action' => 'edit', $values['id']));
+					} else {
+						$out .= $this->Output->edit(null, null, $values['id']).$this->Output->delete(null, null, $values['id']);
+					}					
+					$out .= '</td>';	
+					
+				// if data is manually supplied				
+				} else {				
+					foreach(current($val) as $key => $val) {
+						if($key == 'actions') {
+							$out .= '<td class="actions">';				
+						} else {
+							$out .= '<td>';			
+						}
+						$out .= $val;
+						$out .= '</td>';				
+					} 
+				}
+				$out .= '</tr>';
+			}
+					
+			$out .= '</table>';
+
+			// paginator meta info			
+			if ($paginate) {
+				$out .= 
+					'<div class="paging">';
+				if ($this->Paginator->numbers()) {	
+					$out .= 
+						'<span class="paging_pages">'.
+						$this->Paginator->prev('< ', array(), null, array('class'=>'disabled')).
+						$this->Paginator->numbers().
+						$this->Paginator->next(' >', array(), null, array('class' => 'disabled')).
+						'</span>';
+				}
+				$out .= 				
+					'<span class="paging_meta">'.
+					$this->Paginator->counter(array('format' => 'Side %page% af %pages%, viser %current% elementer ud af i alt %count%', true)).
+					'</span></div>';						
+			}
+				
+		} else {
+			$out = 'Der er ingen elementer at vise!';
+		}
+
+		// return full table output	
+		return $out;		
+	}
+	
     function add($title = null, $url = null, $style = null) {
+
+	    // get current user and get controller
+	    $currentuser = $this->_getUser();
+    	$controller = $this->_getController($url);
     	
-    	// decide title to display in link
-    	if ($title == null) {
-    		$title = 'Opret';
-    	}
+    	// check access to the action
+    	// $access = $this->Acl->check(array('model' => 'User', 'foreign_key' => $currentuser['id']), 'Application/Controllers/'.$controller.'/add');
+    	$access = true;
     	
-    	// decide controller to use in taget url
-    	if ($url == null) {
-    		$url = array('action' => 'add');
-    	}
-    	
-    	// decide style for css class
-    	if ($style == null) {
-    		$style = array('class' => 'action_button action_new');
-    	} else if ($style == 'icon') {
-    		$style = array('class' => '');
-    	}
-    	
-		// build the output
-		echo $this->output($this->Html->link($title, $url, $style));
+    	if ($access) {
+    	    	
+	    	// decide title to display in link
+	    	if ($title == null) {
+				$title = 'Opret';
+	    	}
+	    	$title = $this->Html->image('icons/10/103.png', array('alt' => 'Opret')).$title;
+	    	    	
+	    	// decide controller to use in taget url
+	    	if ($url == null) {
+	    		$url = array('action' => 'add');
+	    	}
+	    	
+	    	// decide style for css class
+	    	if ($style == null) {
+	    		$style = array('class' => 'action_new', 'escape' => false);
+	    	} else if ($style == 'icon') {
+	    		$style = array('class' => '', 'escape' => false);
+	    	}
+	    	
+			// build the output
+			return $this->Html->link($title, $url, $style);
+		}
     }
 
     function edit($title = null, $url = null, $id = null , $style = null) {
-    	
-    	// set id of targeted item
+	    
+	    // get current user, set id of targeted item and get controller
+	    $currentuser = $this->_getUser();
     	$id = $this->_setId($id);
-    	if ($id != false) {
+    	$controller = $this->_getController($url);
+    	    	    	    	
+    	// check access to the action
+    	// $access = $this->Acl->check(array('model' => 'User', 'foreign_key' => $currentuser['id']), 'Application/Controllers/'.$controller.'/edit');
+    	$access = true;    	
+    	
+    	if ($id != false && $access == true) {
 	    	
 	    	// decide title to display in link
 	    	if ($title == null) {
 	    		$title = 'Rediger';
 	    	}
+	    	$title = $this->Html->image('icons/10/018.png', array('alt' => 'Opret')).$title;    	
 	    	
 	    	// decide controller to use in taget url
 	    	if ($url == null) {
@@ -67,26 +236,34 @@ class OutputHelper extends AppHelper {
 	    	
 	    	// decide style for css class
 	    	if ($style == null) {
-	    		$style = array('class' => 'action_button action_edit');
+	    		$style = array('class' => 'action_edit', 'escape' => false);
 	    	} else if ($style == 'icon') {
 	    		$style = array('class' => '');
 	    	}
 	
 			// build the output
-			echo $this->output($this->Html->link($title, $url, $style));
+			return $this->Html->link($title, $url, $style);
 		}
     }
 
     function delete($title = null, $url = null, $id = null, $style = null) {
     	
-    	// set id of targeted item
-    	$id = $this->_setId($id);    	
-    	if ($id != false) {
+	    // get current user, set id of targeted item and get controller
+	    $currentuser = $this->_getUser();
+    	$id = $this->_setId($id);
+    	$controller = $this->_getController($url);
+    	
+    	// check access to the action
+    	// $access = $this->Acl->check(array('model' => 'User', 'foreign_key' => $currentuser['id']), 'Application/Controllers/'.$controller.'/delete');
+    	$access = true;
+    	
+    	if ($id != false && $access == true) {
 
 	    	// decide title to display in link
 	    	if ($title == null) {
 	    		$title = 'Slet';
 	    	}
+	    	$title = $this->Html->image('icons/10/101.png', array('alt' => 'Opret')).$title;
 	    	
 	    	// decide controller to use in taget url
 	    	if ($url == null) {
@@ -95,26 +272,34 @@ class OutputHelper extends AppHelper {
 	    	
 	    	// decide style for css class
 	    	if ($style == null) {
-	    		$style = array('class' => 'action_button action_delete');
+	    		$style = array('class' => 'action_delete', 'escape' => false);
 	    	} else if ($style == 'icon') {
 	    		$style = array('class' => '');
 	    	}
 	
 			// build the output
-			echo $this->output($this->Html->link($title, $url, $style, sprintf(__('Er du sikker på du vil slette #%s?', true), $id)));
+			return $this->Html->link($title, $url, $style, sprintf(__('Er du sikker på du vil slette #%s?', true), $id));
 		}
     }
     
     function export($title = null, $url = null, $id = null , $style = null) {
-    	
-    	// set id of targeted item
+
+	    // get current user, set id of targeted item and get controller
+	    $currentuser = $this->_getUser();
     	$id = $this->_setId($id);
-    	if ($id != false) {
+    	$controller = $this->_getController($url);
+    	
+    	// check access to the action
+    	$access = true;
+    	
+    	if ($id != false && $access == true) {
 	    	
 	    	// decide title to display in link
 	    	if ($title == null) {
 	    		$title = 'Eksport til Excel';
 	    	}
+	    	$title = $this->Html->image('icons/10/139.png', array('alt' => 'Opret')).$title;
+	    	
 	    	
 	    	// decide controller to use in taget url
 	    	if ($url == null) {
@@ -123,14 +308,65 @@ class OutputHelper extends AppHelper {
 	    	
 	    	// decide style for css class
 	    	if ($style == null) {
-	    		$style = array('class' => 'action_button action_export');
+	    		$style = array('class' => 'action_export', 'escape' => false);
 	    	} else if ($style == 'icon') {
 	    		$style = array('class' => '');
 	    	}
 	
 			// build the output
-			echo $this->output($this->Html->link($title, $url, $style));
+			return $this->Html->link($title, $url, $style);
 		}
+    }    
+
+    function status($title = false, $statusid = null) {    	
+    	$imagealt = "Status: ".$statusid;
+    	$out = '';
+    	
+    	// decide style for css class
+    	$style = 'meta_status';
+    		    	
+    	// decide icon - neutral
+    	if ($statusid == 0) {
+    		$out = $this->Html->image('icons/16/159.png', array('alt' => $imagealt, 'class' => $style, 'escape' => false));
+    		if ($title) {
+    			$out .= "Igangværende";
+    		}
+    	}
+    	// decide icon - accepted
+    	else if ($statusid == 1) {
+    		$out = $this->Html->image('icons/16/152.png', array('alt' => $imagealt, 'class' => $style, 'escape' => false));
+    		if ($title) {
+    			$out .= "Godkendt";
+    		}
+    		
+    	}
+    	// decide icon - rejected
+    	else if ($statusid == 2) {
+    		$out = $this->Html->image('icons/16/151.png', array('alt' => $imagealt, 'class' => $style, 'escape' => false));
+    		if ($title) {
+    			$out .= "Afvist";
+    		}
+    	}
+    	
+		// build the output
+		return $out;
+    }    
+
+    function powerUsage($usage = 0, $allowance = 0) {
+		$out = "<span class='icon_powerusage_";
+		
+		if ($allowance == 0) {
+			$out .= "0";			 	
+		} else if ($usage < $allowance) {
+			$out .= "1";
+		} else if ($usage > $allowance) {
+			$out .= "2"; 
+		}    	
+    	
+    	$out .= "'>".$usage."</span>";
+    	    	
+		// build the output
+		return $out;
     }    
 
 }

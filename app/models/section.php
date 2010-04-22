@@ -2,11 +2,8 @@
 class Section extends AppModel {
 
 	var $name = 'Section';
+	// Ties sections to ACL, so each time a new section is created, it's also added to the ACOS table
 	var $actsAs = array('Acl' => array('type' => 'controlled'));
-
-	function parentNode() {
-		return 'Content';
-	}
 
 	var $validate = array(
 		'title' => array(
@@ -30,7 +27,6 @@ class Section extends AppModel {
 			),
 		),
 	);
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	var $belongsTo = array(
 		'User' => array(
@@ -57,6 +53,10 @@ class Section extends AppModel {
 			'counterQuery' => ''
 		)
 	);
+
+	function parentNode() {
+		return 'Content';
+	}
 
 }
 ?>

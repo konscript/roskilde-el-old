@@ -1,6 +1,8 @@
 <?php
 class Item extends AppModel {
+
 	var $name = 'Item';
+
 	var $validate = array(
 		'title' => array(
 			'notempty' => array(
@@ -23,7 +25,6 @@ class Item extends AppModel {
 			),
 		),
 	);
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	var $hasAndBelongsToMany = array(
 		'Project' => array(
@@ -43,8 +44,9 @@ class Item extends AppModel {
 		)
 	);
 	
+	// Virtual field that concatenates title and power usage (used in dropdowns in views)
 	var $virtualFields = array(
-    	'details' => 'CONCAT(Item.title, " (", Item.power_usage, ")")'
+    	'details' => 'CONCAT(Item.title, " (", Item.power_usage, " watt)")'
 	);	
 
 }

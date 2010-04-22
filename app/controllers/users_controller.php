@@ -32,7 +32,8 @@ class UsersController extends AppController {
 	}
 
 	function view($id = null) {
-		$this->set('title_for_layout', 'Se Bruger');	
+		$this->set('title_for_layout', 'Se Bruger');
+		$this->User->recursive = 2;		
 		if (!$id) {
 			$this->Session->setFlash(sprintf(__('Ugyldig %s.', true), 'bruger'), 'default', array('class' => 'notice'));
 			$this->redirect(array('action' => 'index'));
@@ -80,8 +81,7 @@ class UsersController extends AppController {
 				}
 			}
 		}
-		$roles = $this->User->Role->find('list');
-		$this->set(compact('roles'));
+		$this->set('roles', $this->User->Role->find('list', array('conditions' => array('Role.id >=' => $this->Auth->user('role_id')))));
 	}
 
 	function edit($id = null) {
@@ -106,8 +106,7 @@ class UsersController extends AppController {
 		if (empty($this->data)) {
 			$this->data = $this->User->read(null, $id);
 		}
-		$roles = $this->User->Role->find('list');
-		$this->set(compact('roles'));
+		$this->set('roles', $this->User->Role->find('list'));
 	}
 
 	function profile() {
@@ -135,10 +134,10 @@ class UsersController extends AppController {
 			$this->Session->setFlash(sprintf(__('Ugyldigt ID for %s.', true), 'brugeren'), 'default', array('class' => 'notice'));
 			$this->redirect(array('action'=>'index'));
 		}
-		$projects = $this->User->Project->find('list', array('conditions' => array('Project.user_id' => $id)));
-		$groups = $this->User->Group->find('list', array('conditions' => array('Group.user_id' => $id)));
-		$sections = $this->User->Section->find('list', array('conditions' => array('Section.user_id' => $id)));
-		if (!empty($projects) || !empty($groups) || !empty($sections)) {
+		if (empty($this->data)) {
+			$this->data = $this->User->read(null, $id);
+		}
+		if (!empty($this->data['Project']) || !empty($this->data['Group']) || !empty($this->data['Section'])) {
 			$this->Session->setFlash(sprintf(__('%s har tilknyttede projekter/grupper/sektioner og kan ikke slettes.', true), 'Brugeren'), 'default', array('class' => 'error'));
 			$this->redirect(array('action'=>'index'));			
 		} else if ($this->User->delete($id)) {

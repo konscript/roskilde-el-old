@@ -6,7 +6,9 @@
 		echo $this->Form->input('Project.title', array('label' => 'Navn'));
 		echo $this->Form->input('Project.body', array('label' => 'Beskrivelse'));
 		//echo $this->Form->input('total_power_usage');
-		echo $this->Form->input('Project.total_power_allowance', array('label' => 'Tilladt strømforbrug'));
+       	if ($currentuser['role_id'] <= 2) {
+			echo $this->Form->input('Project.total_power_allowance', array('label' => 'Tilladt strømforbrug'));
+		}
 		//echo $this->Form->input('Project.build_start');
 		//echo $this->Form->input('Project.build_end');
 		//echo $this->Form->input('Project.items_start');

@@ -38,7 +38,8 @@ class SetupController extends AppController {
 
 		// all users (requesters)
 		$allusers = "Requesters";
-		$this->Acl->allow($allusers, 'Application/Controllers/Pages/display');
+		$this->Acl->allow($allusers, 'Application/Controllers/Pages');
+		$this->Acl->allow($allusers, 'Application/Controllers/Projects/createExcel');
 		echo "- All users setup done<br />";		
 
 		// administrators

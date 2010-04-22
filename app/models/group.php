@@ -2,35 +2,8 @@
 class Group extends AppModel {
 
 	var $name = 'Group';
+	// Ties groups to ACL, so each time a new group is created, it's also added to the ACOS table	
 	var $actsAs = array('Acl' => array('type' => 'controlled'));
-
-	function parentNode() {
-		if (!$this->id && empty($this->data)) {
-			return null;
-		}
-		$data = $this->data;
-		if (empty($this->data)) {
-			$data = $this->read();
-		} 
-		if (!$data['Group']['section_id']) {
-			return null;
-		} else {
-			$this->Section->id = $data['Group']['section_id'];
-			$sectionNode = $this->Section->node();
-			return array('Section' => array('id' => $sectionNode[0]['Aco']['foreign_key']));
-		}
-	}
-	
-	function afterSave($created) {
-        if (!$created) {
-            $parent = $this->parentNode();
-            $parent = $this->node($parent);
-            $node = $this->node();
-            $aco = $node[0];
-            $aco['Aco']['parent_id'] = $parent[0]['Aco']['id'];
-            $this->Aco->save($aco);
-        }
-	}	
 	
 	var $validate = array(
 		'title' => array(
@@ -61,7 +34,6 @@ class Group extends AppModel {
 			),
 		),
 	);
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	var $belongsTo = array(
 		'Section' => array(
@@ -95,6 +67,36 @@ class Group extends AppModel {
 			'counterQuery' => ''
 		)
 	);
+
+    // Defines hierachy in the ACL/ACO structure	
+	function parentNode() {
+		if (!$this->id && empty($this->data)) {
+			return null;
+		}
+		$data = $this->data;
+		if (empty($this->data)) {
+			$data = $this->read();
+		} 
+		if (!$data['Group']['section_id']) {
+			return null;
+		} else {
+			$this->Section->id = $data['Group']['section_id'];
+			$sectionNode = $this->Section->node();
+			return array('Section' => array('id' => $sectionNode[0]['Aco']['foreign_key']));
+		}
+	}
+	
+	// Updates the ACO entry if it's parent_id (Section) has been changed		
+	function afterSave($created) {
+        if (!$created) {
+            $parent = $this->parentNode();
+            $parent = $this->node($parent);
+            $node = $this->node();
+            $aco = $node[0];
+            $aco['Aco']['parent_id'] = $parent[0]['Aco']['id'];
+            $this->Aco->save($aco);
+        }
+	}
 
 }
 ?>

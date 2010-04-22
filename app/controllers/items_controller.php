@@ -29,8 +29,7 @@ class ItemsController extends AppController {
 				$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Enhedsskabelonen'), 'default', array('class' => 'error'));
 			}
 		}
-		$projects = $this->Item->Project->find('list');
-		$this->set(compact('projects'));
+		$this->set('projects', $this->Item->Project->find('list'));
 	}
 
 	function edit($id = null) {
@@ -50,8 +49,7 @@ class ItemsController extends AppController {
 		if (empty($this->data)) {
 			$this->data = $this->Item->read(null, $id);
 		}
-		$projects = $this->Item->Project->find('list');
-		$this->set(compact('projects'));
+		$this->set('projects', $this->Item->Project->find('list'));
 	}
 
 	function delete($id = null) {

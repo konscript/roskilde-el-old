@@ -8,7 +8,7 @@ class SpecificAclComponent extends Object {
 		// saving the controller reference for later use
 		$this->controller =& $controller;
 	}
-
+	
 	/**
  	* Used for printing out which elements the current user is allowed to see on an index page
  	*
@@ -25,10 +25,11 @@ class SpecificAclComponent extends Object {
 				$allowed_ids[$i] = $element[$model]['id'];
 				$i++;
 			}
+			//debug($element);
 		}
 		return $allowed_ids; 
     }
-
+    
 	/**
  	* Check the if the current user has access to a specific id in a model (Project, Group, Section)
  	*

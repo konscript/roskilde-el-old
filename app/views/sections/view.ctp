@@ -26,58 +26,28 @@
 		</dd>
 	</dl>
 </div>
+
 <div class="actions">
-	<h3><?php __('Actions'); ?></h3>
+	<h3><?php __('Handlinger'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(sprintf(__('Edit %s', true), __('Section', true)), array('action' => 'edit', $section['Section']['id'])); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('Delete %s', true), __('Section', true)), array('action' => 'delete', $section['Section']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $section['Section']['id'])); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('List %s', true), __('Sections', true)), array('action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('New %s', true), __('Section', true)), array('action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('List %s', true), __('Groups', true)), array('controller' => 'groups', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('New %s', true), __('Group', true)), array('controller' => 'groups', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Output->edit(); ?></li>
+		<li><?php echo $this->Output->delete(); ?></li>
 	</ul>
 </div>
-<div class="related">
-	<h3><?php printf(__('Related %s', true), __('Groups', true));?></h3>
-	<?php if (!empty($section['Group'])):?>
-	<table cellpadding = "0" cellspacing = "0">
-	<tr>
-		<th><?php __('Id'); ?></th>
-		<th><?php __('Title'); ?></th>
-		<th><?php __('Section Id'); ?></th>
-		<th><?php __('User Id'); ?></th>
-		<th><?php __('Created'); ?></th>
-		<th><?php __('Modified'); ?></th>
-		<th class="actions"><?php __('Actions');?></th>
-	</tr>
-	<?php
-		$i = 0;
-		foreach ($section['Group'] as $group):
-			$class = null;
-			if ($i++ % 2 == 0) {
-				$class = ' class="altrow"';
-			}
-		?>
-		<tr<?php echo $class;?>>
-			<td><?php echo $group['id'];?></td>
-			<td><?php echo $group['title'];?></td>
-			<td><?php echo $group['section_id'];?></td>
-			<td><?php echo $group['user_id'];?></td>
-			<td><?php echo $group['created'];?></td>
-			<td><?php echo $group['modified'];?></td>
-			<td class="actions">
-				<?php echo $this->Html->link(__('View', true), array('controller' => 'groups', 'action' => 'view', $group['id'])); ?>
-				<?php echo $this->Html->link(__('Edit', true), array('controller' => 'groups', 'action' => 'edit', $group['id'])); ?>
-				<?php echo $this->Html->link(__('Delete', true), array('controller' => 'groups', 'action' => 'delete', $group['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $group['id'])); ?>
-			</td>
-		</tr>
-	<?php endforeach; ?>
-	</table>
-<?php endif; ?>
 
-	<div class="actions">
-		<ul>
-			<li><?php echo $this->Html->link(sprintf(__('New %s', true), __('Group', true)), array('controller' => 'groups', 'action' => 'add'));?> </li>
-		</ul>
-	</div>
+<div class="related">
+	<h3><?php printf(__('Tilhørende %s', true), __('Grupper', true));?></h3>
+	<?php
+	
+	$header = array(
+		"id" => "ID",
+		"title" => "Navn",
+		"user_id" => "Gruppeleder",
+		"created" => "Oprettet",
+		"modified" => "Redigeret",
+		"actions" => "Handlinger"	
+	);
+	echo $this->Output->index($header, $section['Group'], false, true, 'Group');
+	
+	?>
 </div>

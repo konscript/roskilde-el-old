@@ -3,9 +3,8 @@
 class Project extends AppModel {
 
 	var $name = 'Project';
-
-	//controlled type is of type ACO  = Object to get
-	var $actsAs = array('Acl' => array('type' => 'controlled'), 'Containable', 'WhoDidIt'); 
+	// Ties projects to ACL, so each time a new project is created, it's also added to the ACOS table	
+	var $actsAs = array('Acl' => array('type' => 'controlled'), 'Containable', 'WhoDidIt');
 	var $recursive = 2;
 
 	var $validate = array(
@@ -52,7 +51,6 @@ class Project extends AppModel {
 		)
 	);
 	
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
 	var $belongsTo = array(
 		'Group' => array(
 			'className' => 'Group',
@@ -86,7 +84,7 @@ class Project extends AppModel {
 		)
 	);
 
-    //Defines hierachy in the ACL/ACO structure
+    // Defines hierachy in the ACL/ACO structure
 	function parentNode() {
 		if (!$this->id && empty($this->data)) {
 			return null;

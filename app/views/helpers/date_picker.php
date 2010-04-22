@@ -2,7 +2,7 @@
 
 class DatePickerHelper extends FormHelper {
 
-    var $helpers = array('Html','Javascript');
+    var $helpers = array('Html', 'Javascript');
     var $format = '%Y-%m-%d';
 
     function _setup(){

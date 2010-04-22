@@ -2,8 +2,7 @@
 class User extends AppModel {
 
 	var $name = 'User';
-
-	// Ties roles to ACL, so each time a new user is added, it's also added to the AROS table	
+	// Ties users to ACL, so each time a new user is added, it's also added to the AROS table	
 	var $actsAs = array('Acl' => 'requester');
 
 	var $validate = array(
@@ -41,7 +40,6 @@ class User extends AppModel {
 			)
 		)
 	);
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	var $belongsTo = array(
 		'Role' => array(
@@ -95,6 +93,7 @@ class User extends AppModel {
 		)
 	);
 	
+    // Defines hierachy in the ACL/ARO structure	
 	function parentNode() {
 	    if (!$this->id && empty($this->data)) {
 	        return null;
@@ -110,6 +109,7 @@ class User extends AppModel {
 	    }
 	}
 	
+	// Updates the ARO entry if it's parent_id (Role) has been changed		
 	function afterSave($created) {
         if (!$created) {
             $parent = $this->parentNode();
@@ -120,17 +120,5 @@ class User extends AppModel {
             $this->Aro->save($aro);
         }
 	}
-	
-	/* function afterDelete() {
-
-		$id = $this->read('id');
-		$projects = $this->Project->find('all', array('conditions' => array('Project.user_id' => $id)));
-		
-		foreach($projects as $project) {
-			$this->Project->id = $project['Project']['id'];
-			$this->Project->set('user_id', 0);
-	        $this->Project->save(array('validate' => false));
-		}
-	} */		
 }
 ?>

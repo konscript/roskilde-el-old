@@ -4,30 +4,20 @@ class ProjectItem extends AppModel {
 	var $name = 'ProjectItem';
 	var $actsAs = array('WhoDidIt'); 
 	
-	/* var $validate = array(
-		'title' => array(
-			'notempty' => array(
-				'rule' => array('notempty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-		),
-		'power_usage' => array(
+	var $validate = array(
+		'quantity' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'message' => 'Angiv antallet af enheder du vil tilknytte',
+				'allowEmpty' => false,
 			),
-		),
-	); */
+			'notZero' => array(
+				'rule' => array('comparison', '>=', 1),
+				'message' => 'Angiv minimum 1 i antal',
+			),
+		)
+	);
 	
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
 	var $belongsTo = array(
 		'Item' => array(
 			'className' => 'Item',
@@ -62,18 +52,30 @@ class ProjectItem extends AppModel {
 		// $data = array('Project' => array('id' => $project_id, 'total_power_usage'=> $total));
 		// $this->Project->save($data, false, array('Project.total_power_usage'));
 	}
-
+	
 	// Updates the corresponding projects DB field with the a calculated total power usage of attached project items
-	/* function afterDelete() {
-		$data = $this->ProjectItem->read(null, $this->id);
-		$project_id = $data['ProjectItem']['project_id'];
-		die(print_r($data));
+	function afterDelete() {
+		$project_id = $this->data['ProjectItem']['project_id'];
 		$total = $this->SumByProject($project_id);
 		$this->Project->id = $project_id;
 		$this->Project->saveField('total_power_usage', $total);
 		// $data = array('Project' => array('id' => $project_id, 'total_power_usage'=> $total));
 		// $this->Project->save($data, false, array('Project.total_power_usage'));
-	} */
+	}	
+	
+	// If the Item is based on a template, fetch the data from it and populate own fields
+	function afterFind($results) {
+		if (!isset($results[0][0]['count'])) {
+			foreach($results as $key => $val) {
+				if (isset($val['ProjectItem']['item_id']) && $val['ProjectItem']['item_id'] && isset($val['Item'])) {
+					$results[$key]['ProjectItem']['title'] = $val['Item']['title'];
+					$results[$key]['ProjectItem']['description'] = $val['Item']['description'];
+					$results[$key]['ProjectItem']['power_usage'] = $val['Item']['power_usage'];
+				}
+			}
+		}
+		return $results;
+	}
 	
 }
 ?>

@@ -32,14 +32,66 @@
 		</dd>
 	</dl>
 </div>
+
 <div class="actions">
-	<h3><?php __('Actions'); ?></h3>
+	<h3><?php __('Handlinger'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(sprintf(__('Edit %s', true), __('User', true)), array('action' => 'edit', $user['User']['id'])); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('Delete %s', true), __('User', true)), array('action' => 'delete', $user['User']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $user['User']['id'])); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('List %s', true), __('Users', true)), array('action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('New %s', true), __('User', true)), array('action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('List %s', true), __('Roles', true)), array('controller' => 'roles', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(sprintf(__('New %s', true), __('Role', true)), array('controller' => 'roles', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Output->edit(); ?></li>
+		<li><?php echo $this->Output->delete(); ?></li>
 	</ul>
 </div>
+
+<?php if (!empty($user['Section'])) { ?>
+<div class="related">
+	<h3><?php printf(__('Sektionsleder', true), __('', true));?></h3>
+	<?php
+	
+	$header = array(
+		"id" => "ID",
+		"title" => "Navn",
+		"created" => "Oprettet",
+		"modified" => "Redigeret",		
+		"actions" => "Handlinger"	
+	);
+	echo $this->Output->index($header, $user['Section'], false, true, 'Section');
+	
+	?>
+</div>
+<?php } ?>
+<?php if (!empty($user['Group'])) { ?>
+<div class="related">
+	<h3><?php printf(__('Gruppeleder', true), __('', true));?></h3>
+	<?php
+	
+	$header = array(
+		"id" => "ID",
+		"title" => "Navn",
+		"section_id" => "Sektion",
+		"created" => "Oprettet",
+		"modified" => "Redigeret",		
+		"actions" => "Handlinger"	
+	);
+	echo $this->Output->index($header, $user['Group'], false, true, 'Group');
+	
+	?>
+</div>
+<?php } ?>
+<?php if (!empty($user['Project'])) { ?>
+<div class="related">
+	<h3><?php printf(__('Projektleder', true), __('', true));?></h3>
+	<?php
+	
+	$header = array(
+		"id" => "ID",
+		"title" => "Navn",
+		"total_power_usage" => "Strømforbrug",		
+		"group_id" => "Gruppe",
+		"created" => "Oprettet",
+		"modified" => "Redigeret",		
+		"actions" => "Handlinger"	
+	);
+	echo $this->Output->index($header, $user['Project'], false, true, 'Project');
+	
+	?>
+</div>
+<?php } ?>

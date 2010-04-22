@@ -11,6 +11,7 @@ class SectionsController extends AppController {
 	}
 
 	function view($id = null) {
+		$this->Section->recursive = 2;		
 		$this->set('title_for_layout', 'Se Sektion');	
 		if (!$id) {
 			$this->Session->setFlash(sprintf(__('Invalid %s', true), 'section'));
@@ -37,8 +38,7 @@ class SectionsController extends AppController {
 				$this->Session->setFlash(sprintf(__('The %s could not be saved. Please, try again.', true), 'section'));
 			}
 		}
-		$users = $this->Section->User->find('list', array('fields' => array('User.id', 'User.username'), 'conditions' => array('User.role_id' => 2)));
-		$this->set(compact('users'));
+		$this->set('users', $this->Section->User->find('list', array('fields' => array('User.id', 'User.username'), 'conditions' => array('User.role_id' => 2))));
 	}
 
 	function edit($id = null) {
@@ -64,8 +64,7 @@ class SectionsController extends AppController {
 		if (empty($this->data)) {
 			$this->data = $this->Section->read(null, $id);
 		}
-		$users = $this->Section->User->find('list', array('fields' => array('User.id', 'User.username'), 'conditions' => array('User.role_id' => 2)));
-		$this->set(compact('users'));
+		$this->set('users', $this->Section->User->find('list', array('fields' => array('User.id', 'User.username'), 'conditions' => array('User.role_id' => 2))));
 	}
 
 	function delete($id = null) {
