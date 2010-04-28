@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
         <?php echo $this->Html->charset(); ?>
-        <title><?php echo $title_for_layout; ?></title>
+        <title><?php echo $title_for_layout; ?> - Roskilde Festival El-system</title>
 
      	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
         <?php
@@ -70,7 +70,7 @@
 			<div class="inside">
 				<div style="float: left;">
 					<div id="footer_object" class="button_beta" style="float: left;">beta<br />v1.3</div>
-					<div id="footer_text" style="float: left;">Roskilde Festival el-system 2010</div>
+					<div id="footer_text" style="float: left;">Roskilde Festival El-system 2010</div>
 				</div>
 				<div style="float: right;">
 					<div id="footer_object" style="float: right;"><?php echo $html->image('konscript-icon.png', array('alt' => "Konscript", 'border' => "0", 'url' => "http://konscript.com", 'class' => 'konscript-icon'));?></div>

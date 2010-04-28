@@ -30,7 +30,7 @@ class SetupController extends AppController {
 		// cake acl create aco root Application
 		// cake acl create aco Application Controllers
 		// cake acl create aco Application Content				
-
+	
 	// assign roles the correct permission to controllers/actions in the ACL - necessary for a new setup!
 	function permissions_assign_controlleractions() {
 

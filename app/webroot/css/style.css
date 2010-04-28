@@ -120,7 +120,6 @@ img {
 		padding: 20px 0 0 0;
 		color: #a1a0a6; }
 	.konscript-icon {
-		margin-top: -4px;
 		margin-left: 10px;
 		opacity: .23; /* Standard: FF gt 1.5, Opera, Safari */
 		filter: alpha(opacity=23); /* IE lt 8 */

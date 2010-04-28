@@ -28,7 +28,15 @@ class ProjectItemsController extends AppController {
 	}
 
 	function add() {
-			
+		
+        if (isset($this->params['url']['project_id'])) {
+	        // SPECIFICACL: Project-based permission check
+			if (!$this->SpecificAcl->check("Project", $this->params['url']['project_id'])) {
+				$this->Session->setFlash('Du har ikke adgang til projektet du forsøger at oprette enhed til', 'default', array('class' => 'error'));
+				$this->redirect(array('controller' => 'projects', 'action' => 'index'));
+			}		
+		}
+					
 		$this->set('title_for_layout', 'Opret ny Enhed');	
 		if (!empty($this->data)) {
 			$this->ProjectItem->create();
@@ -61,6 +69,15 @@ class ProjectItemsController extends AppController {
 
 	function edit($id = null) {
 		$this->set('title_for_layout', 'Rediger Enhed');	
+		
+        if (isset($this->params['url']['project_id'])) {
+	        // SPECIFICACL: Project-based permission check
+			if (!$this->SpecificAcl->check("Project", $this->params['url']['project_id'])) {
+				$this->Session->setFlash('Du har ikke adgang til det projekt som enheden er knyttet til', 'default', array('class' => 'error'));
+				$this->redirect(array('controller' => 'projects', 'action' => 'index'));
+			}		
+		}		
+		
 		if (!$id && empty($this->data)) {
 			$this->Session->setFlash(sprintf(__('Ugyldig %s.', true), 'enhed'), 'default', array('class' => 'notice'));
 			$this->redirect(array('action' => 'index'));

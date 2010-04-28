@@ -53,7 +53,7 @@ class ProjectsController extends AppController {
 		
 		$this->set('projects', $allowed_projects);
 		
-		if (count($allowed_projects) == 1 && $this->Auth->user('role_id')) {
+		if (count($allowed_projects) == 1 && $this->Auth->user('role_id') == 4) {
 			$this->redirect(array('action' => 'view', $allowed_projects["0"]["Project"]["id"]));
 		}
 	}
@@ -192,8 +192,7 @@ class ProjectsController extends AppController {
 
         // SPECIFICACL: Project-based permission check
 		if (!$this->SpecificAcl->check("Project", $id)) {
-			$this->Session->setFlash('Du har ikke adgang til projektet');			
-			$this->redirect(array('action' => 'index'));			
+			$this->Session->setFlash('Du har ikke adgang til projektet', 'default', array('class' => 'error'));					$this->redirect(array('action' => 'index'));			
 		}
 
 		if (!$id && empty($this->data)) {
@@ -202,9 +201,8 @@ class ProjectsController extends AppController {
 		}
 
 		if (!empty($this->data)) {
-				        
-	        // SPECIFICACL: Removes permission for the old project manager
-			$this->SpecificAcl->deny("Project", $this->Project->read(null, $id));						
+			
+			$olddata = $this->Project->read(null, $id);	        
 
             // upload image
             if($this->data['Project']['uploadAttachment'] && $this->data['Project']['Attachment']['error'] != 4) {
@@ -212,7 +210,9 @@ class ProjectsController extends AppController {
             }
 			
 			if ($this->Project->save($this->data)) {
-		        // SPECIFICACL: Reassigns permission for the chosen project manager
+		        
+		        // SPECIFICACL: Removes permission for old and reassigns permission for the chosen project manager
+				$this->SpecificAcl->deny("Project", $olddata);
 				$this->SpecificAcl->allow("Project", $this->data);			
 
 				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Projektet'), 'default', array('class' => 'success'));
