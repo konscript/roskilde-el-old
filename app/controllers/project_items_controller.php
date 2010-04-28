@@ -13,7 +13,7 @@ class ProjectItemsController extends AppController {
 		$allowed_projectitem_ids = $this->SpecificAcl->index("Project", $this->ProjectItem->Project->find('all'));
 
 		// setup pagination for allowed projects only
-	    $this->paginate = array('conditions' => array('ProjectItem.project_id' => $allowed_projectitem_ids), 'limit' => 10);
+	    $this->paginate = array('conditions' => array('ProjectItem.project_id' => $allowed_projectitem_ids), 'limit' => 20);
 	    $allowed_projectitems = $this->paginate('ProjectItem');
 		$this->set('projectItems', $allowed_projectitems);
 	}

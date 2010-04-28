@@ -4,7 +4,6 @@
 	$header = array(
 		"id" => "ID",
 		"title" => "Navn",
-		"description" => "Beskrivelse",
 		"power_usage" => "Strømforbrug",
 		"modified" => "Redigeret",
 		"actions" => "Handlinger"	

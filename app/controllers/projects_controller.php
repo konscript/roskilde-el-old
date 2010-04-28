@@ -6,9 +6,9 @@ class ProjectsController extends AppController {
     var $helpers = array('Form', 'DatePicker');
     var $paginate = array(
     		'Project' => array(
-    			'limit' => 10),
+    			'limit' => 20),
     		'ProjectItem' => array(
-    			'limit' => 10)    		
+    			'limit' => 20)    		
     		);
 
     function createExcel($id = null){

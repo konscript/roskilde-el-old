@@ -12,21 +12,25 @@ if (empty($projects)) {
 } else { 
 
 	$header = array(
-		"id" => "ID",
 		"title" => "Navn",
 		"total_power_usage" => "Strømforbrug",
-		"group_id" => "Gruppe",
-		"user_id" => "Projektleder",
+		"group_id" => "Gruppe / Projektleder",
 		"modified" => "Redigeret",
 		"actions" => "Handlinger"	
 	);
 	foreach ($projects as $key => $project) {
 		$data[$key]['Project'] = array(
-			"id" => $project['Project']['id'],
-			"title" => $this->Output->status(false, $project['Project']['status']).$this->Html->link($project['Project']['title'], array('action' => 'view', $project['Project']['id'])),
-			"total_power_usage" => $this->Output->powerUsage($project['Project']['total_power_usage'], $project['Project']['total_power_allowance'])." (". $project['Project']['total_power_allowance'].")",
-			"group_id" => $this->Html->link($project['Group']['title'], array('controller' => 'groups', 'action' => 'view', $project['Group']['id'])),
-			"user_id" => $this->Html->link($project['User']['username'], array('controller' => 'users', 'action' => 'view', $project['User']['id'])),
+			"title" => 
+				$this->Output->status(false, $project['Project']['status']).
+				$this->Html->link($project['Project']['title'], array('action' => 'view', $project['Project']['id'])),
+			"total_power_usage" => 
+				$this->Output->powerUsage($project['Project']['total_power_usage'], $project['Project']['total_power_allowance'])." (".
+				$project['Project']['total_power_allowance'].")",
+			"group_id" => 
+				$this->Output->icon('group', 'small').
+				$this->Html->link($project['Group']['title'], array('controller' => 'groups', 'action' => 'view', $project['Group']['id'])).'<br />'.
+				$this->Output->icon('user', 'small').
+				$this->Html->link($project['User']['title'], array('controller' => 'users', 'action' => 'view', $project['User']['id'])),
 			"modified" => $project['Project']['modified'],
 			"actions" => 
 				$this->Output->edit(null, null, $project['Project']['id']).

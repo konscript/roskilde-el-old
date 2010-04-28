@@ -318,6 +318,38 @@ class OutputHelper extends AppHelper {
 		}
     }    
 
+    function icon($icon = null, $size = null) {    	
+    	$out = '';
+		
+		// set size of the icon
+		if ($size == 'large') {
+			$size = '16';
+		} else if ($size == 'small') {
+			$size = '10';
+		} else {
+			$size = '16'; // large is default
+		}
+		
+		// check if icon name is predefined
+    	if ($icon == 'user') {
+    		$src = 'icons/'.$size.'/006.png';
+    		$out = $this->Html->image($src, array('class' => 'icon_user', 'escape' => false));
+    	} else if ($icon == 'group') {
+    		$src = 'icons/'.$size.'/045.png';    	
+    		$out = $this->Html->image($src, array('class' => 'icon_group', 'escape' => false));
+    	}
+    	// if icon supplied is not recognized
+    	else {
+    		$src = 'icons/'.$size.'/'.$icon.'.png';
+    		$class = 'icon_'.$icon;
+    		$out = $this->Html->image($src, array('class' => $class, 'escape' => false));    	
+    	}
+    	
+		// build the output
+		return $out;
+    }    
+
+
     function status($title = false, $statusid = null) {    	
     	$imagealt = "Status: ".$statusid;
     	$out = '';

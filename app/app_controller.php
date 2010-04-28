@@ -24,12 +24,14 @@ class AppController extends Controller {
 	// Private method for sending a welcome e-mail to new users
 	// Returns true if succesful
 	function _userMail($name, $email, $password) {
+		
+		// Using SwiftMailer with TLS SMTP turned on
 					
-        $this->SwiftMailer->smtpType = 'tls'; 
-        $this->SwiftMailer->smtpHost = 'smtp.gmail.com'; 
-        $this->SwiftMailer->smtpPort = 465; 
-        $this->SwiftMailer->smtpUsername = 'el@laander.com'; 
-        $this->SwiftMailer->smtpPassword = 'Laander1193'; 
+        $this->SwiftMailer->smtpType = 'ssl'; 
+        $this->SwiftMailer->smtpHost = 'webmail.roskilde-festival.dk'; 
+        $this->SwiftMailer->smtpPort = 25; 
+        $this->SwiftMailer->smtpUsername = 'nicolai.johansen'; 
+        $this->SwiftMailer->smtpPassword = 'ProBlematic4Sure'; 
 
         $this->SwiftMailer->sendAs = 'html'; 
         $this->SwiftMailer->fromName = 'Roskilde Festival';
@@ -50,7 +52,37 @@ class AppController extends Controller {
         } catch (Exception $e) { 
 			$this->log("Problem with sending e-mail through SwiftMailer: ".$e);
 			return false;
-        }         
+        }
+        
+        // Built-in Cakephp mailer with SMTP (no TLS)
+        
+		/*$this->Email->from    = 'Roskilde Festival <nicolai.johansen@roskilde-festival.dk>';
+		$this->Email->to      = $email;
+		$this->Email->subject = 'Roskilde Festival: Oprettet som bruger i el-system';
+	    $this->Email->replyTo = 'nicolai.johansen@roskilde-festival.dk';
+	    $this->Email->template = 'welcome'; // note no '.ctp'
+
+        $this->set('name', $name);
+        $this->set('email', $email);
+		$this->set('password', $password);
+       
+		$this->Email->smtpOptions = array(
+	        'port'=>'25', 
+	        'timeout'=>'90',
+	        'host' => 'webmail.roskilde-festival.dk.',
+	        'username'=>'nicolai.johansen',
+	        'password'=>'ProBlematic4Sure',
+		);
+	
+	    $this->Email->delivery = 'smtp';
+	    $result = $this->Email->send();
+	
+	    $this->set('smtp-errors', $this->Email->smtpError);
+
+		if ($result) {
+			return true;
+		} else { debug($this->Email->smtpError); return false; }	    */           
+
 	}	
 	  
 }

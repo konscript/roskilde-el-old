@@ -28,10 +28,10 @@
 	<div id="container">
 		<div id="header">
 			<div class="inside">
-				<h1 style="float: left;">
+				<h1 style="float: left; margin-top: 3px;">
 					<?php echo $html->image('logo.png', array('alt' => "Roskilde Festival - EL Booking", 'border' => "0", 'url' => "/"));?>
 				</h1>
-				<div id="user" style="float: right">
+				<div id="user" style="float: right; margin-right: -5px;">
 					<?php echo $this->element('usermeta'); ?>
 				</div>
 				<ul id="menu" style="float: right; clear: right;">
@@ -46,7 +46,10 @@
 				</h2>
 				<div style="float: right">
 					<?php echo $this->Session->flash(); ?>
-					<?php echo $this->Session->flash('auth'); ?>
+					
+					<?php if ($this->params['action'] != 'login') { 
+						echo $this->Session->flash('auth'); }
+					?>
 
 					<?php 
 					//if($this->params['action'] == 'add' || $this->params['action'] == 'edit') { 
@@ -65,8 +68,14 @@
 		</div>
 		<div id="footer">
 			<div class="inside">
-				<span style="float: left;">El Booking for Roskilde Festival 2010</span>
-				<span style="float: right;">Beta v1.2 'AC/DC'</span>
+				<div style="float: left;">
+					<div id="footer_object" class="button_beta" style="float: left;">beta<br />v1.3</div>
+					<div id="footer_text" style="float: left;">Roskilde Festival el-system 2010</div>
+				</div>
+				<div style="float: right;">
+					<div id="footer_object" style="float: right;"><?php echo $html->image('konscript-icon.png', array('alt' => "Konscript", 'border' => "0", 'url' => "http://konscript.com", 'class' => 'konscript-icon'));?></div>
+					<div id="footer_text" style="float: right;">Juiced by</div>
+				</div>
 			</div>
 		</div>
 	<?php echo $this->element('sql_dump'); ?>

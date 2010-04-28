@@ -54,12 +54,12 @@
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Oprettet'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $projectItem['ProjectItem']['created']; ?>
-			af <?php echo $this->Html->link($projectItem['CreatedBy']['username'], array('controller' => 'users', 'action' => 'view', $projectItem['CreatedBy']['id'])); ?>
+			af <?php echo $this->Html->link($projectItem['CreatedBy']['title'], array('controller' => 'users', 'action' => 'view', $projectItem['CreatedBy']['id'])); ?>
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Redigeret'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $projectItem['ProjectItem']['modified']; ?>
-			af <?php echo $this->Html->link($projectItem['ModifiedBy']['username'], array('controller' => 'users', 'action' => 'view', $projectItem['ModifiedBy']['id'])); ?>
+			af <?php echo $this->Html->link($projectItem['ModifiedBy']['title'], array('controller' => 'users', 'action' => 'view', $projectItem['ModifiedBy']['id'])); ?>
 		</dd>
 	</dl>
 </div>

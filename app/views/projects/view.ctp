@@ -45,24 +45,25 @@
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Projektleder'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $this->Html->link($project['User']['username'], array('controller' => 'users', 'action' => 'view', $project['User']['id'])); ?>
+			<?php echo $this->Html->link($project['User']['title'], array('controller' => 'users', 'action' => 'view', $project['User']['id'])); ?>
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Oprettet'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $project['Project']['created']; ?>
-			af <?php echo $this->Html->link($project['CreatedBy']['username'], array('controller' => 'users', 'action' => 'view', $project['CreatedBy']['id'])); ?>
+			af <?php echo $this->Html->link($project['CreatedBy']['title'], array('controller' => 'users', 'action' => 'view', $project['CreatedBy']['id'])); ?>
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Redigeret'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $project['Project']['modified']; ?>
-			af <?php echo $this->Html->link($project['ModifiedBy']['username'], array('controller' => 'users', 'action' => 'view', $project['ModifiedBy']['id'])); ?>
+			af <?php echo $this->Html->link($project['ModifiedBy']['title'], array('controller' => 'users', 'action' => 'view', $project['ModifiedBy']['id'])); ?>
 		</dd>		
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Kort'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php if ($project['Project']['file_path'] != '') {
 				echo $html->link(
-							$html->image('/attachments/photos/thumb/'.$project['Project']['file_path']),
+							//$html->image('/attachments/photos/thumb/'.$project['Project']['file_path'])				
+							$this->Output->icon('020', 'large').'Se nuværende kort',
 							'/attachments/photos/default/'.$project['Project']['file_path'],
 							array('escape'=>false)); 
 			} else {

@@ -19,7 +19,8 @@
         ?><div><?php
 	        echo $this->Form->input('User.title', array('label' => 'Projektlederens navn'));
 	        echo $this->Form->input('User.username', array('label' => 'Projektlederens e-mail'));
-			echo "<i>Adgangskode vil blive automatisk genereret og brugeren vil modtage en velkomst e-mail med information og log ind oplysninger!</i>";	                
+			//echo "<i>Adgangskode vil blive automatisk genereret og brugeren vil modtage en velkomst e-mail med information og log ind oplysninger!</i>";
+			echo "<i>Der forsøges at sende en velkomst e-mail med information og log ind oplysninger til brugeren! Brugerens adgangskode er: <b>gurli123acdc</b></i>";
         ?></div><div><?php
 	        echo $this->Form->input('User.user_id', array('label' => 'Tilknyt en eksisterende projektleder'));
         ?></div><?php

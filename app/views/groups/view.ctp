@@ -17,7 +17,7 @@
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Gruppeleder'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $this->Html->link($group['User']['username'], array('controller' => 'users', 'action' => 'view', $group['User']['id'])); ?>
+			<?php echo $this->Html->link($group['User']['title'], array('controller' => 'users', 'action' => 'view', $group['User']['id'])); ?>
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Oprettet'); ?></dt>

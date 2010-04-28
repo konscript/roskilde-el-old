@@ -12,7 +12,7 @@
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Sektionsleder'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $this->Html->link($section['User']['username'], array('controller' => 'users', 'action' => 'view', $section['User']['id'])); ?>
+			<?php echo $this->Html->link($section['User']['title'], array('controller' => 'users', 'action' => 'view', $section['User']['id'])); ?>
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Oprettet'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>

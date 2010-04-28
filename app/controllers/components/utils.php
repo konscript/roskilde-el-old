@@ -7,8 +7,9 @@ class UtilsComponent extends Object {
 	// Method for creating random passwords (not used directly as an action)
 	// Returns array: 0 => hashed, 1 => cleartext
     function createRandomPassword() {
+    
         // generate random string and save to variable
-        $chars = "abcdefghijkmnopqrstuvwxyz023456789";
+        /* $chars = "abcdefghijkmnopqrstuvwxyz023456789";
         srand((double)microtime()*1000000);
         $i = 0;
         $pass = '';
@@ -17,7 +18,9 @@ class UtilsComponent extends Object {
             $tmp = substr($chars, $num, 1);
             $pass = $pass . $tmp;
             $i++;
-        }
+        } */
+        
+        $pass = 'gurli123acdc';
         
         // encrypt the password using CakePHP hash function
         $hash = Security::hash($pass, null, true);
