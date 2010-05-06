@@ -2,28 +2,32 @@ Summary
 ========
 
 **Description:**
-
 The goal is to develop an internal collaboration application for Roskilde Festival projects division, where coordinators can report power usage and administrators can extract information on a per project basis.
 The production deployment of the system is currently live at http://el.konscript.com
 
 **Technical Setup:**
-
 Built on the CakePHP framework, with authentication and access control lists enabled among other features. Developed with the help of jQuery and standard compliant xHTML + CSS – pretty much :)
 
 **Team:**
-
 Søren Louv-Jansen and Lasse Boisen Andersen are the main developers and Nicolai Johansen is the project coordinator from Roskilde Festival.
 
 For the nerdy
 ========
 
 **Setup:**
-
 Built on the CakePHP framework, with authentication and access control lists enabled among other features. Developed with the help of jQuery and standard compliant xHTML + CSS – pretty much :)
 
 **Requirements:**
-
 Preferably PHP5 and MySQL on an Apache server with mod_rewrite enabled (more on http://book.cakephp.org/view/28/Requirements).
+
+**Installation:**
+1. Download/fork/fetch the full repository from GitHub
+2. Create a MySQL database from scheme: app/config/schema/roskilde-el_structure-only.sql
+3. Change configuration settings in app/config/database.php and app/config/core.php (if needed)
+4. Run: http://site.com/setup/aco_build_controlleractions (to build the aco structure based on controllers/actions)
+5. Run: http://site.com/setup/permissions_assign_controlleractions (to build the permissions aros_acos for ACL)
+6. Login with the predifined admin user: la@laander.com + admin
+7. Create users first, then sections, groups and projects. We need users in the system first to choose from when creating items
 
 Current features (briefly)
 ========
