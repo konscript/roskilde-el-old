@@ -45,24 +45,21 @@
 					<?php echo $title_for_layout; ?>
 				</h2>
 				<div style="float: right">
-					<?php echo $this->Session->flash(); ?>
-					
-					<?php if ($this->params['action'] != 'login') { 
-						echo $this->Session->flash('auth'); }
-					?>
-
 					<?php 
-					//if($this->params['action'] == 'add' || $this->params['action'] == 'edit') { 
-					//	echo $html->link("Annuller", array('controller'=>$this->params['controller'], 'action' => 'index'));
-					//} else if($this->params['action'] != 'index') {
-					//	echo $html->link("Gå tilbage", array('controller'=>$this->params['controller'], 'action' => 'index')); 
-					//} ?>
+					echo $this->Session->flash();
+					if ($this->params['action'] == 'login' && $this->Session->flash('auth')) { 
+						echo
+							'<div id="flashMessage" class="notice" style="display: none; ">
+							Log ind i systemet herunder for at få adgang til dine projekter.</div>';
+					} else {
+						echo $this->Session->flash('auth');
+					}
+					?>
 				</div>
 			</div>
 		</div>
 		<div id="content">
 			<div class="inside">
-	
 				<?php echo $content_for_layout; ?>
 			</div>
 		</div>

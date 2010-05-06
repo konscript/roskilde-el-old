@@ -13,9 +13,8 @@ class UsersController extends AppController {
 	
 	function login() {
 		$this->set('title_for_layout', 'Log Ind');	
-		if ($this->Session->read('Auth.User')) {
+		if ($this->Auth->user()) {
 			$this->Session->setFlash('Du er allerede logget ind.', 'default', array('class' => 'notice'));
-			$this->redirect('/', null, false);
 		}
 	}   
 	 
