@@ -26,6 +26,7 @@ App::import('Helper', 'Xml');
  *
  * @package       cake
  * @subpackage    cake.cake.libs.view.helpers
+ * @link http://book.cakephp.org/view/1460/RSS
  */
 class RssHelper extends XmlHelper {
 
@@ -207,6 +208,13 @@ class RssHelper extends XmlHelper {
 
 		foreach ($elements as $key => $val) {
 			$attrib = array();
+			
+			$escape = true;
+			if (is_array($val) && isset($val['convertEntities'])) {
+				$escape = $val['convertEntities'];
+				unset($val['convertEntities']);
+			}
+			
 			switch ($key) {
 				case 'pubDate' :
 					$val = $this->time($val);
@@ -260,11 +268,6 @@ class RssHelper extends XmlHelper {
 					$val = null;
 				break;
 			}
-			$escape = true;
-			if (is_array($val) && isset($val['convertEntities'])) {
-				$escape = $val['convertEntities'];
-				unset($val['convertEntities']);
-			}
 			if (!is_null($val) && $escape) {
 				$val = h($val);
 			}
@@ -287,4 +290,3 @@ class RssHelper extends XmlHelper {
 		return $this->Time->toRSS($time);
 	}
 }
-?>

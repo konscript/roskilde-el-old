@@ -28,7 +28,7 @@ App::import('Model', 'CakeSchema', false);
  *
  * @package       cake
  * @subpackage    cake.cake.console.libs
- * @link          http://book.cakephp.org/view/734/Schema-management-and-migrations
+ * @link          http://book.cakephp.org/view/1523/Schema-management-and-migrations
  */
 class SchemaShell extends Shell {
 
@@ -90,6 +90,9 @@ class SchemaShell extends Shell {
 		}
 		if (!empty($this->params['plugin'])) {
 			$plugin = $this->params['plugin'];
+			if (empty($name)) {
+				$name = $plugin;
+			}
 		}
 		$this->Schema =& new CakeSchema(compact('name', 'path', 'file', 'connection', 'plugin'));
 	}
@@ -150,8 +153,13 @@ class SchemaShell extends Shell {
 			}
 		}
 
+		$cacheDisable = Configure::read('Cache.disable');
+		Configure::write('Cache.disable', true);
+
 		$content = $this->Schema->read($options);
 		$content['file'] = $this->params['file'];
+		
+		Configure::write('Cache.disable', $cacheDisable);
 
 		if ($snapshot === true) {
 			$Folder =& new Folder($this->Schema->path);
@@ -501,4 +509,3 @@ TEXT;
 		$this->_stop();
 	}
 }
-?>

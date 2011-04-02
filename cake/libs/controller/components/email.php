@@ -1,6 +1,6 @@
 <?php
 /**
- * Short description for file.
+ * Email Component
  *
  * PHP versions 4 and 5
  *
@@ -27,6 +27,7 @@ App::import('Core', 'Multibyte');
  *
  * @package       cake
  * @subpackage    cake.cake.libs.controller.components
+ * @link http://book.cakephp.org/view/1283/Email
  *
  */
 class EmailComponent extends Object{
@@ -97,6 +98,15 @@ class EmailComponent extends Object{
 	var $bcc = array();
 
 /**
+ * The date to put in the Date: header.  This should be a date
+ * conformant with the RFC2822 standard.  Leave null, to have
+ * today's date generated.
+ *
+ * @var string
+ */
+	var $date = null;
+
+/**
  * The subject of the email
  *
  * @var string
@@ -146,6 +156,18 @@ class EmailComponent extends Object{
  * @access public
  */
 	var $lineLength = 70;
+
+/**
+ * Line feed character(s) to be used when sending using mail() function
+ * By default PHP_EOL is used.
+ * RFC2822 requires it to be CRLF but some Unix
+ * mail transfer agents replace LF by CRLF automatically
+ * (which leads to doubling CR if CRLF is used).
+ *
+ * @var string
+ * @access public
+ */
+	var $lineFeed = PHP_EOL;
 
 /**
  * @deprecated see lineLength
@@ -225,10 +247,9 @@ class EmailComponent extends Object{
  *
  * @var array
  * @access public
+ * @link http://book.cakephp.org/view/1290/Sending-A-Message-Using-SMTP
  */
-	var $smtpOptions = array(
-		'port'=> 25, 'host' => 'localhost', 'timeout' => 30
-	);
+	var $smtpOptions = array();
 
 /**
  * Placeholder for any errors that might happen with the
@@ -260,6 +281,9 @@ class EmailComponent extends Object{
  * e-mail. True to generate a Message-ID, False to let
  * it be handled by sendmail (or similar) or a string
  * to completely override the Message-ID.
+ *
+ * If you are sending Email from a shell, be sure to set this value.  As you
+ * could encounter delivery issues if you do not.
  *
  * @var mixed
  * @access public
@@ -324,6 +348,7 @@ class EmailComponent extends Object{
  * Send an email using the specified content, template and layout
  *
  * @param mixed $content Either an array of text lines, or a string with contents
+ *  If you are rendering a template this variable will be sent to the templates as `$content`
  * @param string $template Template to use when sending email
  * @param string $layout Layout to use to enclose email body
  * @return boolean Success
@@ -355,7 +380,11 @@ class EmailComponent extends Object{
 			}
 		}
 
-		$message = $this->_wrap($content);
+		if ($this->sendAs === 'text') {
+			$message = $this->_wrap($content);
+		} else {
+			$message = $this->_wrap($content, 998);
+		}
 
 		if ($this->template === null) {
 			$message = $this->_formatMessage($message);
@@ -390,6 +419,7 @@ class EmailComponent extends Object{
  * Reset all EmailComponent internal variables to be able to send out a new email.
  *
  * @access public
+ * @link http://book.cakephp.org/view/1285/Sending-Multiple-Emails-in-a-loop
  */
 	function reset() {
 		$this->template = null;
@@ -401,6 +431,7 @@ class EmailComponent extends Object{
 		$this->bcc = array();
 		$this->subject = null;
 		$this->additionalParams = null;
+		$this->date = null;
 		$this->smtpError = null;
 		$this->attachments = array();
 		$this->htmlMessage = null;
@@ -427,7 +458,7 @@ class EmailComponent extends Object{
 			App::import('View', $this->Controller->view);
 		}
 
-		$View = new $viewClass($this->Controller, false);
+		$View = new $viewClass($this->Controller);
 		$View->layout = $this->layout;
 		$msg = array();
 
@@ -465,6 +496,7 @@ class EmailComponent extends Object{
 			$msg[] = '--alt-' . $this->__boundary . '--';
 			$msg[] = '';
 
+			ClassRegistry::removeObject('view');
 			return $msg;
 		}
 
@@ -494,6 +526,7 @@ class EmailComponent extends Object{
 		}
 
 		$msg = array_merge($msg, $content);
+		ClassRegistry::removeObject('view');
 
 		return $msg;
 	}
@@ -528,11 +561,7 @@ class EmailComponent extends Object{
         $headers = array();
 
 		if ($this->delivery == 'smtp') {
-			if (is_array($this->to)) {
-				$headers['To'] = implode(', ', array_map(array($this, '_formatAddress'), $this->to));
-			} else {
-				$headers['To'] = $this->_formatAddress($this->to);
-			}
+			$headers['To'] = implode(', ', array_map(array($this, '_formatAddress'), (array)$this->to));
 		}
 		$headers['From'] = $this->_formatAddress($this->from);
 
@@ -547,24 +576,30 @@ class EmailComponent extends Object{
 		}
 
 		if (!empty($this->cc)) {
-			$headers['cc'] = implode(', ', array_map(array($this, '_formatAddress'), $this->cc));
+			$headers['Cc'] = implode(', ', array_map(array($this, '_formatAddress'), (array)$this->cc));
 		}
 
 		if (!empty($this->bcc) && $this->delivery != 'smtp') {
-			$headers['Bcc'] = implode(', ', array_map(array($this, '_formatAddress'), $this->bcc));
+			$headers['Bcc'] = implode(', ', array_map(array($this, '_formatAddress'), (array)$this->bcc));
 		}
 		if ($this->delivery == 'smtp') {
 			$headers['Subject'] = $this->_encode($this->subject);
 		}
-		
+
 		if ($this->messageId !== false) {
 			if ($this->messageId === true) {
 				$headers['Message-ID'] = '<' . String::UUID() . '@' . env('HTTP_HOST') . '>';
 			} else {
-				$headers['Message-ID'] = $this->messageId; 
+				$headers['Message-ID'] = $this->messageId;
 			}
 		}
-		
+
+		$date = $this->date;
+		if ($date == false) {
+			$date = date(DATE_RFC2822);
+		}
+		$headers['Date'] = $date;
+
 		$headers['X-Mailer'] = $this->xMailer;
 
 		if (!empty($this->headers)) {
@@ -624,14 +659,17 @@ class EmailComponent extends Object{
  */
 	function _attachFiles() {
 		$files = array();
-		foreach ($this->attachments as $attachment) {
+		foreach ($this->attachments as $filename => $attachment) {
 			$file = $this->_findFiles($attachment);
 			if (!empty($file)) {
-				$files[] = $file;
+				if (is_int($filename)) {
+					$filename = basename($file);
+				}
+				$files[$filename] = $file;
 			}
 		}
 
-		foreach ($files as $file) {
+		foreach ($files as $filename => $file) {
 			$handle = fopen($file, 'rb');
 			$data = fread($handle, filesize($file));
 			$data = chunk_split(base64_encode($data)) ;
@@ -640,7 +678,7 @@ class EmailComponent extends Object{
 			$this->__message[] = '--' . $this->__boundary;
 			$this->__message[] = 'Content-Type: application/octet-stream';
 			$this->__message[] = 'Content-Transfer-Encoding: base64';
-			$this->__message[] = 'Content-Disposition: attachment; filename="' . basename($file) . '"';
+			$this->__message[] = 'Content-Disposition: attachment; filename="' . basename($filename) . '"';
 			$this->__message[] = '';
 			$this->__message[] = $data;
 			$this->__message[] = '';
@@ -671,10 +709,11 @@ class EmailComponent extends Object{
  * Wrap the message using EmailComponent::$lineLength
  *
  * @param string $message Message to wrap
+ * @param integer $lineLength Max length of line
  * @return array Wrapped message
- * @access private
+ * @access protected
  */
-	function _wrap($message) {
+	function _wrap($message, $lineLength = null) {
 		$message = $this->_strip($message, true);
 		$message = str_replace(array("\r\n","\r"), "\n", $message);
 		$lines = explode("\n", $message);
@@ -685,11 +724,15 @@ class EmailComponent extends Object{
 			$this->lineLength = $this->_lineLength;
 		}
 
+		if (!$lineLength) {
+			$lineLength = $this->lineLength;
+		}
+
 		foreach ($lines as $line) {
 			if (substr($line, 0, 1) == '.') {
 				$line = '.' . $line;
 			}
-			$formatted = array_merge($formatted, explode("\n", wordwrap($line, $this->lineLength, "\n", true)));
+			$formatted = array_merge($formatted, explode("\n", wordwrap($line, $lineLength, "\n", true)));
 		}
 		$formatted[] = '';
 		return $formatted;
@@ -709,7 +752,16 @@ class EmailComponent extends Object{
 		if ($this->delivery == 'mail') {
 			$nl = '';
 		}
-		return mb_encode_mimeheader($subject, $this->charset, 'B', $nl);
+		$internalEncoding = function_exists('mb_internal_encoding');
+		if ($internalEncoding) {
+			$restore = mb_internal_encoding();
+			mb_internal_encoding($this->charset);
+		}
+		$return = mb_encode_mimeheader($subject, $this->charset, 'B', $nl);
+		if ($internalEncoding) {
+			mb_internal_encoding($restore);
+		}
+		return $return;
 	}
 
 /**
@@ -720,19 +772,22 @@ class EmailComponent extends Object{
  * @access private
  */
 	function _formatAddress($string, $smtp = false) {
-		if (strpos($string, '<') !== false) {
-			$value = explode('<', $string);
-			if ($smtp) {
-				$string = '<' . $value[1];
-			} else {
-				$string = $this->_encode($value[0]) . ' <' . $value[1];
-			}
+		$hasAlias = preg_match('/((.*))?\s?<(.+)>/', $string, $matches);
+		if ($smtp && $hasAlias) {
+			return $this->_strip('<' .  $matches[3] . '>');
+		} elseif ($smtp) {
+			return $this->_strip('<' . $string . '>');
+		}
+
+		if ($hasAlias && !empty($matches[2])) {
+			return $this->_encode($matches[2]) . $this->_strip(' <' . $matches[3] . '>');
 		}
 		return $this->_strip($string);
 	}
 
 /**
- * Remove certain elements (such as bcc:, to:, %0a) from given value
+ * Remove certain elements (such as bcc:, to:, %0a) from given value.
+ * Helps prevent header injection / mainipulation on user content.
  *
  * @param string $value Value to strip
  * @param boolean $message Set to true to indicate main message content
@@ -760,8 +815,8 @@ class EmailComponent extends Object{
  * @access private
  */
 	function _mail() {
-		$header = implode("\n", $this->__header);
-		$message = implode("\n", $this->__message);
+		$header = implode($this->lineFeed, $this->__header);
+		$message = implode($this->lineFeed, $this->__message);
 		if (is_array($this->to)) {
 			$to = implode(', ', array_map(array($this, '_formatAddress'), $this->to));
 		} else {
@@ -773,6 +828,18 @@ class EmailComponent extends Object{
 		return @mail($to, $this->_encode($this->subject), $message, $header, $this->additionalParams);
 	}
 
+
+/**
+ * Helper method to get socket, overridden in tests
+ *
+ * @param array $config Config data for the socket.
+ * @return void
+ * @access protected
+ */
+	function _getSocket($config) {
+		$this->__smtpConnection =& new CakeSocket($config);
+	}
+
 /**
  * Sends out email via SMTP
  *
@@ -782,7 +849,14 @@ class EmailComponent extends Object{
 	function _smtp() {
 		App::import('Core', array('CakeSocket'));
 
-		$this->__smtpConnection =& new CakeSocket(array_merge(array('protocol'=>'smtp'), $this->smtpOptions));
+		$defaults = array(
+			'host' => 'localhost',
+			'port' => 25,
+			'protocol' => 'smtp',
+			'timeout' => 30
+		);
+		$this->smtpOptions = array_merge($defaults, $this->smtpOptions);
+		$this->_getSocket($this->smtpOptions);
 
 		if (!$this->__smtpConnection->connect()) {
 			$this->smtpError = $this->__smtpConnection->lastError();
@@ -796,12 +870,12 @@ class EmailComponent extends Object{
 		if (isset($this->smtpOptions['client'])) {
 			$host = $this->smtpOptions['client'];
 		} elseif (!empty($httpHost)) {
-			$host = $httpHost;
+			list($host) = explode(':', $httpHost);
 		} else {
 			$host = 'localhost';
 		}
 
-		if (!$this->_smtpSend("HELO {$host}", '250')) {
+		if (!$this->_smtpSend("EHLO {$host}", '250') && !$this->_smtpSend("HELO {$host}", '250')) {
 			return false;
 		}
 
@@ -824,7 +898,7 @@ class EmailComponent extends Object{
 		}
 
 		if (!is_array($this->to)) {
-			$tos = array($this->to);
+			$tos = array_map('trim', explode(',', $this->to));
 		} else {
 			$tos = $this->to;
 		}
@@ -861,22 +935,34 @@ class EmailComponent extends Object{
 	}
 
 /**
- * Private method for sending data to SMTP connection
+ * Protected method for sending data to SMTP connection
  *
  * @param string $data data to be sent to SMTP server
  * @param mixed $checkCode code to check for in server response, false to skip
  * @return bool Success
- * @access private
+ * @access protected
  */
 	function _smtpSend($data, $checkCode = '250') {
 		if (!is_null($data)) {
 			$this->__smtpConnection->write($data . "\r\n");
 		}
-		if ($checkCode !== false) {
-			$response = $this->__smtpConnection->read();
+		while ($checkCode !== false) {
+			$response = '';
+			$startTime = time();
+			while (substr($response, -2) !== "\r\n" && ((time() - $startTime) < $this->smtpOptions['timeout'])) {
+				$response .= $this->__smtpConnection->read();
+			}
+			if (substr($response, -2) !== "\r\n") {
+				$this->smtpError = 'timeout';
+				return false;
+			}
+			$response = end(explode("\r\n", rtrim($response, "\r\n")));
 
-			if (preg_match('/^(' . $checkCode . ')/', $response, $code)) {
-				return $code[0];
+			if (preg_match('/^(' . $checkCode . ')(.)/', $response, $code)) {
+				if ($code[2] === '-') {
+					continue;
+				}
+				return $code[1];
 			}
 			$this->smtpError = $response;
 			return false;
@@ -901,11 +987,6 @@ class EmailComponent extends Object{
 		} else {
 			$to = $this->to;
 		}
-		if ($this->delivery == 'smtp') {
-			$fm .= sprintf('%s %s%s', 'Host:', $this->smtpOptions['host'], $nl);
-			$fm .= sprintf('%s %s%s', 'Port:', $this->smtpOptions['port'], $nl);
-			$fm .= sprintf('%s %s%s', 'Timeout:', $this->smtpOptions['timeout'], $nl);
-		}
 		$fm .= sprintf('%s %s%s', 'To:', $to, $nl);
 		$fm .= sprintf('%s %s%s', 'From:', $this->from, $nl);
 		$fm .= sprintf('%s %s%s', 'Subject:', $this->_encode($this->subject), $nl);
@@ -914,9 +995,10 @@ class EmailComponent extends Object{
 		$fm .= sprintf('%s%3$s%3$s%s', 'Message:', $message, $nl);
 		$fm .= '</pre>';
 
-		$this->Controller->Session->setFlash($fm, 'default', null, 'email');
-		return true;
+		if (isset($this->Controller->Session)) {
+			$this->Controller->Session->setFlash($fm, 'default', null, 'email');
+			return true;
+		}
+		return $fm;
 	}
-
 }
-?>

@@ -95,14 +95,12 @@ class TestTask extends BakeTask {
 		$this->out(sprintf(__("Path: %s", true), $this->path));
 		$this->hr();
 
-		$selection = null;
 		if ($type) {
 			$type = Inflector::camelize($type);
 			if (!in_array($type, $this->classTypes)) {
-				unset($type);
+				$this->error(sprintf('Incorrect type provided.  Please choose one of %s', implode(', ', $this->classTypes)));
 			}
-		}
-		if (!$type) {
+		} else {
 			$type = $this->getObjectType();
 		}
 		$className = $this->getClassName($type);
@@ -183,7 +181,20 @@ class TestTask extends BakeTask {
  * @access public
  */
 	function getClassName($objectType) {
-		$options = App::objects(strtolower($objectType));
+		$type = strtolower($objectType);
+		if ($this->plugin) {
+			$path = Inflector::pluralize($type);
+			if ($type === 'helper') {
+				$path = 'views' . DS . $path;
+			} elseif ($type === 'component') {
+				$path = 'controllers' . DS . $path;
+			} elseif ($type === 'behavior') {
+				$path = 'models' . DS . $path;
+			}
+			$options = App::objects($type, App::pluginPath($this->plugin) . $path, false);
+		} else {
+			$options = App::objects($type);
+		}
 		$this->out(sprintf(__('Choose a %s class', true), $objectType));
 		$keys = array();
 		foreach ($options as $key => $option) {
@@ -423,7 +434,7 @@ class TestTask extends BakeTask {
  */
 	function testCaseFileName($type, $className) {
 		$path = $this->getPath();;
-		$path .= 'cases' . DS . Inflector::tableize($type) . DS;
+		$path .= 'cases' . DS . strtolower($type) . 's' . DS;
 		if (strtolower($type) == 'controller') {
 			$className = $this->getRealClassName($type, $className);
 		}
@@ -456,4 +467,3 @@ class TestTask extends BakeTask {
 		$this->_stop();
 	}
 }
-?>

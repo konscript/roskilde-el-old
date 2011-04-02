@@ -231,7 +231,12 @@ class DboPostgres extends DboSource {
 					if (!empty($c['char_length'])) {
 						$length = intval($c['char_length']);
 					} elseif (!empty($c['oct_length'])) {
-						$length = intval($c['oct_length']);
+						if ($c['type'] == 'character varying') {
+							$length = null;
+							$c['type'] = 'text';
+						} else {
+							$length = intval($c['oct_length']);
+						}
 					} else {
 						$length = $this->length($c['type']);
 					}
@@ -260,6 +265,9 @@ class DboPostgres extends DboSource {
 							$this->_sequenceMap[$table][$c['name']] = $seq[1];
 						}
 					}
+					if ($fields[$c['name']]['type'] == 'boolean' && !empty($fields[$c['name']]['default'])) {
+						$fields[$c['name']]['default'] = constant($fields[$c['name']]['default']);
+					}
 				}
 			}
 			$this->__cacheDescription($table, $fields);
@@ -286,7 +294,7 @@ class DboPostgres extends DboSource {
 			return $parent;
 		}
 
-		if ($data === null) {
+		if ($data === null || (is_array($data) && empty($data))) {
 			return 'NULL';
 		}
 		if (empty($column)) {
@@ -294,16 +302,6 @@ class DboPostgres extends DboSource {
 		}
 
 		switch($column) {
-			case 'inet':
-			case 'float':
-			case 'integer':
-			case 'date':
-			case 'datetime':
-			case 'timestamp':
-			case 'time':
-				if ($data === '') {
-					return $read ? 'NULL' : 'DEFAULT';
-				}
 			case 'binary':
 				$data = pg_escape_bytea($data);
 			break;
@@ -315,6 +313,19 @@ class DboPostgres extends DboSource {
 				}
 				return (!empty($data) ? 'TRUE' : 'FALSE');
 			break;
+			case 'float':
+				if (is_float($data)) {
+					$data = sprintf('%F', $data);
+				}
+			case 'inet':
+			case 'integer':
+			case 'date':
+			case 'datetime':
+			case 'timestamp':
+			case 'time':
+				if ($data === '') {
+					return $read ? 'NULL' : 'DEFAULT';
+				}
 			default:
 				$data = pg_escape_string($data);
 			break;
@@ -440,9 +451,23 @@ class DboPostgres extends DboSource {
 		}
 		$count = count($fields);
 
-		if ($count >= 1 && $fields[0] != '*' && strpos($fields[0], 'COUNT(*)') === false) {
+		if ($count >= 1 && strpos($fields[0], 'COUNT(*)') === false) {
+			$result = array();
 			for ($i = 0; $i < $count; $i++) {
 				if (!preg_match('/^.+\\(.*\\)/', $fields[$i]) && !preg_match('/\s+AS\s+/', $fields[$i])) {
+					if (substr($fields[$i], -1) == '*') {
+						if (strpos($fields[$i], '.') !== false && $fields[$i] != $alias . '.*') {
+							$build = explode('.', $fields[$i]);
+							$AssociatedModel = $model->{$build[0]};
+						} else {
+							$AssociatedModel = $model;
+						}
+
+						$_fields = $this->fields($AssociatedModel, $AssociatedModel->alias, array_keys($AssociatedModel->schema()));
+						$result = array_merge($result, $_fields);
+						continue;
+					}
+
 					$prepend = '';
 					if (strpos($fields[$i], 'DISTINCT') !== false) {
 						$prepend = 'DISTINCT ';
@@ -455,10 +480,38 @@ class DboPostgres extends DboSource {
 						$build = explode('.', $fields[$i]);
 						$fields[$i] = $prepend . $this->name($build[0]) . '.' . $this->name($build[1]) . ' AS ' . $this->name($build[0] . '__' . $build[1]);
 					}
+				} else {
+					$fields[$i] = preg_replace_callback('/\(([\s\.\w]+)\)/',  array(&$this, '__quoteFunctionField'), $fields[$i]);
 				}
+				$result[] = $fields[$i];
 			}
+			return $result;
 		}
 		return $fields;
+	}
+
+/**
+ * Auxiliary function to quote matched `(Model.fields)` from a preg_replace_callback call
+ *
+ * @param string matched string
+ * @return string quoted strig
+ * @access private
+ */
+	function __quoteFunctionField($match) {
+		$prepend = '';
+		if (strpos($match[1], 'DISTINCT') !== false) {
+			$prepend = 'DISTINCT ';
+			$match[1] = trim(str_replace('DISTINCT', '', $match[1]));
+		}
+		if (strpos($match[1], '.') === false) {
+			$match[1] = $this->name($match[1]);
+		} else {
+			$parts = explode('.', $match[1]);
+			if (!Set::numeric($parts)) {
+				$match[1] = $this->name($match[1]);
+			}
+		}
+		return '(' . $prepend .$match[1] . ')';
 	}
 
 /**
@@ -515,7 +568,7 @@ class DboPostgres extends DboSource {
 		$out = '';
 		$colList = array();
 		foreach ($compare as $curTable => $types) {
-			$indexes = array();
+			$indexes = $colList = array();
 			if (!$table || $table == $curTable) {
 				$out .= 'ALTER TABLE ' . $this->fullTableName($curTable) . " \n";
 				foreach ($types as $type => $column) {
@@ -558,7 +611,7 @@ class DboPostgres extends DboSource {
 								}
 
 								if (isset($default)) {
-									$colList[] = 'ALTER COLUMN '. $fieldName .'  SET DEFAULT ' . $default;
+									$colList[] = 'ALTER COLUMN '. $fieldName .'  SET DEFAULT ' . $this->value($default, $col['type']);
 								} else {
 									$colList[] = 'ALTER COLUMN '. $fieldName .'  DROP DEFAULT';
 								}
@@ -583,7 +636,7 @@ class DboPostgres extends DboSource {
 				} else {
 					$out = '';
 				}
-				$out .= implode(";\n\t", $this->_alterIndexes($curTable, $indexes)) . ";";
+				$out .= implode(";\n\t", $this->_alterIndexes($curTable, $indexes));
 			}
 		}
 		return $out;
@@ -925,4 +978,3 @@ class DboPostgres extends DboSource {
 		}
 	}
 }
-?>

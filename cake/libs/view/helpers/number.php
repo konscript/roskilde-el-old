@@ -27,6 +27,7 @@
  *
  * @package       cake
  * @subpackage    cake.cake.libs.view.helpers
+ * @link http://book.cakephp.org/view/1452/Number
  */
 class NumberHelper extends AppHelper {
 
@@ -47,7 +48,7 @@ class NumberHelper extends AppHelper {
 			'decimals' => '.', 'negative' => '()','escape' => false
 		),
 		'EUR' => array(
-			'before'=>'&#8364;', 'after' => 'c', 'zero' => 0, 'places' => 2, 'thousands' => '.',
+			'before'=>'&#8364;', 'after' => false, 'zero' => 0, 'places' => 2, 'thousands' => '.',
 			'decimals' => ',', 'negative' => '()', 'escape' => false
 		)
 	);
@@ -68,8 +69,9 @@ class NumberHelper extends AppHelper {
  *
  * @param float $number	A floating point number.
  * @param integer $precision The precision of the returned number.
- * @return float Enter description here...
+ * @return float Formatted float.
  * @access public
+ * @link http://book.cakephp.org/view/1454/precision
  */
 	function precision($number, $precision = 3) {
 		return sprintf("%01.{$precision}f", $number);
@@ -81,6 +83,7 @@ class NumberHelper extends AppHelper {
  * @param integer $length Size in bytes
  * @return string Human readable size
  * @access public
+ * @link http://book.cakephp.org/view/1456/toReadableSize
  */
 	function toReadableSize($size) {
 		switch (true) {
@@ -104,6 +107,7 @@ class NumberHelper extends AppHelper {
  * @param integer $precision The precision of the returned number
  * @return string Percentage string
  * @access public
+ * @link http://book.cakephp.org/view/1455/toPercentage
  */
 	function toPercentage($number, $precision = 2) {
 		return $this->precision($number, $precision) . '%';
@@ -117,6 +121,7 @@ class NumberHelper extends AppHelper {
  *   or array with places and before keys
  * @return string formatted number
  * @access public
+ * @link http://book.cakephp.org/view/1457/format
  */
 	function format($number, $options = false) {
 		$places = 0;
@@ -174,6 +179,7 @@ class NumberHelper extends AppHelper {
  * @param array $options
  * @return string Number formatted as a currency.
  * @access public
+ * @link http://book.cakephp.org/view/1453/currency
  */
 	function currency($number, $currency = 'USD', $options = array()) {
 		$default = $this->_currencyDefaults;
@@ -249,4 +255,3 @@ class NumberHelper extends AppHelper {
 	}
 
 }
-?>

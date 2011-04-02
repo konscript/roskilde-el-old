@@ -4,14 +4,14 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
  * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.4206
@@ -170,6 +170,10 @@ class CakeSessionTest extends CakeTestCase {
 		$_SESSION = null;
 		$this->assertFalse($this->Session->started());
 		$this->assertTrue($this->Session->start());
+
+		$session = new CakeSession(null, false);
+		$this->assertTrue($session->started());
+		unset($session);
 	}
 
 /**
@@ -251,6 +255,11 @@ class CakeSessionTest extends CakeTestCase {
 		$this->Session->destroy();
 		$this->assertFalse($this->Session->check('bulletProof'));
 		$this->assertNotEqual($id, $this->Session->id());
+		$this->assertTrue($this->Session->started());
+
+		$this->Session->cookieLifeTime = 'test';
+		$this->Session->destroy();
+		$this->assertNotEqual('test', $this->Session->cookieLifeTime);
 	}
 
 /**
@@ -465,5 +474,35 @@ class CakeSessionTest extends CakeTestCase {
 		$this->setUp();
 	}
 
+/**
+ * testReadAndWriteWithDatabaseStorage method
+ *
+ * @access public
+ * @return void
+ */
+	function testDatabaseStorageEmptySessionId() {
+		unset($_SESSION);
+		session_destroy();
+		Configure::write('Session.table', 'sessions');
+		Configure::write('Session.model', 'Session');
+		Configure::write('Session.database', 'test_suite');
+		Configure::write('Session.save', 'database');
+		$this->setUp();
+		$id = $this->Session->id();
+
+		$this->Session->id = '';
+		session_id('');
+
+		$this->Session->write('SessionTestCase', 'This is a Test');
+		$this->assertEqual($this->Session->read('SessionTestCase'), 'This is a Test');
+
+		session_write_close();
+
+		unset($_SESSION);
+		ini_set('session.save_handler', 'files');
+		Configure::write('Session.save', 'php');
+		session_id($id);
+		$this->setUp();
+	}
+
 }
-?>

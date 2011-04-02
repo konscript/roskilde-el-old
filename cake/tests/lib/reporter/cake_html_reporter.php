@@ -4,13 +4,13 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.tests.libs.reporter
@@ -27,7 +27,17 @@ include_once dirname(__FILE__) . DS . 'cake_base_reporter.php';
  * @subpackage cake.tests.lib
  */
 class CakeHtmlReporter extends CakeBaseReporter {
-
+/**
+ * Constructor
+ *
+ * @param string $charset 
+ * @param string $params 
+ * @return void
+ */
+	function CakeHtmlReporter($charset = 'utf-8', $params = array()) {
+		$params = array_map(array($this, '_htmlEntities'), $params);
+		$this->CakeBaseReporter($charset, $params);
+	}
 /**
  * Paints the top of the web page setting the
  * title to the name of the starting test.
@@ -40,7 +50,7 @@ class CakeHtmlReporter extends CakeBaseReporter {
 		$this->sendNoCacheHeaders();
 		$this->paintDocumentStart();
 		$this->paintTestMenu();
-		echo "<h2>$testName</h2>\n";
+		printf("<h2>%s</h2>\n", $this->_htmlEntities($testName));
 		echo "<ul class='tests'>\n";
 	}
 
@@ -64,7 +74,8 @@ class CakeHtmlReporter extends CakeBaseReporter {
 	function paintTestMenu() {
 		$groups = $this->baseUrl() . '?show=groups';
 		$cases = $this->baseUrl() . '?show=cases';
-		$plugins = App::objects('plugin');
+		$plugins = App::objects('plugin', null, false);
+		sort($plugins);
 		include CAKE_TESTS_LIB . 'templates' . DS . 'menu.php';
 	}
 
@@ -365,4 +376,3 @@ class CakeHtmlReporter extends CakeBaseReporter {
 		return htmlentities($message, ENT_COMPAT, $this->_characterSet);
 	}
 }
-?>

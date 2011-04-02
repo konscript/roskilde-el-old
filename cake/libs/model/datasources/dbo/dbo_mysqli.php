@@ -30,9 +30,9 @@ App::import('Datasource', 'DboMysql');
 class DboMysqli extends DboMysqlBase {
 
 /**
- * Enter description here...
+ * Datasource Description
  *
- * @var unknown_type
+ * @var string
  */
 	var $description = "Mysqli DBO Driver";
 
@@ -47,7 +47,8 @@ class DboMysqli extends DboMysqlBase {
 		'login' => 'root',
 		'password' => '',
 		'database' => 'cake',
-		'port' => '3306'
+		'port' => '3306',
+		'socket' => null
 	);
 
 /**
@@ -58,13 +59,6 @@ class DboMysqli extends DboMysqlBase {
 	function connect() {
 		$config = $this->config;
 		$this->connected = false;
-
-		if (is_numeric($config['port'])) {
-			$config['socket'] = null;
-		} else {
-			$config['socket'] = $config['port'];
-			$config['port'] = null;
-		}
 
 		$this->connection = mysqli_connect($config['host'], $config['login'], $config['password'], $config['database'], $config['port'], $config['socket']);
 
@@ -336,4 +330,3 @@ class DboMysqli extends DboMysqlBase {
 		return is_object($this->_result);
 	}
 }
-?>

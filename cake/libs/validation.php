@@ -30,7 +30,7 @@ if (!class_exists('Multibyte')) {
 class Validation extends Object {
 
 /**
- * Set the the value of methods $check param.
+ * Set the value of methods $check param.
  *
  * @var string
  * @access public
@@ -501,11 +501,11 @@ class Validation extends Object {
 		}
 
 		if ($return === true && preg_match('/@(' . $_this->__pattern['hostname'] . ')$/i', $_this->check, $regs)) {
-			if (function_exists('getmxrr')) {
-				return getmxrr($regs[1], $mxhosts);
+			if (function_exists('getmxrr') && getmxrr($regs[1], $mxhosts)) {
+				return true;
 			}
-			if (function_exists('checkdnsrr')) {
-				return checkdnsrr($regs[1], 'MX');
+			if (function_exists('checkdnsrr') && checkdnsrr($regs[1], 'MX')) {
+				return true;
 			}
 			return is_array(gethostbynamel($regs[1]));
 		}
@@ -874,13 +874,13 @@ class Validation extends Object {
 		$_this =& Validation::getInstance();
 		$_this->__populateIp();
 		$_this->check = $check;
-		$validChars = '([' . preg_quote('!"$&\'()*+,-.@_:;=~') . '\/0-9a-z]|(%[0-9a-f]{2}))';
+		$validChars = '([' . preg_quote('!"$&\'()*+,-.@_:;=~') . '\/0-9a-z\p{L}\p{N}]|(%[0-9a-f]{2}))';
 		$_this->regex = '/^(?:(?:https?|ftps?|file|news|gopher):\/\/)' . (!empty($strict) ? '' : '?') .
 			'(?:' . $_this->__pattern['IPv4'] . '|\[' . $_this->__pattern['IPv6'] . '\]|' . $_this->__pattern['hostname'] . ')' .
 			'(?::[1-9][0-9]{0,4})?' .
 			'(?:\/?|\/' . $validChars . '*)?' .
 			'(?:\?' . $validChars . '*)?' .
-			'(?:#' . $validChars . '*)?$/i';
+			'(?:#' . $validChars . '*)?$/iu';
 		return $_this->_check();
 	}
 
@@ -1058,4 +1058,3 @@ class Validation extends Object {
 		$this->errors = array();
 	}
 }
-?>

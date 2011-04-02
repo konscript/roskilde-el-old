@@ -182,6 +182,7 @@ class Helper extends Overloadable {
  * @param boolean $full If true, the full base URL will be prepended to the result
  * @return string  Full translated URL with base path.
  * @access public
+ * @link http://book.cakephp.org/view/1448/url
  */
 	function url($url = null, $full = false) {
 		return h(Router::url($url, $full));
@@ -191,7 +192,7 @@ class Helper extends Overloadable {
  * Checks if a file exists when theme is used, if no file is found default location is returned
  *
  * @param string $file The file to create a webroot path to.
- * @return string $webPath web path to file.
+ * @return string Web accessible path to file.
  * @access public
  */
 	function webroot($file) {
@@ -244,15 +245,33 @@ class Helper extends Overloadable {
 			Configure::read('Asset.timestamp') === 'force'
 		);
 		if (strpos($path, '?') === false && $timestampEnabled) {
-			$path .= '?' . @filemtime(WWW_ROOT . str_replace('/', DS, $path));
+			$filepath = preg_replace('/^' . preg_quote($this->webroot, '/') . '/', '', $path);
+			$webrootPath = WWW_ROOT . str_replace('/', DS, $filepath);
+			if (file_exists($webrootPath)) {
+				return $path . '?' . @filemtime($webrootPath);
+			}
+			$segments = explode('/', ltrim($filepath, '/'));
+			if ($segments[0] === 'theme') {
+				$theme = $segments[1];
+				unset($segments[0], $segments[1]);
+				$themePath = App::themePath($theme) . 'webroot' . DS . implode(DS, $segments);
+				return $path . '?' . @filemtime($themePath);
+			} else {
+				$plugin = $segments[0];
+				unset($segments[0]);
+				$pluginPath = App::pluginPath($plugin) . 'webroot' . DS . implode(DS, $segments);
+				return $path . '?' . @filemtime($pluginPath);
+			}
 		}
 		return $path;
 	}
 
 /**
- * Used to remove harmful tags from content
+ * Used to remove harmful tags from content.  Removes a number of well known XSS attacks
+ * from content.  However, is not guaranteed to remove all possiblities.  Escaping
+ * content is the best way to prevent all possible attacks.
  *
- * @param mixed $output
+ * @param mixed $output Either an array of strings to clean or a single string to clean.
  * @return cleaned content for output
  * @access public
  */
@@ -292,9 +311,10 @@ class Helper extends Overloadable {
  *
  * And its value is one of:
  *
- * - 1
- * - true
- * - 'true'
+ * - '1' (string)
+ * - 1 (integer)
+ * - true (boolean)
+ * - 'true' (string)
  *
  * Then the value will be reset to be identical with key's name.
  * If the value is not one of these 3, the parameter is not output.
@@ -354,7 +374,7 @@ class Helper extends Overloadable {
 		}
 
 		if (in_array($key, $minimizedAttributes)) {
-			if ($value === 1 || $value === true || $value === 'true' || $value == $key) {
+			if ($value === 1 || $value === true || $value === 'true' || $value === '1' || $value == $key) {
 				$attribute = sprintf($attributeFormat, $key, $key);
 			}
 		} else {
@@ -422,7 +442,11 @@ class Helper extends Overloadable {
 		if (ClassRegistry::isKeySet($model)) {
 			$ModelObj =& ClassRegistry::getObject($model);
 			for ($i = 0; $i < $count; $i++) {
-				if ($ModelObj->hasField($parts[$i]) || array_key_exists($parts[$i], $ModelObj->validate)) {
+				if (
+					is_a($ModelObj, 'Model') && 
+					($ModelObj->hasField($parts[$i]) || 
+					array_key_exists($parts[$i], $ModelObj->validate))
+				) {
 					$hasField = $i;
 					if ($hasField === 0 || ($hasField === 1 && is_numeric($parts[0]))) {
 						$sameScope = true;
@@ -684,7 +708,7 @@ class Helper extends Overloadable {
 		}
 
 		$habtmKey = $this->field();
-		if (empty($result) && isset($this->data[$habtmKey][$habtmKey])) {
+		if (empty($result) && isset($this->data[$habtmKey][$habtmKey]) && is_array($this->data[$habtmKey])) {
 			$result = $this->data[$habtmKey][$habtmKey];
 		} elseif (empty($result) && isset($this->data[$habtmKey]) && is_array($this->data[$habtmKey])) {
 			if (ClassRegistry::isKeySet($habtmKey)) {
@@ -886,4 +910,3 @@ class Helper extends Overloadable {
 		$this->__cleaned = str_replace(array("&amp;", "&lt;", "&gt;"), array("&amp;amp;", "&amp;lt;", "&amp;gt;"), $this->__cleaned);
 	}
 }
-?>

@@ -11,7 +11,7 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.5432
@@ -200,6 +200,26 @@ class StringTest extends CakeTestCase {
 		$result = String::insert('?-pended result', array('Pre'));
 		$expected = "Pre-pended result";
 		$this->assertEqual($result, $expected);
+
+		$string = 'switching :timeout / :timeout_count';
+		$expected = 'switching 5 / 10';
+		$result = String::insert($string, array('timeout' => 5, 'timeout_count' => 10));
+		$this->assertEqual($result, $expected);
+
+		$string = 'switching :timeout / :timeout_count';
+		$expected = 'switching 5 / 10';
+		$result = String::insert($string, array('timeout_count' => 10, 'timeout' => 5));
+		$this->assertEqual($result, $expected);
+
+		$string = 'switching :timeout_count by :timeout';
+		$expected = 'switching 10 by 5';
+		$result = String::insert($string, array('timeout' => 5, 'timeout_count' => 10));
+		$this->assertEqual($result, $expected);
+
+		$string = 'switching :timeout_count by :timeout';
+		$expected = 'switching 10 by 5';
+		$result = String::insert($string, array('timeout_count' => 10, 'timeout' => 5));
+		$this->assertEqual($result, $expected);
 	}
 
 /**
@@ -288,5 +308,3 @@ class StringTest extends CakeTestCase {
 		$this->assertEqual($expected, $result);
 	}
 }
-
-?>

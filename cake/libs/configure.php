@@ -23,14 +23,14 @@
  *
  * @package       cake
  * @subpackage    cake.cake.libs
- * @link          http://book.cakephp.org/view/42/The-Configuration-Class
+ * @link          http://book.cakephp.org/view/924/The-Configuration-Class
  */
 class Configure extends Object {
 
 /**
  * Current debug level.
  *
- * @link          http://book.cakephp.org/view/44/CakePHP-Core-Configuration-Variables
+ * @link          http://book.cakephp.org/view/931/CakePHP-Core-Configuration-Variables
  * @var integer
  * @access public
  */
@@ -72,7 +72,7 @@ class Configure extends Object {
  * ));
  * }}}
  *
- * @link http://book.cakephp.org/view/412/write
+ * @link http://book.cakephp.org/view/926/write
  * @param array $config Name of var to write
  * @param mixed $value Value to set for var
  * @return boolean True if write was successful
@@ -96,6 +96,7 @@ class Configure extends Object {
 					break;
 					case 3:
 						$_this->{$names[0]}[$names[1]][$names[2]] = $value;
+						break;
 					case 4:
 						$names = explode('.', $name, 2);
 						if (!isset($_this->{$names[0]})) {
@@ -145,7 +146,7 @@ class Configure extends Object {
  * Configure::read('Name.key'); will return only the value of Configure::Name[key]
  * }}}
  *
- * @link http://book.cakephp.org/view/413/read
+ * @link http://book.cakephp.org/view/927/read
  * @param string $var Variable to obtain.  Use '.' to access array elements.
  * @return string value of Configure::$var
  * @access public
@@ -195,7 +196,7 @@ class Configure extends Object {
  * Configure::delete('Name.key'); will delete only the Configure::Name[key]
  * }}}
  *
- * @link http://book.cakephp.org/view/414/delete
+ * @link http://book.cakephp.org/view/928/delete
  * @param string $var the var to be deleted
  * @return void
  * @access public
@@ -222,7 +223,7 @@ class Configure extends Object {
  * - To load config files from app/config use `Configure::load('configure_file');`.
  * - To load config files from a plugin `Configure::load('plugin.configure_file');`.
  *
- * @link http://book.cakephp.org/view/415/load
+ * @link http://book.cakephp.org/view/929/load
  * @param string $fileName name of file to load, extension must be .php and only the name
  *     should be used, not the extenstion
  * @return mixed false if file not found, void if load successful
@@ -273,7 +274,7 @@ class Configure extends Object {
  *
  * Usage `Configure::version();`
  *
- * @link http://book.cakephp.org/view/416/version
+ * @link http://book.cakephp.org/view/930/version
  * @return string Current version of CakePHP
  * @access public
  */
@@ -439,7 +440,7 @@ class Configure extends Object {
 /**
  * Class/file loader and path management.
  *
- * @link          http://book.cakephp.org/view/499/The-App-Class
+ * @link          http://book.cakephp.org/view/933/The-App-Class
  * @since         CakePHP(tm) v 1.2.0.6001
  * @package       cake
  * @subpackage    cake.cake.libs
@@ -579,14 +580,6 @@ class App extends Object {
 	var $return = false;
 
 /**
- * Determines if $__maps and $__paths cache should be written.
- *
- * @var boolean
- * @access private
- */
-	var $__cache = false;
-
-/**
  * Holds key/value pairs of $type => file path.
  *
  * @var array
@@ -683,11 +676,13 @@ class App extends Object {
 				$merge = array_merge($merge, (array)$core[$type]);
 			}
 
-			$_this->{$type} = $default;
+			if (empty($_this->{$type}) || empty($paths)) {
+				$_this->{$type} = $default;
+			}
 
 			if (!empty($paths[$type])) {
 				$path = array_flip(array_flip(array_merge(
-					$_this->{$type}, (array)$paths[$type], $merge
+					(array)$paths[$type], $_this->{$type}, $merge
 				)));
 				$_this->{$type} = array_values($path);
 			} else {
@@ -700,7 +695,7 @@ class App extends Object {
 /**
  * Get the path that a plugin is on.  Searches through the defined plugin paths.
  *
- * @param string $plugin CamelCased plugin name to find the path of.
+ * @param string $plugin CamelCased/lower_cased plugin name to find the path of.
  * @return string full path to the plugin.
  */
 	function pluginPath($plugin) {
@@ -712,6 +707,23 @@ class App extends Object {
 			}
 		}
 		return $_this->plugins[0] . $pluginDir . DS;
+	}
+
+/**
+ * Find the path that a theme is on.  Search through the defined theme paths.
+ *
+ * @param string $theme lower_cased theme name to find the path of.
+ * @return string full path to the theme.
+ */
+	function themePath($theme) {
+		$_this =& App::getInstance();
+		$themeDir = 'themed' . DS . Inflector::underscore($theme);
+		for ($i = 0, $length = count($_this->views); $i < $length; $i++) {
+			if (is_dir($_this->views[$i] . $themeDir)) {
+				return $_this->views[$i] . $themeDir . DS ;
+			}
+		}
+		return $_this->views[0] . $themeDir . DS;
 	}
 
 /**
@@ -756,7 +768,11 @@ class App extends Object {
 	}
 
 /**
- * Returns an index of objects of the given type, with the physical path to each object.
+ * Returns an array of objects of the given type.
+ *
+ * Example usage:
+ *
+ * `App::objects('plugin');` returns `array('DebugKit', 'Blog', 'User');`
  *
  * @param string $type Type of object, i.e. 'model', 'controller', 'helper', or 'plugin'
  * @param mixed $path Optional Scan only the path given. If null, paths for the chosen
@@ -812,7 +828,7 @@ class App extends Object {
 			}
 
 			if ($cache === true) {
-				$_this->__cache = true;
+				$_this->__resetCache(true);
 			}
 			$_this->__objects[$name] = $objects;
 		}
@@ -821,9 +837,10 @@ class App extends Object {
 	}
 
 /**
- * Finds classes based on $name or specific file(s) to search.
+ * Finds classes based on $name or specific file(s) to search.  Calling App::import() will
+ * not construct any classes contained in the files. It will only find and require() the file.
  *
- * @link          http://book.cakephp.org/view/529/Using-App-import
+ * @link          http://book.cakephp.org/view/934/Using-App-import
  * @param mixed $type The type of Class if passed as a string, or all params can be passed as
  *                    an single array to $type,
  * @param string $name Name of the Class or a unique name for the file
@@ -907,7 +924,7 @@ class App extends Object {
 					return true;
 				} else {
 					$_this->__remove($name . $ext['class'], $type, $plugin);
-					$_this->__cache = true;
+					$_this->__resetCache(true);
 				}
 			}
 			if (!empty($search)) {
@@ -938,7 +955,7 @@ class App extends Object {
 			}
 
 			if ($directory !== null) {
-				$_this->__cache = true;
+				$_this->__resetCache(true);
 				$_this->__map($directory . $file, $name . $ext['class'], $type, $plugin);
 				$_this->__overload($type, $name . $ext['class'], $parent);
 
@@ -1267,6 +1284,21 @@ class App extends Object {
 		}
 		return $items;
 	}
+	
+/**
+ * Determines if $__maps, $__objects and $__paths cache should be reset.
+ *
+ * @param boolean $reset 
+ * @return boolean
+ * @access private
+ */	
+	function __resetCache($reset = null) {
+		static $cache = array();
+		if (!$cache && $reset === true) {
+			$cache = true;	
+		}
+		return $cache;
+	}
 
 /**
  * Object destructor.
@@ -1277,7 +1309,7 @@ class App extends Object {
  * @access private
  */
 	function __destruct() {
-		if ($this->__cache) {
+		if ($this->__resetCache() === true) {
 			$core = App::core('cake');
 			unset($this->__paths[rtrim($core[0], DS)]);
 			Cache::write('dir_map', array_filter($this->__paths), '_cake_core_');
@@ -1286,4 +1318,3 @@ class App extends Object {
 		}
 	}
 }
-?>

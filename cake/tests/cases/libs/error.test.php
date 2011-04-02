@@ -4,14 +4,14 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
  * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.5432
@@ -609,5 +609,22 @@ class ErrorHandlerTest extends CakeTestCase {
 		$this->assertPattern('/<em>Article<\/em> could not be found./', $result);
 		$this->assertPattern('/(\/|\\\)article.php/', $result);
 	}
+
+/**
+ * testing that having a code => 500 in the cakeError call makes an 
+ * internal server error.
+ *
+ * @return void
+ */
+	function testThatCode500Works() {
+		Configure::write('debug', 0);
+		ob_start();
+		$TestErrorHandler = new TestErrorHandler('missingTable', array(
+			'className' => 'Article',
+			'table' => 'articles',
+			'code' => 500
+		));
+		$result = ob_get_clean();
+		$this->assertPattern('/<h2>An Internal Error Has Occurred<\/h2>/', $result);
+	}
 }
-?>

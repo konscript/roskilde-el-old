@@ -44,7 +44,7 @@ Mock::generatePartial(
 );
 Mock::generatePartial(
 	'TestTask', 'MockTestTask',
-	array('in', '_stop', 'err', 'out', 'createFile', 'isLoadableClass')
+	array('in', '_stop', 'err', 'out', 'hr', 'createFile', 'isLoadableClass')
 );
 
 /**
@@ -278,6 +278,7 @@ class TestTaskTest extends CakeTestCase {
  */
 	function endTest() {
 		ClassRegistry::flush();
+		App::build();
 	}
 
 /**
@@ -561,6 +562,26 @@ class TestTaskTest extends CakeTestCase {
 	}
 
 /**
+ * test interactive with plugins lists from the plugin
+ *
+ * @return void
+ */
+	function testInteractiveWithPlugin() {
+		$testApp = TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS;
+		App::build(array(
+			'plugins' => array($testApp)
+		), true);
+
+		$this->Task->plugin = 'TestPlugin';
+		$path = $testApp . 'test_plugin' . DS . 'tests' . DS . 'cases' . DS . 'helpers' . DS . 'other_helper.test.php';
+		$this->Task->setReturnValueAt(0, 'in', 5); //helper
+		$this->Task->setReturnValueAt(1, 'in', 1); //OtherHelper
+		$this->Task->expectAt(0, 'createFile', array($path, '*'));
+		$this->Task->expectAt(9, 'out', array('1. OtherHelper'));
+		$this->Task->execute();
+	}
+
+/**
  * Test filename generation for each type + plugins
  *
  * @return void
@@ -623,4 +644,3 @@ class TestTaskTest extends CakeTestCase {
 		$this->Task->execute();
 	}
 }
-?>

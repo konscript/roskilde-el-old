@@ -22,7 +22,7 @@
  *
  * @package       cake
  * @subpackage    cake.cake.libs.controller
- * @link          http://book.cakephp.org/view/62/Components
+ * @link          http://book.cakephp.org/view/993/Components
  */
 class Component extends Object {
 
@@ -84,7 +84,7 @@ class Component extends Object {
  * @param object $controller Controller with components to initialize
  * @return void
  * @access public
- * @link http://book.cakephp.org/view/65/MVC-Class-Access-Within-Components
+ * @link http://book.cakephp.org/view/998/MVC-Class-Access-Within-Components
  */
 	function initialize(&$controller) {
 		foreach (array_keys($this->_loaded) as $name) {
@@ -106,7 +106,7 @@ class Component extends Object {
  * @param object $controller Controller with components to startup
  * @return void
  * @access public
- * @link http://book.cakephp.org/view/65/MVC-Class-Access-Within-Components
+ * @link http://book.cakephp.org/view/998/MVC-Class-Access-Within-Components
  * @deprecated See Component::triggerCallback()
  */
 	function startup(&$controller) {
@@ -246,7 +246,11 @@ class Component extends Object {
 				if ($componentCn === 'SessionComponent') {
 					$object->{$component} =& new $componentCn($base);
 				} else {
-					$object->{$component} =& new $componentCn();
+					if (PHP5) {
+						$object->{$component} = new $componentCn();
+					} else {
+						$object->{$component} =& new $componentCn();
+					}
 				}
 				$object->{$component}->enabled = true;
 				$this->_loaded[$component] =& $object->{$component};
@@ -261,5 +265,3 @@ class Component extends Object {
 		}
 	}
 }
-
-?>

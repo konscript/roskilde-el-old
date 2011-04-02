@@ -5,12 +5,12 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.tests.cases.console.libs.tasks
@@ -299,6 +299,8 @@ class ControllerTaskTest extends CakeTestCase {
 		$this->Task->expectAt(1, 'createFile', array(
 			$path, new PatternExpectation('/ArticlesController extends ControllerTestAppController/')));
 		$this->Task->bake('Articles', '--actions--', array(), array(), array());
+
+		$this->assertEqual($this->Task->Template->templateVars['plugin'], 'ControllerTest');
 	}
 
 /**
@@ -320,20 +322,20 @@ class ControllerTaskTest extends CakeTestCase {
 		$this->assertTrue(strpos($result, "\$this->set('articles', \$this->paginate());") !== false);
 
 		$this->assertTrue(strpos($result, 'function view($id = null)') !== false);
-		$this->assertTrue(strpos($result, "\$this->Session->setFlash(sprintf(__('Invalid %s', true), 'article'));") !== false);
+		$this->assertTrue(strpos($result, "\$this->Session->setFlash(__('Invalid article', true));") !== false);
 		$this->assertTrue(strpos($result, "\$this->set('article', \$this->Article->read(null, \$id)") !== false);
 
 		$this->assertTrue(strpos($result, 'function add()') !== false);
 		$this->assertTrue(strpos($result, 'if (!empty($this->data))') !== false);
 		$this->assertTrue(strpos($result, 'if ($this->Article->save($this->data))') !== false);
-		$this->assertTrue(strpos($result, "\$this->Session->setFlash(sprintf(__('The %s has been saved', true), 'article'));") !== false);
+		$this->assertTrue(strpos($result, "\$this->Session->setFlash(__('The article has been saved', true));") !== false);
 
 		$this->assertTrue(strpos($result, 'function edit($id = null)') !== false);
-		$this->assertTrue(strpos($result, "\$this->Session->setFlash(sprintf(__('The %s could not be saved. Please, try again.', true), 'article'));") !== false);
+		$this->assertTrue(strpos($result, "\$this->Session->setFlash(__('The article could not be saved. Please, try again.', true));") !== false);
 
 		$this->assertTrue(strpos($result, 'function delete($id = null)') !== false);
 		$this->assertTrue(strpos($result, 'if ($this->Article->delete($id))') !== false);
-		$this->assertTrue(strpos($result, "\$this->Session->setFlash(sprintf(__('%s deleted', true), 'Article'));") !== false);
+		$this->assertTrue(strpos($result, "\$this->Session->setFlash(__('Article deleted', true));") !== false);
 
 		$result = $this->Task->bakeActions('Articles', 'admin_', true);
 
@@ -363,13 +365,13 @@ class ControllerTaskTest extends CakeTestCase {
 		$this->assertTrue(strpos($result, "\$this->set('articles', \$this->paginate());") !== false);
 
 		$this->assertTrue(strpos($result, 'function view($id = null)') !== false);
-		$this->assertTrue(strpos($result, "\$this->flash(sprintf(__('Invalid %s', true), 'article'), array('action' => 'index'))") !== false);
+		$this->assertTrue(strpos($result, "\$this->flash(__('Invalid article', true), array('action' => 'index'))") !== false);
 		$this->assertTrue(strpos($result, "\$this->set('article', \$this->Article->read(null, \$id)") !== false);
 
 		$this->assertTrue(strpos($result, 'function add()') !== false);
 		$this->assertTrue(strpos($result, 'if (!empty($this->data))') !== false);
 		$this->assertTrue(strpos($result, 'if ($this->Article->save($this->data))') !== false);
-		$this->assertTrue(strpos($result, "\$this->flash(sprintf(__('The %s has been saved.', true), 'article'), array('action' => 'index'))") !== false);
+		$this->assertTrue(strpos($result, "\$this->flash(__('The article has been saved.', true), array('action' => 'index'))") !== false);
 
 		$this->assertTrue(strpos($result, 'function edit($id = null)') !== false);
 		$this->assertTrue(strpos($result, "\$this->Article->Tag->find('list')") !== false);
@@ -377,7 +379,7 @@ class ControllerTaskTest extends CakeTestCase {
 
 		$this->assertTrue(strpos($result, 'function delete($id = null)') !== false);
 		$this->assertTrue(strpos($result, 'if ($this->Article->delete($id))') !== false);
-		$this->assertTrue(strpos($result, "\$this->flash(sprintf(__('%s deleted', true), 'Article'), array('action' => 'index'))") !== false);
+		$this->assertTrue(strpos($result, "\$this->flash(__('Article deleted', true), array('action' => 'index'))") !== false);
 	}
 
 /**
@@ -419,6 +421,35 @@ class ControllerTaskTest extends CakeTestCase {
 		$this->Task->setReturnValueAt(8, 'in', 'y'); // looks good
 
 		$this->Task->execute();
+
+		$filename = '/my/path/articles_controller.php';
+		$this->Task->expectAt(0, 'createFile', array($filename, new PatternExpectation('/class ArticlesController/')));
+	}
+
+/**
+ * test Interactive mode.
+ *
+ * @return void
+ * @access public
+ */
+	function testInteractiveAdminMethodsNotInteractive() {
+		$this->Task->connection = 'test_suite';
+		$this->Task->interactive = true;
+		$this->Task->path = '/my/path';
+		$this->Task->setReturnValue('in', '1');
+		$this->Task->setReturnValueAt(1, 'in', 'y'); // build interactive
+		$this->Task->setReturnValueAt(2, 'in', 'n'); // build no scaffolds
+		$this->Task->setReturnValueAt(3, 'in', 'y'); // build normal methods
+		$this->Task->setReturnValueAt(4, 'in', 'y'); // build admin methods
+		$this->Task->setReturnValueAt(5, 'in', 'n'); // helpers?
+		$this->Task->setReturnValueAt(6, 'in', 'n'); // components?
+		$this->Task->setReturnValueAt(7, 'in', 'y'); // use sessions
+		$this->Task->setReturnValueAt(8, 'in', 'y'); // looks good
+		$this->Task->setReturnValue('createFile', true);
+		$this->Task->Project->setReturnValue('getPrefix', 'admin_');
+
+		$result = $this->Task->execute();
+		$this->assertPattern('/admin_index/', $result);
 
 		$filename = '/my/path/articles_controller.php';
 		$this->Task->expectAt(0, 'createFile', array($filename, new PatternExpectation('/class ArticlesController/')));
@@ -600,4 +631,3 @@ class ControllerTaskTest extends CakeTestCase {
 		$this->Task->execute();
 	}
 }
-?>

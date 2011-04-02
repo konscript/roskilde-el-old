@@ -1,6 +1,6 @@
 <?php
 /**
- * Short description for file.
+ * Application level Controller
  *
  * This file is application-wide controller file. You can put all
  * application-wide controller-related methods here.
@@ -30,7 +30,7 @@
  *
  * @package       cake
  * @subpackage    cake.cake.libs.controller
+ * @link http://book.cakephp.org/view/957/The-App-Controller
  */
 class AppController extends Controller {
 }
-?>

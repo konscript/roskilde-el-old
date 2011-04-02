@@ -4,14 +4,14 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
  * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases
  * @since         CakePHP(tm) v 1.2.0.4206
@@ -96,7 +96,13 @@ class BasicsTest extends CakeTestCase {
 		$__ENV = $_ENV;
 
 		$_SERVER['HTTP_HOST'] = 'localhost';
-		$this->assertEqual(env('HTTP_BASE'), '');
+		$this->assertEqual(env('HTTP_BASE'), '.localhost');
+
+		$_SERVER['HTTP_HOST'] = 'com.ar';
+		$this->assertEqual(env('HTTP_BASE'), '.com.ar');
+
+		$_SERVER['HTTP_HOST'] = 'example.ar';
+		$this->assertEqual(env('HTTP_BASE'), '.example.ar');
 
 		$_SERVER['HTTP_HOST'] = 'example.com';
 		$this->assertEqual(env('HTTP_BASE'), '.example.com');
@@ -107,8 +113,20 @@ class BasicsTest extends CakeTestCase {
 		$_SERVER['HTTP_HOST'] = 'subdomain.example.com';
 		$this->assertEqual(env('HTTP_BASE'), '.example.com');
 
+		$_SERVER['HTTP_HOST'] = 'example.com.ar';
+		$this->assertEqual(env('HTTP_BASE'), '.example.com.ar');
+
+		$_SERVER['HTTP_HOST'] = 'www.example.com.ar';
+		$this->assertEqual(env('HTTP_BASE'), '.example.com.ar');
+
+		$_SERVER['HTTP_HOST'] = 'subdomain.example.com.ar';
+		$this->assertEqual(env('HTTP_BASE'), '.example.com.ar');
+
 		$_SERVER['HTTP_HOST'] = 'double.subdomain.example.com';
 		$this->assertEqual(env('HTTP_BASE'), '.subdomain.example.com');
+
+		$_SERVER['HTTP_HOST'] = 'double.subdomain.example.com.ar';
+		$this->assertEqual(env('HTTP_BASE'), '.subdomain.example.com.ar');
 
 		$_SERVER = $_ENV = array();
 
@@ -332,6 +350,23 @@ class BasicsTest extends CakeTestCase {
 		$this->assertFalse(file_exists(CACHE . 'models' . DS . 'basics_test.cache'));
 		$this->assertFalse(file_exists(CACHE . 'models' . DS . 'basics_test_2.cache'));
 		$this->assertFalse(file_exists(CACHE . 'models' . DS . 'basics_test_3.cache'));
+
+		// checking if empty files were not removed
+		$emptyExists = file_exists(CACHE . 'views' . DS . 'empty');
+		if (!$emptyExists) {
+			cache('views' . DS . 'empty', '');
+		}
+		cache('views' . DS . 'basics_test.php', 'simple cache write');
+		$this->assertTrue(file_exists(CACHE . 'views' . DS . 'basics_test.php'));
+		$this->assertTrue(file_exists(CACHE . 'views' . DS . 'empty'));
+
+		$result = clearCache();
+		$this->assertTrue($result);
+		$this->assertTrue(file_exists(CACHE . 'views' . DS . 'empty'));
+		$this->assertFalse(file_exists(CACHE . 'views' . DS . 'basics_test.php'));
+		if (!$emptyExists) {
+			unlink(CACHE . 'views' . DS . 'empty');
+		}
 	}
 
 /**
@@ -791,4 +826,3 @@ class BasicsTest extends CakeTestCase {
 		$this->assertEqual($result, array('Blog', 'Post'));
 	}
 }
-?>

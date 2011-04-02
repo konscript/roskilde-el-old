@@ -4,14 +4,14 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
  * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.4206
@@ -162,6 +162,21 @@ class HelperTestPostsTag extends Model {
 	}
 }
 
+class TestHelper extends Helper {
+/**
+ * expose a method as public
+ *
+ * @param string $options 
+ * @param string $exclude 
+ * @param string $insertBefore 
+ * @param string $insertAfter 
+ * @return void
+ */
+	function parseAttributes($options, $exclude = null, $insertBefore = ' ', $insertAfter = null) {
+		return $this->_parseAttributes($options, $exclude, $insertBefore, $insertAfter);
+	}
+}
+
 /**
  * HelperTest class
  *
@@ -204,7 +219,7 @@ class HelperTest extends CakeTestCase {
  * @access public
  * @return void
  */
-	function testFormFieldNameParsing() {
+	function testSetEntity() {
 		// PHP4 reference hack
 		ClassRegistry::removeObject('view');
 		ClassRegistry::addObject('view', $this->View);
@@ -333,6 +348,17 @@ class HelperTest extends CakeTestCase {
 		$this->assertEqual($this->View->modelId, null);
 		$this->assertEqual($this->View->association, null);
 		$this->assertEqual($this->View->fieldSuffix, null);
+	}
+
+/**
+ * test that 'view' doesn't break things.
+ *
+ * @return void
+ */
+	function testSetEntityWithView() {
+		$this->assertNull($this->Helper->setEntity('Allow.view.group_id'));
+		$this->assertNull($this->Helper->setEntity('Allow.view'));
+		$this->assertNull($this->Helper->setEntity('View.view'));
 	}
 
 /**
@@ -467,7 +493,40 @@ class HelperTest extends CakeTestCase {
 		$result = $this->Helper->assetTimestamp(CSS_URL . 'cake.generic.css?someparam');
 		$this->assertEqual($result, CSS_URL . 'cake.generic.css?someparam');
 
+		$this->Helper->webroot = '/some/dir/';
+		$result = $this->Helper->assetTimestamp('/some/dir/' . CSS_URL . 'cake.generic.css');
+		$this->assertPattern('/' . preg_quote(CSS_URL . 'cake.generic.css?', '/') . '[0-9]+/', $result);
+
 		Configure::write('debug', $_debug);
+		Configure::write('Asset.timestamp', $_timestamp);
+	}
+
+/**
+ * test assetTimestamp with plugins and themes
+ *
+ * @return void
+ */
+	function testAssetTimestampPluginsAndThemes() {
+		$_timestamp = Configure::read('Asset.timestamp');
+		Configure::write('Asset.timestamp', 'force');
+		App::build(array(
+			'plugins' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS),
+			'views' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views' . DS),
+		));
+
+		$result = $this->Helper->assetTimestamp('/test_plugin/css/test_plugin_asset.css');
+		$this->assertPattern('#/test_plugin/css/test_plugin_asset.css\?[0-9]+$#', $result, 'Missing timestamp plugin');
+
+		$result = $this->Helper->assetTimestamp('/test_plugin/css/i_dont_exist.css');
+		$this->assertPattern('#/test_plugin/css/i_dont_exist.css\?$#', $result, 'No error on missing file');
+
+		$result = $this->Helper->assetTimestamp('/theme/test_theme/js/theme.js');
+		$this->assertPattern('#/theme/test_theme/js/theme.js\?[0-9]+$#', $result, 'Missing timestamp theme');
+
+		$result = $this->Helper->assetTimestamp('/theme/test_theme/js/non_existant.js');
+		$this->assertPattern('#/theme/test_theme/js/non_existant.js\?$#', $result, 'No error on missing file');
+
+		App::build();
 		Configure::write('Asset.timestamp', $_timestamp);
 	}
 
@@ -527,6 +586,13 @@ class HelperTest extends CakeTestCase {
 		$this->assertEqual($this->View->association, null);
 		$this->assertEqual($this->View->fieldSuffix, null);
 
+		$this->Helper->setEntity('HelperTestTag');
+		$this->assertEqual($this->View->model, 'HelperTestTag');
+		$this->assertEqual($this->View->field, 'HelperTestTag');
+		$this->assertEqual($this->View->modelId, null);
+		$this->assertEqual($this->View->association, null);
+		$this->assertEqual($this->View->fieldSuffix, null);
+		$this->assertEqual($this->View->entityPath, 'HelperTestTag');
 	}
 
 /**
@@ -717,5 +783,22 @@ class HelperTest extends CakeTestCase {
 		Configure::write('App.www_root', $webRoot);
 	}
 
+/**
+ * test parsing attributes.
+ *
+ * @return void
+ */
+	function testParseAttributeCompact() {
+		$helper =& new TestHelper();
+		$compact = array('compact', 'checked', 'declare', 'readonly', 'disabled',
+			'selected', 'defer', 'ismap', 'nohref', 'noshade', 'nowrap', 'multiple', 'noresize');
+		
+		foreach ($compact as $attribute) {
+			foreach (array('true', true, 1, '1', $attribute) as $value) {
+				$attrs = array($attribute => $value);
+				$expected = ' ' . $attribute . '="' . $attribute . '"';
+				$this->assertEqual($helper->parseAttributes($attrs), $expected, '%s Failed on ' . $value);
+			}
+		}
+	}
 }
-?>

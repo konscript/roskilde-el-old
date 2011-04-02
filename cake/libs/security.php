@@ -1,6 +1,6 @@
 <?php
 /**
- * Short description for file.
+ * Core Security
  *
  * PHP versions 4 and 5
  *
@@ -176,19 +176,16 @@ class Security extends Object {
 
 		srand(Configure::read('Security.cipherSeed'));
 		$out = '';
-
 		$keyLength = strlen($key);
-		for ($i = 0, $j = strlen($text); $i < $j; $i++) {
-			$k = ord($key[$i % $keyLength]);
-			while ($k-- > 0) {
+		for ($i = 0, $textLength = strlen($text); $i < $textLength; $i++) {
+			$j = ord(substr($key, $i % $keyLength, 1));
+			while ($j--) {
 				rand(0, 255);
 			}
 			$mask = rand(0, 255);
-			$out .= chr(ord($text[$i]) ^ $mask);
+			$out .= chr(ord(substr($text, $i, 1)) ^ $mask);
 		}
-
 		srand();
 		return $out;
 	}
 }
-?>

@@ -242,6 +242,7 @@ class String {
 			}
 
 			$tempData = array_combine(array_keys($data), array_values($hashKeys));
+			krsort($tempData);
 			foreach ($tempData as $key => $hashVal) {
 				$key = sprintf($format, preg_quote($key, '/'));
 				$str = preg_replace($key, $hashVal, $str);
@@ -260,17 +261,17 @@ class String {
 	}
 
 /**
- * Cleans up a Set::insert formated string with given $options depending on the 'clean' key in
+ * Cleans up a String::insert() formated string with given $options depending on the 'clean' key in
  * $options. The default method used is text but html is also available. The goal of this function
  * is to replace all whitespace and uneeded markup around placeholders that did not get replaced
- * by Set::insert.
+ * by String::insert().
  *
  * @param string $str
  * @param string $options
  * @return string
  * @access public
  * @static
- * @see Set::insert()
+ * @see String::insert()
  */
 	function cleanInsert($str, $options) {
 		$clean = $options['clean'];
@@ -326,4 +327,3 @@ class String {
 		return $str;
 	}
 }
-?>

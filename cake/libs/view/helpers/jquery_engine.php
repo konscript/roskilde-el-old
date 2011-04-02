@@ -11,12 +11,12 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright       Copyright 2006-2009, Cake Software Foundation, Inc.
+ * @copyright       Copyright 2006-2010, Cake Software Foundation, Inc.
  * @link            http://cakephp.org CakePHP Project
  * @package         cake
  * @subpackage      cake.view.helpers
@@ -256,23 +256,26 @@ class JqueryEngineHelper extends JsBaseEngineHelper {
 		$options['url'] = $url;
 		if (isset($options['update'])) {
 			$wrapCallbacks = isset($options['wrapCallbacks']) ? $options['wrapCallbacks'] : true;
-			if ($wrapCallbacks) {
-				$success = '$("' . $options['update'] . '").html(data);';
-			} else {
-				$success = 'function (data, textStatus) {$("' . $options['update'] . '").html(data);}';
+			$success = '';
+			if(isset($options['success']) AND !empty($options['success'])) {
+				$success .= $options['success'];
+			}
+			$success .= $this->jQueryObject . '("' . $options['update'] . '").html(data);';
+			if (!$wrapCallbacks) {
+				$success = 'function (data, textStatus) {' . $success . '}';
 			}
 			$options['dataType'] = 'html';
 			$options['success'] = $success;
 			unset($options['update']);
 		}
 		$callbacks = array('success', 'error', 'beforeSend', 'complete');
-		if (isset($options['dataExpression'])) {
+		if (!empty($options['dataExpression'])) {
 			$callbacks[] = 'data';
 			unset($options['dataExpression']);
 		}
 		$options = $this->_prepareCallbacks('request', $options);
 		$options = $this->_parseOptions($options, $callbacks);
-		return '$.ajax({' . $options .'});';
+		return $this->jQueryObject . '.ajax({' . $options .'});';
 	}
 
 /**
@@ -358,4 +361,3 @@ class JqueryEngineHelper extends JsBaseEngineHelper {
 		return $selector . $method;
 	}
 }
-?>

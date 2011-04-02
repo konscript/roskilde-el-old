@@ -13,7 +13,7 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://book.cakephp.org/view/160/Testing
+ * @link          http://book.cakephp.org/view/1196/Testing
  * @package       cake.tests
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.4206
@@ -43,23 +43,14 @@ class InflectorTest extends CakeTestCase {
 	var $Inflector = null;
 
 /**
- * setUp method
- *
- * @access public
- * @return void
- */
-	function setUp() {
-		$this->Inflector = Inflector::getInstance();
-	}
-
-/**
  * testInstantiation method
  *
  * @access public
  * @return void
  */
 	function testInstantiation() {
-		$this->assertEqual(Inflector::getInstance(), $this->Inflector);
+		$Inflector =& Inflector::getInstance();
+		$this->assertEqual(Inflector::getInstance(), $Inflector);
 	}
 
 /**
@@ -116,6 +107,15 @@ class InflectorTest extends CakeTestCase {
 		$this->assertEqual(Inflector::singularize('niches'), 'niche');
 		$this->assertEqual(Inflector::singularize('waves'), 'wave');
 		$this->assertEqual(Inflector::singularize('bureaus'), 'bureau');
+		$this->assertEqual(Inflector::singularize('genetic_analyses'), 'genetic_analysis');
+		$this->assertEqual(Inflector::singularize('doctor_diagnoses'), 'doctor_diagnosis');
+		$this->assertEqual(Inflector::singularize('parantheses'), 'paranthesis');
+		$this->assertEqual(Inflector::singularize('Causes'), 'Cause');
+		$this->assertEqual(Inflector::singularize('colossuses'), 'colossus');
+		$this->assertEqual(Inflector::singularize('diagnoses'), 'diagnosis');
+		$this->assertEqual(Inflector::singularize('bases'), 'basis');
+		$this->assertEqual(Inflector::singularize('analyses'), 'analysis');
+
 		$this->assertEqual(Inflector::singularize(''), '');
 	}
 
@@ -334,6 +334,19 @@ class InflectorTest extends CakeTestCase {
 	}
 
 /**
+ * This test if run in isolation should not cause errors in PHP4.
+ *
+ * @return void
+ */
+	function testRulesNoErrorPHP4() {
+		Inflector::rules('plural', array(
+			'rules' => array(),
+			'irregular' => array(),
+			'uninflected' => array('pays')
+		));
+	}
+
+/**
  * testCustomPluralRule method
  *
  * @access public
@@ -401,6 +414,27 @@ class InflectorTest extends CakeTestCase {
 	}
 
 /**
+ * test that setting new rules clears the inflector caches.
+ *
+ * @return void
+ */
+	function testRulesClearsCaches() {
+		$this->assertEqual(Inflector::singularize('Bananas'), 'Banana');
+		$this->assertEqual(Inflector::tableize('Banana'), 'bananas');
+		$this->assertEqual(Inflector::pluralize('Banana'), 'Bananas');
+
+		Inflector::rules('singular', array(
+			'rules' => array('/(.*)nas$/i' => '\1zzz')
+		));
+		$this->assertEqual(Inflector::singularize('Bananas'), 'Banazzz', 'Was inflected with old rules. %s');
+
+		Inflector::rules('plural', array(
+			'rules' => array('/(.*)na$/i' => '\1zzz')
+		));
+		$this->assertEqual(Inflector::pluralize('Banana'), 'Banazzz', 'Was inflected with old rules. %s');
+	}
+
+/**
  * Test resetting inflection rules.
  *
  * @return void
@@ -428,14 +462,4 @@ class InflectorTest extends CakeTestCase {
 		$this->assertEqual(Inflector::singularize('Atlas'), 'Atlas');
 	}
 
-/**
- * tearDown method
- *
- * @access public
- * @return void
- */
-	function tearDown() {
-		unset($this->Inflector);
-	}
 }
-?>

@@ -4,14 +4,14 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
  * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.5428
@@ -193,6 +193,29 @@ class SanitizeTest extends CakeTestCase {
 		$expected = '';
 		$result = Sanitize::clean($string);
 		$this->assertEqual($string, $expected);
+
+		$data = array(
+			'Grant' => array(
+				'title' => '2 o clock grant',
+				'grant_peer_review_id' => 3,
+				'institution_id' => 5,
+				'created_by' => 1,
+				'modified_by' => 1,
+				'created' => '2010-07-15 14:11:00',
+				'modified' => '2010-07-19 10:45:41'
+			),
+			'GrantsMember' => array(
+				0 => array(
+					'id' => 68,
+					'grant_id' => 120,
+					'member_id' => 16,
+					'program_id' => 29,
+					'pi_percent_commitment' => 1
+				)
+			)
+		);
+		$result = Sanitize::clean($data);
+		$this->assertEqual($result, $data);
 	}
 
 /**
@@ -346,6 +369,32 @@ class SanitizeTest extends CakeTestCase {
 		$expected = '';
 		$result = Sanitize::stripScripts($string);
 		$this->assertEqual($result, $expected);
+
+		$string = <<<HTML
+text
+<style type="text/css">
+<!-- 
+#content { display:none; } 
+-->
+</style>
+text
+HTML;
+		$expected = "text\n\ntext";
+		$result = Sanitize::stripScripts($string);
+		$this->assertEqual($result, $expected);
+
+		$string = <<<HTML
+text
+<script type="text/javascript">
+<!-- 
+alert('wooo');
+-->
+</script>
+text
+HTML;
+		$expected = "text\n\ntext";
+		$result = Sanitize::stripScripts($string);
+		$this->assertEqual($result, $expected);
 	}
 
 /**
@@ -472,4 +521,3 @@ class SanitizeTest extends CakeTestCase {
 		$this->assertEqual($result, $expected);
 	}
 }
-?>

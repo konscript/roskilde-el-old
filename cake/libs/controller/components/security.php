@@ -1,6 +1,6 @@
 <?php
 /**
- * Short description for file.
+ * Security Component
  *
  * PHP versions 4 and 5
  *
@@ -17,12 +17,14 @@
  * @since         CakePHP(tm) v 0.10.8.2156
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
+App::import('Core', array('String', 'Security'));
 
 /**
- * Short description for file.
+ * SecurityComponent
  *
  * @package       cake
  * @subpackage    cake.cake.libs.controller.components
+ * @link http://book.cakephp.org/view/1296/Security-Component
  */
 class SecurityComponent extends Object {
 
@@ -108,7 +110,6 @@ class SecurityComponent extends Object {
 
 /**
  * An associative array of usernames/passwords used for HTTP-authenticated logins.
- * If using digest authentication, passwords should be MD5-hashed.
  *
  * @var array
  * @access public
@@ -215,6 +216,7 @@ class SecurityComponent extends Object {
  *
  * @return void
  * @access public
+ * @link http://book.cakephp.org/view/1299/requirePost
  */
 	function requirePost() {
 		$args = func_get_args();
@@ -259,6 +261,7 @@ class SecurityComponent extends Object {
  *
  * @return void
  * @access public
+ * @link http://book.cakephp.org/view/1300/requireSecure
  */
 	function requireSecure() {
 		$args = func_get_args();
@@ -270,6 +273,7 @@ class SecurityComponent extends Object {
  *
  * @return void
  * @access public
+ * @link http://book.cakephp.org/view/1301/requireAuth
  */
 	function requireAuth() {
 		$args = func_get_args();
@@ -281,6 +285,7 @@ class SecurityComponent extends Object {
  *
  * @return void
  * @access public
+ * @link http://book.cakephp.org/view/1302/requireLogin
  */
 	function requireLogin() {
 		$args = func_get_args();
@@ -306,6 +311,7 @@ class SecurityComponent extends Object {
  * @param string $type Either 'basic', 'digest', or null. If null/empty, will try both.
  * @return mixed If successful, returns an array with login name and password, otherwise null.
  * @access public
+ * @link http://book.cakephp.org/view/1303/loginCredentials-string-type
  */
 	function loginCredentials($type = null) {
 		switch (strtolower($type)) {
@@ -345,6 +351,7 @@ class SecurityComponent extends Object {
  * @param array $options Set of options for header
  * @return string HTTP-authentication request header
  * @access public
+ * @link http://book.cakephp.org/view/1304/loginRequest-array-options
  */
 	function loginRequest($options = array()) {
 		$options = array_merge($this->loginOptions, $options);
@@ -367,6 +374,7 @@ class SecurityComponent extends Object {
  * @param string $digest Digest authentication response
  * @return array Digest authentication parameters
  * @access public
+ * @link http://book.cakephp.org/view/1305/parseDigestAuthData-string-digest
  */
 	function parseDigestAuthData($digest) {
 		if (substr($digest, 0, 7) == 'Digest ') {
@@ -375,7 +383,7 @@ class SecurityComponent extends Object {
 		$keys = array();
 		$match = array();
 		$req = array('nonce' => 1, 'nc' => 1, 'cnonce' => 1, 'qop' => 1, 'username' => 1, 'uri' => 1, 'response' => 1);
-		preg_match_all('@(\w+)=([\'"]?)([a-zA-Z0-9=./\_-]+)\2@', $digest, $match, PREG_SET_ORDER);
+		preg_match_all('/(\w+)=([\'"]?)([a-zA-Z0-9@=.\/_-]+)\2/', $digest, $match, PREG_SET_ORDER);
 
 		foreach ($match as $i) {
 			$keys[$i[1]] = $i[3];
@@ -395,6 +403,7 @@ class SecurityComponent extends Object {
  * @return string Digest authentication hash
  * @access public
  * @see SecurityComponent::parseDigestAuthData()
+ * @link http://book.cakephp.org/view/1306/generateDigestResponseHash-array-data
  */
 	function generateDigestResponseHash($data) {
 		return md5(
@@ -413,6 +422,7 @@ class SecurityComponent extends Object {
  * @return mixed If specified, controller blackHoleCallback's response, or no return otherwise
  * @access public
  * @see SecurityComponent::$blackHoleCallback
+ * @link http://book.cakephp.org/view/1307/blackHole-object-controller-string-error
  */
 	function blackHole(&$controller, $error = '') {
 		if ($this->blackHoleCallback == null) {
@@ -608,10 +618,11 @@ class SecurityComponent extends Object {
 		}
 		unset($check['_Token']);
 
+		$locked = explode('|', $locked);
+
 		$lockedFields = array();
 		$fields = Set::flatten($check);
 		$fieldList = array_keys($fields);
-		$locked = unserialize(str_rot13($locked));
 		$multi = array();
 
 		foreach ($fieldList as $i => $key) {
@@ -734,4 +745,3 @@ class SecurityComponent extends Object {
 		}
 	}
 }
-?>

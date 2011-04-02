@@ -389,11 +389,11 @@ class Set {
 		$options = array_merge(array('flatten' => true), $options);
 		if (!isset($contexts[0])) {
 			$current = current($data);
-			if ((is_array($current) && count($data) <= 1) || !is_array($current) || !Set::numeric(array_keys($data))) {
+			if ((is_array($current) && count($data) < 1) || !is_array($current) || !Set::numeric(array_keys($data))) {
 				$contexts = array($data);
 			}
 		}
-		$tokens = array_slice(preg_split('/(?<!=)\/(?![a-z-]*\])/', $path), 1);
+		$tokens = array_slice(preg_split('/(?<!=|\\\\)\/(?![a-z-\s]*\])/', $path), 1);
 
 		do {
 			$token = array_shift($tokens);
@@ -437,7 +437,8 @@ class Set {
 						$items = array($items);
 					} elseif (!isset($items[0])) {
 						$current = current($items);
-						if ((is_array($current) && count($items) <= 1) || !is_array($current)) {
+						$currentKey = key($items);
+						if (!is_array($current) || (is_array($current) && count($items) <= 1 && !is_numeric($currentKey))) {
 							$items = array($items);
 						}
 					}
@@ -446,18 +447,18 @@ class Set {
 						$ctext = array($context['key']);
 						if (!is_numeric($key)) {
 							$ctext[] = $token;
-							$token = array_shift($tokens);
-							if (isset($items[$token])) {
-								$ctext[] = $token;
-								$item = $items[$token];
+							$tok = array_shift($tokens);
+							if (isset($items[$tok])) {
+								$ctext[] = $tok;
+								$item = $items[$tok];
 								$matches[] = array(
 									'trace' => array_merge($context['trace'], $ctext),
-									'key' => $token,
+									'key' => $tok,
 									'item' => $item,
 								);
 								break;
-							} else {
-								array_unshift($tokens, $token);
+							} elseif ($tok !== null) {
+								array_unshift($tokens, $tok);
 							}
 						} else {
 							$key = $token;
@@ -484,7 +485,7 @@ class Set {
 					$length = count($matches);
 					foreach ($matches as $i => $match) {
 						if (Set::matches(array($condition), $match['item'], $i + 1, $length)) {
-							$filtered[] = $match;
+							$filtered[$i] = $match;
 						}
 					}
 					$matches = $filtered;
@@ -936,6 +937,9 @@ class Set {
 		} else {
 			$keys = Set::extract($data, $path1);
 		}
+		if (empty($keys)) {
+			return array();
+		}
 
 		if (!empty($path2) && is_array($path2)) {
 			$format = array_shift($path2);
@@ -967,7 +971,9 @@ class Set {
 				return $out;
 			}
 		}
-
+		if (empty($vals)) {
+			return array();
+		}
 		return array_combine($keys, $vals);
 	}
 
@@ -1086,6 +1092,10 @@ class Set {
  * @static
  */
 	function sort($data, $path, $dir) {
+		$originalKeys = array_keys($data);
+		if (is_numeric(implode('', $originalKeys))) {
+			$data = array_values($data);
+		}
 		$result = Set::__flatten(Set::extract($data, $path));
 		list($keys, $values) = array(Set::extract($result, '{n}.id'), Set::extract($result, '{n}.value'));
 
@@ -1097,7 +1107,6 @@ class Set {
 		}
 		array_multisort($values, $dir, $keys, $dir);
 		$sorted = array();
-
 		$keys = array_unique($keys);
 
 		foreach ($keys as $k) {
@@ -1144,4 +1153,3 @@ class Set {
 		return  $result;
 	}
 }
-?>

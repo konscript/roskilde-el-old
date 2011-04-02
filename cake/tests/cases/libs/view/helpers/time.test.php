@@ -4,14 +4,14 @@
  *
  * PHP versions 4 and 5
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
  * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.view.helpers
  * @since         CakePHP(tm) v 1.2.0.4206
@@ -339,14 +339,14 @@ class TimeHelperTest extends CakeTestCase {
 		if (date('Y', $time) == date('Y')) {
 			$this->assertEqual(date('M jS, H:i', $time), $this->Time->niceShort($time));
 		} else {
-			$this->assertEqual(date('M jSY, H:i', $time), $this->Time->niceShort($time));
+			$this->assertEqual(date('M jS Y, H:i', $time), $this->Time->niceShort($time));
 		}
 
 		$time = time();
-		$this->assertEqual('Today, '.date('H:i', $time), $this->Time->niceShort($time));
+		$this->assertEqual('Today, ' . date('H:i', $time), $this->Time->niceShort($time));
 
 		$time = time() - DAY;
-		$this->assertEqual('Yesterday, '.date('H:i', $time), $this->Time->niceShort($time));
+		$this->assertEqual('Yesterday, ' . date('H:i', $time), $this->Time->niceShort($time));
 	}
 
 /**
@@ -661,7 +661,7 @@ class TimeHelperTest extends CakeTestCase {
 			'locales' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'locale' . DS)
 		), true);
 		Configure::write('Config.language', 'time_test');
-		$time = 1263487419; // Thu Jan 14 11:43:39 2010
+		$time = strtotime('Thu Jan 14 11:43:39 2010');
 
 		$result = $this->Time->convertSpecifiers('%a', $time);
 		$expected = 'jue';
@@ -741,6 +741,25 @@ class TimeHelperTest extends CakeTestCase {
 	}
 
 /**
+ * test convert %e on windows.
+ *
+ * @return void
+ */
+	function testConvertPercentE() {
+		if ($this->skipIf(DS !== '\\', 'Cannot run windows tests on non-windows OS')) {
+			return;
+		}
+		$time = strtotime('Thu Jan 14 11:43:39 2010');
+		$result = $this->Time->convertSpecifiers('%e', $time);
+		$expected = '14';
+		$this->assertEqual($result, $expected);
+
+		$result = $this->Time->convertSpecifiers('%e', strtotime('2011-01-01'));
+		$expected = ' 1';
+		$this->assertEqual($result, $expected);
+	}
+
+/**
  * test formatting dates taking in account preferred i18n locale file
  *
  * @access public
@@ -751,7 +770,7 @@ class TimeHelperTest extends CakeTestCase {
 			'locales' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'locale' . DS)
 		), true);
 		Configure::write('Config.language', 'time_test');
-		$time = 1263495568; //Thu Jan 14 13:59:28 2010
+		$time = strtotime('Thu Jan 14 13:59:28 2010');
 
 		$result = $this->Time->i18nFormat($time);
 		$expected = '14/01/10';
@@ -782,4 +801,3 @@ class TimeHelperTest extends CakeTestCase {
 		$this->assertEqual($this->Time->format($time, '%c'), $this->Time->i18nFormat($time, '%c'));
 	}
 }
-?>

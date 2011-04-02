@@ -438,7 +438,7 @@ class ShellDispatcher {
 			$printOptions = '(' . implode('/', $options) . ')';
 		}
 
-		if ($default == null) {
+		if ($default === null) {
 			$this->stdout($prompt . " $printOptions \n" . '> ', false);
 		} else {
 			$this->stdout($prompt . " $printOptions \n" . "[$default] > ", false);
@@ -501,6 +501,9 @@ class ShellDispatcher {
 		}
 		$params = str_replace('\\', '/', $params);
 
+		if (isset($params['working'])) {
+			$params['working'] = trim($params['working']);
+		}
 		if (!empty($params['working']) && (!isset($this->args[0]) || isset($this->args[0]) && $this->args[0]{0} !== '.')) {
 			if (empty($this->params['app']) && $params['working'] != $params['root']) {
 				$params['root'] = dirname($params['working']);
@@ -516,8 +519,10 @@ class ShellDispatcher {
 			$params['root'] .= '/' . dirname($params['app']);
 		}
 
-		$params['app'] = basename($params['app']);
-		$params['working'] = rtrim($params['root'], '/') . '/' . $params['app'];
+		$params['working'] = rtrim($params['root'], '/');
+		if (!$isWin || !preg_match('/^[A-Z]:$/i', $params['app'])) {
+			$params['working'] .= '/' . $params['app'];
+		}
 
 		if (!empty($matches[0]) || !empty($isWin)) {
 			$params = str_replace('/', '\\', $params);
@@ -659,4 +664,3 @@ class ShellDispatcher {
 if (!defined('DISABLE_AUTO_DISPATCH')) {
 	$dispatcher = new ShellDispatcher($argv);
 }
-?>
