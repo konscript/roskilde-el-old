@@ -1,5 +1,6 @@
 app/tmp/*
+app/webroot/attachments/photos/*
+
 app/config/database.php
 nbproject/*
 .DS_Store
-app/webroot/attachments/photos/*
