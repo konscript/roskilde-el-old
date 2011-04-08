@@ -39,16 +39,30 @@ class ProjectsController extends AppController {
 		// restrict the associated data fetched using containable behaviour
 		$this->Project->contain(array('Group', 'User'));		
 		
-		// workaround to decrease acl sql queries when current user is a projectmanager or groupmanager
+		
+        /*
+        ** workaround to decrease acl sql queries when current user is a projectmanager or groupmanager
+        */
+		
+		//projectmanager
 		if ($this->Auth->user('role_id') == 4) {
 		    $allowed_projects = $this->paginate('Project', array('Project.user_id' => $this->Auth->user('id')));	
+		    
+		//groupmanager
 		} else if ($this->Auth->user('role_id') == 3) {
 			$user_groups = $this->Project->Group->find('list', array('conditions' => array('Group.user_id' => $this->Auth->user('id')), 'fields' => array('Group.id')));
 		    $allowed_projects = $this->paginate('Project', array('Project.group_id' => $user_groups));	
-		} else {
-			// SPECIFICACL: Save only allowed project ids to array		
+		    
+		//sectionmanager
+		} else if ($this->Auth->user('role_id') == 2) {
+        
+            // SPECIFICACL: Save only allowed project ids to array		
 			$allowed_project_ids = $this->SpecificAcl->index("Project", $this->Project->find('all'));
 		    $allowed_projects = $this->paginate('Project', array('Project.id' => $allowed_project_ids));
+		    
+		//admin can see all projects
+		} else if ($this->Auth->user('role_id') == 1) {
+		    $allowed_projects = $this->paginate('Project');			    
 		}
 		
 		$this->set('projects', $allowed_projects);
@@ -56,6 +70,7 @@ class ProjectsController extends AppController {
 		if (count($allowed_projects) == 1 && $this->Auth->user('role_id') == 4) {
 			$this->redirect(array('action' => 'view', $allowed_projects["0"]["Project"]["id"]));
 		}
+
 	}
 
 	function view($id = null) {

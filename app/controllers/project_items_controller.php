@@ -4,18 +4,29 @@ class ProjectItemsController extends AppController {
 	var $name = 'ProjectItems';
 	var $components = array('SpecificAcl');		
     var $helpers = array('Output');
+    var $paginate = array(
+        'limit' => 25,
+        'order' => array(
+            'ProjectItem.title' => 'asc'
+        )
+    );
+
 
 	function index() {
 		$this->set('title_for_layout', 'Alle Enheder');	
 		$this->ProjectItem->recursive = 0;
 
-		// SPECIFICACL: Save only allowed project ids to array		
-		$allowed_projectitem_ids = $this->SpecificAcl->index("Project", $this->ProjectItem->Project->find('all'));
+
+        $allowed_projectitem_ids = $this->SpecificAcl->checkMany("ProjectItems");
+       
 
 		// setup pagination for allowed projects only
-	    $this->paginate = array('conditions' => array('ProjectItem.project_id' => $allowed_projectitem_ids), 'limit' => 20);
-	    $allowed_projectitems = $this->paginate('ProjectItem');
-		$this->set('projectItems', $allowed_projectitems);
+	    //$allowed_projectitems = $this->paginate = array('conditions' => array('ProjectItem.project_id' => $allowed_projectitem_ids), 'limit' => 20);
+
+	    $allowed_projects = $this->paginate('ProjectItem', array('ProjectItem.id' => $allowed_projectitem_ids));		
+		$this->set('projectItems', $allowed_projects);
+
+		
 	}
 
 	function view($id = null) {

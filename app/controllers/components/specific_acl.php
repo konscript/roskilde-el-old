@@ -18,6 +18,7 @@ class SpecificAclComponent extends Object {
  	* @access public
  	*/
     function index($model, $elements) {
+
     	$allowed_ids = array();
 		$i = 0;
 		foreach($elements as $element) {
@@ -25,7 +26,6 @@ class SpecificAclComponent extends Object {
 				$allowed_ids[$i] = $element[$model]['id'];
 				$i++;
 			}
-			//debug($element);
 		}
 		return $allowed_ids; 
     }
@@ -40,11 +40,44 @@ class SpecificAclComponent extends Object {
  	*/
     function check($model, $id) {
     	$model = Inflector::camelize($model);
+    	
 		if ($this->Acl->check($this->Auth->user(), array('model'=>$model,'foreign_key'=>$id))) {
 			return true;
 		} else {
 			return false;
 		}
+    }
+    
+    
+    /** get all the rows the user has permission to see at once**/
+    function checkMany($modelName){                   
+    
+        //make sure modelname is singular (Project, not projects)
+        $modelName = Inflector::singularize($modelName);                
+        $model = ClassRegistry::init($modelName);
+        
+        //do custom query to get interval for allowed acos
+        $interval = $model->query("
+            SELECT lft, rght FROM acos WHERE id = ( 
+                SELECT aco_id FROM  aros_acos  WHERE aro_id = ( 
+                    SELECT id FROM aros WHERE foreign_key = ".$this->Auth->user("id")." && model =  'User' ))
+         "); 
+                  
+         //get projects within interval (allowed projects)
+         $project_ids = ClassRegistry::init('acos')->find("list", array(
+            "conditions"=>array("acos.lft BETWEEN ? AND ?" => array($interval[0]["acos"]["lft"], $interval[0]["acos"]["rght"])),
+            'fields' => array('acos.foreign_key')
+         ));       
+        
+        //get entries that belongs to allowed projects, and to the current model (eg. ProjectItem)
+		$allowed_entry_ids = $model->find("list", array( 
+		    'conditions' => array('ProjectItem.project_id' => $project_ids),
+		    'recursive'=>-1
+	    ));                     
+
+        //only return the ids of the allowed entries
+        return array_keys($allowed_entry_ids);
+        
     }
 
 	function allow($model, $data) {
