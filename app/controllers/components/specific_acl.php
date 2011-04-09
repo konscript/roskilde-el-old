@@ -50,34 +50,61 @@ class SpecificAclComponent extends Object {
     
     
     /** get all the rows the user has permission to see at once**/
-    function checkMany($modelName){                   
+    function allowedProjects($modelName){                   
     
         //make sure modelname is singular (Project, not projects)
         $modelName = Inflector::singularize($modelName);                
         $model = ClassRegistry::init($modelName);
         
-        //do custom query to get interval for allowed acos
+        //get user perms.
         $interval = $model->query("
-            SELECT lft, rght FROM acos WHERE id = ( 
+            SELECT lft, rght FROM acos WHERE id IN ( 
+                SELECT aco_id FROM  aros_acos  WHERE 
+                aro_id = (SELECT parent_id FROM aros WHERE foreign_key = ".$this->Auth->user("id")." && model =  'User' )
+                OR aro_id = (SELECT id FROM aros WHERE foreign_key = ".$this->Auth->user("id")." && model =  'User' )
+                )
+         ");     
+     
+        /*         
+         $lft = $interval[0][0]["lft"];
+         $rght = $interval[0][0]["rght"];          
+        
+        //get role perms
+        $interval_role = $model->query("
+            SELECT min(lft) as lft, max(rght) as rght FROM acos WHERE id IN ( 
                 SELECT aco_id FROM  aros_acos  WHERE aro_id = ( 
-                    SELECT id FROM aros WHERE foreign_key = ".$this->Auth->user("id")." && model =  'User' ))
-         "); 
-                  
+                    SELECT parent_id FROM aros WHERE foreign_key = ".$this->Auth->user("id")." && model =  'User' ))
+         ");                   
+                 
+         //both role and user permissions
+         if(!empty($interval_role) && !empty($interval_user)){
+             //the lowest gets assigned
+             $lft = $interval_user[0]["acos"]["lft"] > $interval_role[0][0]["lft"] ? $interval_role[0][0]["lft"] : $interval_user[0]["acos"]["lft"];
+
+             //the highest gets assigned
+             $rght = $interval_user[0]["acos"]["rght"] < $interval_role[0][0]["rght"] ? $interval_role[0][0]["rght"] : $interval_user[0]["acos"]["rght"];
+
+        //only role permissions
+         }elseif(!empty($interval_role)){
+             $lft = $interval_role[0][0]["lft"];
+             $rght = $interval_role[0][0]["rght"];         
+             
+         //only user permissions
+         }else{
+             $lft = $interval_user[0]["acos"]["lft"];
+             $rght = $interval_user[0]["acos"]["rght"];                  
+         }    
+        */
+        
+ //( SELECT aco_id FROM aros_acos WHERE aro_id = (SELECT parent_id FROM aros WHERE foreign_key = 47 && model = 'User' ) OR aro_id = (SELECT id FROM aros WHERE foreign_key = 47 && model = 'User' ) )        
+        
          //get projects within interval (allowed projects)
          $project_ids = ClassRegistry::init('acos')->find("list", array(
-            "conditions"=>array("acos.lft BETWEEN ? AND ?" => array($interval[0]["acos"]["lft"], $interval[0]["acos"]["rght"])),
+            "conditions"=>array("acos.lft BETWEEN ? AND ?" => array($lft, $rght)),
             'fields' => array('acos.foreign_key')
          ));       
-        
-        //get entries that belongs to allowed projects, and to the current model (eg. ProjectItem)
-		$allowed_entry_ids = $model->find("list", array( 
-		    'conditions' => array('ProjectItem.project_id' => $project_ids),
-		    'recursive'=>-1
-	    ));                     
-
-        //only return the ids of the allowed entries
-        return array_keys($allowed_entry_ids);
-        
+         
+       return $project_ids;               
     }
 
 	function allow($model, $data) {

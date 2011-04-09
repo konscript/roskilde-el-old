@@ -17,7 +17,15 @@ class ProjectItemsController extends AppController {
 		$this->ProjectItem->recursive = 0;
 
 
-        $allowed_projectitem_ids = $this->SpecificAcl->checkMany("ProjectItems");
+        $project_ids = $this->SpecificAcl->allowedProjects("ProjectItems");
+        
+        //get entries that belongs to allowed projects, and to the current model (eg. ProjectItem)
+		$allowed_entry_ids = $this->ProjectItem->find("list", array( 
+		    'conditions' => array('ProjectItem.project_id' => $project_ids),
+		    'recursive'=>-1
+	    ));                     
+
+        $allowed_projectitem_ids = array_keys($allowed_entry_ids);
        
 
 		// setup pagination for allowed projects only
@@ -69,6 +77,7 @@ class ProjectItemsController extends AppController {
 				
 			}
 		}
+		
 		$items = $this->ProjectItem->Item->find('list', array('fields' => array('Item.id', 'Item.details')));
 		$parameters = $this->params['url'];
 		
