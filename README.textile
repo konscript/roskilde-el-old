@@ -1,5 +1,5 @@
 h2. Summary
-
+Tomas was here!
 *Description:*
 The goal is to develop an internal collaboration application for Roskilde Festival projects division, where coordinators can report power usage and administrators can extract information on a per project basis.
 The production deployment of the system is currently live at http://el.konscript.com
