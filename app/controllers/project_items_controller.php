@@ -17,22 +17,20 @@ class ProjectItemsController extends AppController {
 		$this->ProjectItem->recursive = 0;
 
 
-        $project_ids = $this->SpecificAcl->allowedProjects("ProjectItems");
-        
+        $project_ids = $this->SpecificAcl->allowedProjects();
+                            
         //get entries that belongs to allowed projects, and to the current model (eg. ProjectItem)
 		$allowed_entry_ids = $this->ProjectItem->find("list", array( 
 		    'conditions' => array('ProjectItem.project_id' => $project_ids),
 		    'recursive'=>-1
-	    ));                     
+	    ));     
 
+        //flip array to get ids (get keys instead of values)                
         $allowed_projectitem_ids = array_keys($allowed_entry_ids);
-       
 
-		// setup pagination for allowed projects only
-	    //$allowed_projectitems = $this->paginate = array('conditions' => array('ProjectItem.project_id' => $allowed_projectitem_ids), 'limit' => 20);
-
-	    $allowed_projects = $this->paginate('ProjectItem', array('ProjectItem.id' => $allowed_projectitem_ids));		
-		$this->set('projectItems', $allowed_projects);
+		// setup pagination for allowed projectsitems only
+	    $allowed_projectitems = $this->paginate('ProjectItem', array('ProjectItem.id' => $allowed_projectitem_ids));		
+		$this->set('projectItems', $allowed_projectitems);
 
 		
 	}

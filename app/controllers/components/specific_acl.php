@@ -41,6 +41,8 @@ class SpecificAclComponent extends Object {
     function check($model, $id) {
     	$model = Inflector::camelize($model);
     	
+    	
+    	
 		if ($this->Acl->check($this->Auth->user(), array('model'=>$model,'foreign_key'=>$id))) {
 			return true;
 		} else {
@@ -50,61 +52,43 @@ class SpecificAclComponent extends Object {
     
     
     /** get all the rows the user has permission to see at once**/
-    function allowedProjects($modelName){                   
+    function allowedProjects(){                   
     
-        //make sure modelname is singular (Project, not projects)
-        $modelName = Inflector::singularize($modelName);                
-        $model = ClassRegistry::init($modelName);
+        //model arbitratily chosen (does it matter?)
+        $model = ClassRegistry::init("Project");
         
-        //get user perms.
-        $interval = $model->query("
-            SELECT lft, rght FROM acos WHERE id IN ( 
-                SELECT aco_id FROM  aros_acos  WHERE 
-                aro_id = (SELECT parent_id FROM aros WHERE foreign_key = ".$this->Auth->user("id")." && model =  'User' )
-                OR aro_id = (SELECT id FROM aros WHERE foreign_key = ".$this->Auth->user("id")." && model =  'User' )
-                )
-         ");     
-     
-        /*         
-         $lft = $interval[0][0]["lft"];
-         $rght = $interval[0][0]["rght"];          
-        
-        //get role perms
-        $interval_role = $model->query("
-            SELECT min(lft) as lft, max(rght) as rght FROM acos WHERE id IN ( 
-                SELECT aco_id FROM  aros_acos  WHERE aro_id = ( 
-                    SELECT parent_id FROM aros WHERE foreign_key = ".$this->Auth->user("id")." && model =  'User' ))
-         ");                   
-                 
-         //both role and user permissions
-         if(!empty($interval_role) && !empty($interval_user)){
-             //the lowest gets assigned
-             $lft = $interval_user[0]["acos"]["lft"] > $interval_role[0][0]["lft"] ? $interval_role[0][0]["lft"] : $interval_user[0]["acos"]["lft"];
-
-             //the highest gets assigned
-             $rght = $interval_user[0]["acos"]["rght"] < $interval_role[0][0]["rght"] ? $interval_role[0][0]["rght"] : $interval_user[0]["acos"]["rght"];
-
-        //only role permissions
-         }elseif(!empty($interval_role)){
-             $lft = $interval_role[0][0]["lft"];
-             $rght = $interval_role[0][0]["rght"];         
-             
-         //only user permissions
-         }else{
-             $lft = $interval_user[0]["acos"]["lft"];
-             $rght = $interval_user[0]["acos"]["rght"];                  
-         }    
-        */
-        
- //( SELECT aco_id FROM aros_acos WHERE aro_id = (SELECT parent_id FROM aros WHERE foreign_key = 47 && model = 'User' ) OR aro_id = (SELECT id FROM aros WHERE foreign_key = 47 && model = 'User' ) )        
-        
-         //get projects within interval (allowed projects)
-         $project_ids = ClassRegistry::init('acos')->find("list", array(
-            "conditions"=>array("acos.lft BETWEEN ? AND ?" => array($lft, $rght)),
-            'fields' => array('acos.foreign_key')
-         ));       
+        //get allowed projects
+        $query = $model->query("
+SELECT distinct foreign_key FROM acos a INNER JOIN
+    (
+        SELECT lft, rght
+        FROM acos
+        WHERE
+            id IN ( 
+                SELECT aco_id
+                FROM aros_acos
+                WHERE
+                    (aro_id = (
+                        SELECT parent_id
+                        FROM aros
+                        WHERE foreign_key = ".$this->Auth->user("id")." && model =  'User'
+                    )
+                    OR aro_id = (
+                        SELECT id
+                        FROM aros
+                        WHERE foreign_key = ".$this->Auth->user("id")." && model =  'User'
+                    ))
+                    AND _read = '1'
+            )
+    ) i ON a.lft>=i.lft AND a.rght<=i.rght WHERE a.model='Project'");     
+  
+        //flatten array
+        $allowed_project_ids = array();
+        foreach($query as $key=>$value){
+            $allowed_project_ids[] = $value["a"]["foreign_key"];
+        }        
          
-       return $project_ids;               
+       return $allowed_project_ids;               
     }
 
 	function allow($model, $data) {
