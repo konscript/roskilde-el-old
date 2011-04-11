@@ -36,12 +36,6 @@ class SetupController extends AppController {
 
 		echo "Setting permissions for ACL:<br /><br />";
 
-		// all users (requesters)
-		$allusers = "Requesters";
-		$this->Acl->allow($allusers, 'Application/Controllers/Pages');
-		$this->Acl->allow($allusers, 'Application/Controllers/Projects/createExcel');
-		echo "- All users setup done<br />";		
-
 		// administrators
 		$administrators = array('model'=>'Role','foreign_key'=>1);
 		$this->Acl->allow($administrators, 'Application');
@@ -57,6 +51,7 @@ class SetupController extends AppController {
 		$this->Acl->allow($sectionmanagers, 'Application/Controllers/Projects');
 		$this->Acl->allow($sectionmanagers, 'Application/Controllers/ProjectItems');
 		$this->Acl->allow($sectionmanagers, 'Application/Controllers/Items');
+		$this->Acl->allow($sectionmanagers, 'Application/Controllers/Projects/createExcel');				
 		echo "- Section Managers setup done<br />";
 					 
 		// group managers
@@ -67,6 +62,7 @@ class SetupController extends AppController {
 		$this->Acl->allow($groupmanagers, 'Application/Controllers/ProjectItems');
 		$this->Acl->allow($groupmanagers, 'Application/Controllers/Items/index');
 		$this->Acl->allow($groupmanagers, 'Application/Controllers/Items/view');
+		$this->Acl->allow($groupmanagers, 'Application/Controllers/Projects/createExcel');				
 		echo "- Group Managers setup done<br />";
 
 		// project managers
@@ -76,9 +72,16 @@ class SetupController extends AppController {
 		$this->Acl->allow($projectmanagers, 'Application/Controllers/Projects/view');
 		$this->Acl->allow($projectmanagers, 'Application/Controllers/Projects/edit');
 		$this->Acl->allow($projectmanagers, 'Application/Controllers/ProjectItems');
-		$this->Acl->allow($groupmanagers, 'Application/Controllers/Items/index');
-		$this->Acl->allow($groupmanagers, 'Application/Controllers/Items/view');						
+		$this->Acl->allow($projectmanagers, 'Application/Controllers/Items/index');
+		$this->Acl->allow($projectmanagers, 'Application/Controllers/Items/view');						
+		$this->Acl->allow($projectmanagers, 'Application/Controllers/Projects/createExcel');		
 		echo "- Project Managers setup done<br />";
+		
+		// all users (requesters)
+		$allusers = "Requesters";
+		$this->Acl->allow($allusers, 'Application/Controllers/Pages');
+		$this->Acl->allow($allusers, 'Application/Controllers/Projects/createExcel');
+		echo "- All users setup done<br />";			
 		
 		die("<br />All done!");
  	}

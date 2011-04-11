@@ -3,6 +3,7 @@
 class ExcelComponent extends Object {
 
     function createExcel($data) {
+     
         //App::import('Vendor', 'PHPExcel/PHPExcel');
         //App::import('Vendor', 'PHPExcel/PHPExcel/IOFactory');
         /** Error reporting */
@@ -26,7 +27,7 @@ class ExcelComponent extends Object {
                                      ->setTitle("Roskilde el bestilling")
                                      ->setSubject("Roskilde el bestilling for projekt")
                                      ->setDescription("Dette dokument blev oprettet af Søren og Lasse. I er cocks. Vi rocks!")
-                                     ->setKeywords("roskilde, 2010, musik, el, bestilling, booking, beer")
+                                     ->setKeywords("roskilde, 2011, musik, el, bestilling, booking, beer")
                                      ->setCategory("roskilde");
 
         /*
@@ -64,7 +65,7 @@ class ExcelComponent extends Object {
 		            ->setCellValue('C9', $data["Project"]["title"]) //Projektnavn
 		            ->setCellValue('H9', $data["Project"]["items_start"]) //start dato
 		            ->setCellValue('J9', $data["Project"]["items_end"]) //slut dato
-                    ->setCellValue('A10', $data["Project"]["build_start"].' til '.$data["Project"]["build_end"]) //byggestrøm periode
+                    ->setCellValue('A10', 'Byggestrøm ønskes fra d. '.$data["Project"]["build_start"].' til '.$data["Project"]["build_end"]) //byggestrøm periode
 		            ->setCellValue('A12', ''); //billedekommentar
 
         //enheder

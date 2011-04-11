@@ -3,7 +3,7 @@ class ProjectsController extends AppController {
 
     var $name = 'Projects';
     var $components = array('SpecificAcl', 'Utils', 'Attachment', 'Excel');
-    var $helpers = array('Form', 'DatePicker');
+    var $helpers = array('Form', 'DatePicker', 'Time');
     var $paginate = array(
     		'Project' => array(
     			'limit' => 20),
@@ -57,7 +57,9 @@ class ProjectsController extends AppController {
 		// restrict the associated data fetched using recursive levels		
 		$this->Project->recursive = 2;		
 
-		// SPECIFICACL: Project-based permission check
+		// SPECIFICACL: Project-based permission check	
+		
+
 		if (!$this->SpecificAcl->check("Project", $id)) {
 			$this->Session->setFlash('Du har ikke adgang til projektet', 'default', array('class' => 'error'));			
 			$this->redirect(array('action' => 'index'));			
@@ -201,12 +203,14 @@ class ProjectsController extends AppController {
             if($this->data['Project']['uploadAttachment'] && $this->data['Project']['Attachment']['error'] != 4) {
                 $this->data['Project']['file_path'] = $this->Attachment->upload($this->data['Project']['Attachment']);
             }
-			
+           
 			if ($this->Project->save($this->data)) {
 		        
-		        // SPECIFICACL: Removes permission for old and reassigns permission for the chosen project manager
-				$this->SpecificAcl->deny("Project", $olddata);
-				$this->SpecificAcl->allow("Project", $this->data);			
+		        // SPECIFICACL: Removes permission for old and reassigns permission for the chosen project manager (only if it was set/changed)
+                if(isset($this->data["Project"]["user_id"])){
+				    $this->SpecificAcl->deny("Project", $olddata);
+				    $this->SpecificAcl->allow("Project", $this->data);			
+				}
 
 				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Projektet'), 'default', array('class' => 'success'));
 				

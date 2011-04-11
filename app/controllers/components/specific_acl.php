@@ -39,10 +39,8 @@ class SpecificAclComponent extends Object {
  	* @access public
  	*/
     function check($model, $id) {
-    	$model = Inflector::camelize($model);
-    	
-    	
-    	
+    	$model = Inflector::camelize($model);    
+    	    	    	
 		if ($this->Acl->check($this->Auth->user(), array('model'=>$model,'foreign_key'=>$id))) {
 			return true;
 		} else {

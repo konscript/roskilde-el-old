@@ -15,22 +15,22 @@
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Byggestrøm, start'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $project['Project']['build_start']; ?>
+            <?php echo $this->Time->format( 'd/m Y', $project['Project']['build_start']); ?>
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Byggestrøm, slut'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $project['Project']['build_end']; ?>
+            <?php echo $this->Time->format( 'd/m Y', $project['Project']['build_end']); ?>
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Enhedsstrøm, start'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $project['Project']['items_start']; ?>
+            <?php echo $this->Time->format( 'd/m Y', $project['Project']['items_start']); ?>
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Enhedsstrøm, slut'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $project['Project']['items_end']; ?>
+            <?php echo $this->Time->format( 'd/m Y', $project['Project']['items_end']); ?>		
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Status'); ?></dt>
@@ -95,6 +95,9 @@
 		"type" => "Type",
 		"actions" => "Handlinger"	
 	);
+	
+	debug($project_items);
+	
 	$data = array();
 	foreach ($project_items as $key => $project_item) {
 		$data[$key]['ProjectItem'] = array(
