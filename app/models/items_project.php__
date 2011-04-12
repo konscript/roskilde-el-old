@@ -1,7 +1,7 @@
 <?php
-class ProjectItem extends AppModel {
+class ItemsProject extends AppModel {
 
-	var $name = 'ProjectItem';
+	var $name = 'ProjectsItem';
 	var $actsAs = array('WhoDidIt'); 
 	
 	var $validate = array(

@@ -3,7 +3,7 @@ class ProjectsController extends AppController {
 
     var $name = 'Projects';
     var $components = array('SpecificAcl', 'Utils', 'Attachment', 'Excel');
-    var $helpers = array('Form', 'DatePicker');
+    var $helpers = array('Form', 'DatePicker', 'Time');
     var $paginate = array(
     		'Project' => array(
     			'limit' => 20),
@@ -38,33 +38,11 @@ class ProjectsController extends AppController {
 
 		// restrict the associated data fetched using containable behaviour
 		$this->Project->contain(array('Group', 'User'));		
+				
+		$allowed_project_ids = $this->SpecificAcl->allowedProjects();
+	    $allowed_projects = $this->paginate('Project', array('Project.id' => $allowed_project_ids));
 		
-		
-        /*
-        ** workaround to decrease acl sql queries when current user is a projectmanager or groupmanager
-        */
-		
-		//projectmanager
-		if ($this->Auth->user('role_id') == 4) {
-		    $allowed_projects = $this->paginate('Project', array('Project.user_id' => $this->Auth->user('id')));	
-		    
-		//groupmanager
-		} else if ($this->Auth->user('role_id') == 3) {
-			$user_groups = $this->Project->Group->find('list', array('conditions' => array('Group.user_id' => $this->Auth->user('id')), 'fields' => array('Group.id')));
-		    $allowed_projects = $this->paginate('Project', array('Project.group_id' => $user_groups));	
-		    
-		//sectionmanager
-		} else if ($this->Auth->user('role_id') == 2) {
-        
-            // SPECIFICACL: Save only allowed project ids to array		
-			$allowed_project_ids = $this->SpecificAcl->index("Project", $this->Project->find('all'));
-		    $allowed_projects = $this->paginate('Project', array('Project.id' => $allowed_project_ids));
-		    
-		//admin can see all projects
-		} else if ($this->Auth->user('role_id') == 1) {
-		    $allowed_projects = $this->paginate('Project');			    
-		}
-		
+		//pass data to view
 		$this->set('projects', $allowed_projects);
 		
 		if (count($allowed_projects) == 1 && $this->Auth->user('role_id') == 4) {
@@ -79,7 +57,9 @@ class ProjectsController extends AppController {
 		// restrict the associated data fetched using recursive levels		
 		$this->Project->recursive = 2;		
 
-		// SPECIFICACL: Project-based permission check
+		// SPECIFICACL: Project-based permission check	
+		
+
 		if (!$this->SpecificAcl->check("Project", $id)) {
 			$this->Session->setFlash('Du har ikke adgang til projektet', 'default', array('class' => 'error'));			
 			$this->redirect(array('action' => 'index'));			
@@ -95,11 +75,11 @@ class ProjectsController extends AppController {
 		$this->Project->contain(array('Group', 'User', 'CreatedBy', 'ModifiedBy'));
 		
 		// save to view variable: paginate associated project items
-	    $project_items = $this->paginate($this->Project->ProjectItem, array('ProjectItem.project_id' => $id));
+	    //$project_items = $this->paginate($this->Project->ProjectItem, array('ProjectItem.project_id' => $id));
 
 		$project = $this->Project->read(null, $id);
 
-		$this->set(compact('project', 'project_items'));
+		$this->set(compact('project')); //, 'project_items'
 	}
 
 	function add() {
@@ -223,12 +203,14 @@ class ProjectsController extends AppController {
             if($this->data['Project']['uploadAttachment'] && $this->data['Project']['Attachment']['error'] != 4) {
                 $this->data['Project']['file_path'] = $this->Attachment->upload($this->data['Project']['Attachment']);
             }
-			
+           
 			if ($this->Project->save($this->data)) {
 		        
-		        // SPECIFICACL: Removes permission for old and reassigns permission for the chosen project manager
-				$this->SpecificAcl->deny("Project", $olddata);
-				$this->SpecificAcl->allow("Project", $this->data);			
+		        // SPECIFICACL: Removes permission for old and reassigns permission for the chosen project manager (only if it was set/changed)
+                if(isset($this->data["Project"]["user_id"])){
+				    $this->SpecificAcl->deny("Project", $olddata);
+				    $this->SpecificAcl->allow("Project", $this->data);			
+				}
 
 				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Projektet'), 'default', array('class' => 'success'));
 				
@@ -245,11 +227,11 @@ class ProjectsController extends AppController {
 		$allowed_group_ids = $this->SpecificAcl->index("Group", $this->Project->Group->find('all'));
 	  	$groups = $this->Project->Group->find('list', array('conditions' => array('Group.id' => $allowed_group_ids)));
 		
-	    $project_items = $this->paginate($this->Project->ProjectItem, array('ProjectItem.project_id' => $id));
+	    //$project_items = $this->paginate($this->Project->ProjectItem, array('ProjectItem.project_id' => $id));
 		$users = $this->Project->User->find('list', array('fields' => array('User.id', 'User.username'), 'conditions' => array('User.role_id' => 4)));
 		$project = $this->Project->read(null, $id);
 		
-		$this->set(compact('project', 'groups', 'users', 'project_items'));
+		$this->set(compact('project', 'groups', 'users')); //project_items
 	}
 
 	function delete($id = null) {

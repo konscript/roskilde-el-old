@@ -68,19 +68,9 @@ class Project extends AppModel {
 		)
 	);
 
-	var $hasMany = array(
-		'ProjectItem' => array(
-			'className' => 'ProjectItem',
-			'foreignKey' => 'project_id',
-			'dependent' => true,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
+	var $hasAndBelongsToMany = array(
+		'Item' => array(
+			'className' => 'Item'
 		)
 	);
 
