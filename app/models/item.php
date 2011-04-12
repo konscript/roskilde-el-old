@@ -28,19 +28,7 @@ class Item extends AppModel {
 
 	var $hasAndBelongsToMany = array(
 		'Project' => array(
-			'className' => 'Project',
-			'joinTable' => 'project_items',
-			'foreignKey' => 'item_id',
-			'associationForeignKey' => 'project_id',
-			'unique' => true,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'finderQuery' => '',
-			'deleteQuery' => '',
-			'insertQuery' => ''
+			'className' => 'Project'
 		)
 	);
 	

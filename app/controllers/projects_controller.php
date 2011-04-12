@@ -75,11 +75,11 @@ class ProjectsController extends AppController {
 		$this->Project->contain(array('Group', 'User', 'CreatedBy', 'ModifiedBy'));
 		
 		// save to view variable: paginate associated project items
-	    $project_items = $this->paginate($this->Project->ProjectItem, array('ProjectItem.project_id' => $id));
+	    //$project_items = $this->paginate($this->Project->ProjectItem, array('ProjectItem.project_id' => $id));
 
 		$project = $this->Project->read(null, $id);
 
-		$this->set(compact('project', 'project_items'));
+		$this->set(compact('project')); //, 'project_items'
 	}
 
 	function add() {
@@ -227,11 +227,11 @@ class ProjectsController extends AppController {
 		$allowed_group_ids = $this->SpecificAcl->index("Group", $this->Project->Group->find('all'));
 	  	$groups = $this->Project->Group->find('list', array('conditions' => array('Group.id' => $allowed_group_ids)));
 		
-	    $project_items = $this->paginate($this->Project->ProjectItem, array('ProjectItem.project_id' => $id));
+	    //$project_items = $this->paginate($this->Project->ProjectItem, array('ProjectItem.project_id' => $id));
 		$users = $this->Project->User->find('list', array('fields' => array('User.id', 'User.username'), 'conditions' => array('User.role_id' => 4)));
 		$project = $this->Project->read(null, $id);
 		
-		$this->set(compact('project', 'groups', 'users', 'project_items'));
+		$this->set(compact('project', 'groups', 'users')); //project_items
 	}
 
 	function delete($id = null) {
