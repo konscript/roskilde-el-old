@@ -80,7 +80,10 @@ class UsersController extends AppController {
 				}
 			}
 		}
-		$this->set('roles', $this->User->Role->find('list', array('conditions' => array('Role.id >=' => $this->Auth->user('role_id')))));
+		
+		//only allow users to create other users with permissions similar to their own
+		$roles = $this->User->Role->find('list', array('conditions' => array('Role.id >=' => $this->Auth->user('role_id'))));
+		$this->set('roles', $roles);
 	}
 
 	function edit($id = null) {

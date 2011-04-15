@@ -1,16 +1,14 @@
-<div class="projectItems index">
-	<?php
+<div class="ItemsProject index">
+	<?php	
 	
 	$header = array(
 		"id" => "ID",
 		"title" => "Navn",
 		"power_usage" => "Strømforbrug",
-		"quantity" => "Antal",		
-		"item_id" => "Skabelon",
-		"project_id" => "Projekt",
+		"quantity" => "Antal",
 		"actions" => "Handlinger"	
 	);
-	echo $this->Output->index($header, $projectItems);
+	echo $this->Output->index($header, $ItemsProject);
 	
 	?>
 </div>

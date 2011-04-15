@@ -94,28 +94,30 @@
 		"quantity" => "Antal",
 		"type" => "Type",
 		"actions" => "Handlinger"	
-	);
+	);	
 	
-	debug($project_items);
+
 	
 	$data = array();
-	foreach ($project_items as $key => $project_item) {
-		$data[$key]['ProjectItem'] = array(
-			"title" => $this->Html->link($project_item['ProjectItem']['title'], array('controller' => 'project_items', 'action' => 'view', $project_item['ProjectItem']['id'])),
-			"description" => $project_item['ProjectItem']['description'],		
-			"power_usage" => $project_item['ProjectItem']['power_usage'],
-			"quantity" => $project_item['ProjectItem']['quantity'],
+	foreach ($project["Item"] as $key => $item) {
+		$data[$key]["Items"] = array(
+			"title" => $this->Html->link($item['title'], array('controller' => 'items', 'action' => 'view', $item['id'])),
+			"description" => $item['description'],		
+			"power_usage" => $item['power_usage'],
+			"quantity" => $item['ItemsProject']['quantity'],
 			"type" => "Egen",
-			"actions" => $this->Output->edit(null, array('controller' => 'project_items', 'action' => 'edit', $project_item['ProjectItem']['id'], '?' => array('project_id' => $project['Project']['id']))).$this->Output->delete(null, array('controller' => 'project_items', 'action' => 'delete', $project_item['ProjectItem']['id']))	
+			"actions" => 
+			    $this->Output->edit(null, array('controller' => 'items_projects', 'action' => 'edit', $item['ItemsProject']['id'])).
+			    $this->Output->delete(null, array('controller' => 'items_projects', 'action' => 'delete', $item['ItemsProject']['id']))	
 		);
 	}
-	echo $this->Output->index($header, $data, true, false);
+	echo $this->Output->index($header, $data, false, false);
 	
 	?>
 	<div class="actions">
 		<ul>
 			<li>
-			<?php echo $this->Output->add('Opret ny Enhed', array('controller' => 'project_items', 'action' => 'add', '?' => array('project_id' => $project['Project']['id']))); ?>
+			<?php echo $this->Output->add('Opret ny Enhed', array('controller' => 'items', 'action' => 'add', $project['Project']['id'])); ?>
 			</li>
 		</ul>
 	</div>

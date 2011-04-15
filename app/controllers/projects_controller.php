@@ -72,14 +72,10 @@ class ProjectsController extends AppController {
 		}
 		
 		// restrict the associated data fetched using containable behaviour
-		$this->Project->contain(array('Group', 'User', 'CreatedBy', 'ModifiedBy'));
-		
-		// save to view variable: paginate associated project items
-	    //$project_items = $this->paginate($this->Project->ProjectItem, array('ProjectItem.project_id' => $id));
-
+		$this->Project->contain(array('Item','Group', 'User', 'CreatedBy', 'ModifiedBy'));			
 		$project = $this->Project->read(null, $id);
 
-		$this->set(compact('project')); //, 'project_items'
+		$this->set(compact('project'));
 	}
 
 	function add() {

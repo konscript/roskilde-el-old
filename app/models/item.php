@@ -1,6 +1,6 @@
 <?php
 class Item extends AppModel {
-
+    //var $actsAs = 'ExtendAssociations'; 
 	var $name = 'Item';
 
 	var $validate = array(
@@ -28,7 +28,8 @@ class Item extends AppModel {
 
 	var $hasAndBelongsToMany = array(
 		'Project' => array(
-			'className' => 'Project'
+			'className' => 'Project',
+			'with'=>'ItemsProject'
 		)
 	);
 	

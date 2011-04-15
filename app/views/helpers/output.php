@@ -15,7 +15,7 @@
 
 class OutputHelper extends AppHelper {
 
-    var $helpers = array('Html', 'Paginator', 'Output');
+    var $helpers = array('Html', 'Paginator', 'Output', 'Form');
 	
 	function __construct() {
 		App::import('Component', 'Acl');
@@ -145,8 +145,7 @@ class OutputHelper extends AppHelper {
 					} 
 				}
 				$out .= '</tr>';
-			}
-					
+			}					
 			$out .= '</table>';
 
 			// paginator meta info			
@@ -385,21 +384,44 @@ class OutputHelper extends AppHelper {
     }    
 
     function powerUsage($usage = 0, $allowance = 0) {
-		$out = "<span class='icon_powerusage_";
-		
+
+		$status = "";
 		if ($allowance == 0) {
-			$out .= "0";			 	
+			$status = "0";			 	
 		} else if ($usage < $allowance) {
-			$out .= "1";
+			$status = "1";
 		} else if ($usage > $allowance) {
-			$out .= "2"; 
+			$status = "2"; 
 		}    	
     	
-    	$out .= "'>".$usage."</span>";
+		$out = "<span class='icon_powerusage_".$status."'>".$usage."</span>";
     	    	
 		// build the output
 		return $out;
     }    
+    
+    
+    function project_list($type, $projects){    
+
+    					//If creating a new item, add the project_id to project model. Else just add relation to ItemsProject model    					
+    					$project_field = $type == "new" ? "Project" : "project_id"; 
+    	
+					    /** assign to specific project **/
+                  		if (isset($this->params["pass"][0])) {
+                  			echo"case 1";
+						    $project_id = $this->params["pass"][0];
+						    $assigned_to_project_string = "<strong>Tilknyttet til følgende projekt:</strong>  ".$this->Html->link($projects[$project_id], array("controller"=>"projects", "action"=>"view", $project_id));						    
+						    $project_value = array('type'=>'hidden', 'value'=>$project_id);						    
+						              
+					    /** choose project(s) from list **/   
+                    	} else {                    		
+                    		echo"case 2";
+                        	$project_value = array('type' => 'select', 'multiple' => 'checkbox');
+                            $assigned_to_project_string = "";
+                    	}			
+                    	
+					    return $assigned_to_project_string.$this->Form->input($project_field, $project_value);
+    }     
 
 }
 

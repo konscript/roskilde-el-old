@@ -68,11 +68,7 @@ class Project extends AppModel {
 		)
 	);
 
-	var $hasAndBelongsToMany = array(
-		'Item' => array(
-			'className' => 'Item'
-		)
-	);
+	var $hasAndBelongsToMany = 'Item';
 
     // Defines hierachy in the ACL/ACO structure
 	function parentNode() {

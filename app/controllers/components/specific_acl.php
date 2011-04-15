@@ -50,10 +50,12 @@ class SpecificAclComponent extends Object {
     
     
     /** get all the rows the user has permission to see at once**/
-    function allowedProjects(){                   
+    function allowedProjects($modelName = null){                   
+            
+        $modelName = $modelName == null ? "Project" : $modelName;
     
         //model arbitratily chosen (does it matter?)
-        $model = ClassRegistry::init("Project");
+        $model = ClassRegistry::init($modelName);
         
         //get allowed projects
         $query = $model->query("
@@ -84,9 +86,20 @@ SELECT distinct foreign_key FROM acos a INNER JOIN
         $allowed_project_ids = array();
         foreach($query as $key=>$value){
             $allowed_project_ids[] = $value["a"]["foreign_key"];
-        }        
+        }                
+        
+        if($modelName != "Project"){
+            //get entries that belongs to allowed projects, and to the current model (eg. ItemsProject)
+		    $allowed_entry_ids = $model->find("list", array( 
+		        'conditions' => array($modelName.'.project_id' => $allowed_project_ids),
+		        'recursive'=>-1
+	        ));     
+
+            //flip array to get ids (get keys instead of values)                
+            $allowed_project_ids = array_keys($allowed_entry_ids);        
+         }
          
-       return $allowed_project_ids;               
+       return $allowed_project_ids;
     }
 
 	function allow($model, $data) {
