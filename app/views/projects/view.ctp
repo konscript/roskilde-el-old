@@ -117,7 +117,7 @@
 	<div class="actions">
 		<ul>
 			<li>
-			<?php echo $this->Output->add('Opret ny Enhed', array('controller' => 'items', 'action' => 'add', $project['Project']['id'])); ?>
+			<?php echo $this->Output->add('Tilknyt enhed', array('controller' => 'items_projects', 'action' => 'add', $project['Project']['id'])); ?>
 			</li>
 		</ul>
 	</div>

@@ -15,51 +15,38 @@ class ItemsProjectsController extends AppController {
 		}
 		$this->set('itemsProject', $this->ItemsProject->read(null, $id));
 	}
-
-/**
-  	function add($project_id = null) {
-		$this->set('title_for_layout', 'Opret ny Enhedsskabelon');	
-		
-		if (!empty($this->data)) {
-		    
-		    debug($this->data);
-            exit();
-
-            //If model "Item" is set, there is no template. Insert new Item entry
-		    if(isset($this->data["Item"])){
-		        $this->data["Item"]["id"] = null; //set item_id to null, to be sure a new record is created
-                $this->Item->create();
-                $success = $this->Item->save($this->data);
-            //when using a template (a previous item), save to ItemsProject model (only saving the relation - no item is saved!)
-		    }else{
-                $success = $this->Item->ItemsProject->save($this->data);
-		    }
-		
-			if ($success) {
-				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Enhedsskabelonen'), 'default', array('class' => 'success'));
-				
-                //redirect: if saving an item related to a project, return to project. Else return to Item/index
-			    $redirectArray = $project_id != null ? array('controller'=>'projects', 'action' => 'view', $project_id) : array('action' => 'index');
-    		    $this->redirect($redirectArray);
-    		    
-			} else {
-				$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Enhedsskabelonen'), 'default', array('class' => 'error'));
-			}
-
-		}
-		
-		//Set project id to view
-		if($project_id != null){
-		    $this->data["Project"]["id"] = $project_id;
-		}
-		
-		$items = $this->Item->find('list');
-		$projects = $this->Item->Project->find('list');		
-		$this->set(compact('projects', 'items', 'project_id'));
-	}
- */	
 	
-	function add() {
+	
+	/**
+		    	$project_ids = $this->data["ItemsProject"]["project_id"];
+		    	
+	        	//add to multiple projects	
+		    	if(is_array($project_ids)){
+					foreach($project_ids as $id){
+						$record = $this->data;
+						$record["ItemsProject"]["project_id"] = $id;
+						 
+						$this->ItemsProject->create();						
+		                $success = $this->ItemsProject->save($record);						
+					}		    		
+		    	//add to single project
+		    	}else{
+		    	...
+		    	}
+		    	
+		    		
+		    	--------view helper-------
+				/ ** assign to specific project ** /
+                  	if (isset($this->params["pass"][0])) {		    
+					              
+				    / ** choose project(s) from list ** /   
+                    } else {                    		
+                        $project_value = array('type' => 'select', 'multiple' => 'checkbox');
+                            $assigned_to_project_string = "";
+                    }					    		    
+	 */
+	
+	function add($project_id) {
 		if (!empty($this->data)) {
 			
 			//Create new item (cake creates relation automagically)
@@ -71,35 +58,22 @@ class ItemsProjectsController extends AppController {
                 
             //Use existing item (Only create relation)  
 		    }elseif(isset($this->data["ItemsProject"])){		    
-		    	$project_ids = $this->data["ItemsProject"]["project_id"];
-		    	
-	        	//add to multiple projects	
-		    	if(is_array($project_ids)){
-					foreach($project_ids as $project_id){
-						$record = $this->data;
-						$record["ItemsProject"]["project_id"] = $project_id;
-						 
-						$this->ItemsProject->create();						
-		                $success = $this->ItemsProject->save($record);						
-					}		    		
-		    	//add to single project
-		    	}else{		    	
-			    	$this->ItemsProject->create();
-	                $success = $this->ItemsProject->save($this->data);
-		    	}
-		    	
+		    	$this->ItemsProject->create();
+	            $success = $this->ItemsProject->save($this->data);		    	
 		    }else{
 		    	$success = false;
 		    }			
 			
 			if ($success) {
 				$this->Session->setFlash(__('The items project has been saved', true));
-				$this->redirect(array('action' => 'index'));
+				$this->redirect(array('controller'=>'projects', 'action' => 'view', $project_id));
 			} else {
 				$this->Session->setFlash(__('The items project could not be saved. Please, try again.', true));
 			}
 		}
-		$items = $this->ItemsProject->Item->find('list');
+		$items = $this->ItemsProject->Item->find('list', array(
+			"conditions" => array("Item.template"=>1)
+		));
 		$projects = $this->ItemsProject->Project->find('list');
 		$this->set(compact('items', 'projects'));
 	}
