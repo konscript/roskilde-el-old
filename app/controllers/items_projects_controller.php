@@ -47,6 +47,11 @@ class ItemsProjectsController extends AppController {
 	 */
 	
 	function add($project_id) {
+		if(!isset($project_id)){
+			$this->Session->setFlash(__('The url is not valid (missing project_id)', true));
+			$this->redirect(array('controller'=>'projects', 'action' => 'index'));
+		}
+		
 		if (!empty($this->data)) {
 			
 			//Create new item (cake creates relation automagically)
@@ -54,7 +59,13 @@ class ItemsProjectsController extends AppController {
 		    	
 		        $this->data["Item"]["id"] = null; //set item_id to null, to be sure a new record is created
                 $this->ItemsProject->Item->create();
-                $success = $this->ItemsProject->Item->save($this->data);                               
+                $success = $this->ItemsProject->Item->save($this->data);     
+                
+                //indsæt quantity
+                if($success){                    
+                    $item_id = $this->ItemsProject->Item->getLastInsertId();
+                    //sæt quantity ved alle rækker hvor $project_id $item_id
+                }
                 
             //Use existing item (Only create relation)  
 		    }elseif(isset($this->data["ItemsProject"])){		    
@@ -65,7 +76,7 @@ class ItemsProjectsController extends AppController {
 		    }			
 			
 			if ($success) {
-				$this->Session->setFlash(__('The items project has been saved', true));
+				$this->Session->setFlash(__('The items has been saved', true));
 				$this->redirect(array('controller'=>'projects', 'action' => 'view', $project_id));
 			} else {
 				$this->Session->setFlash(__('The items project could not be saved. Please, try again.', true));

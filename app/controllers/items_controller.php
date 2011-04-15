@@ -5,6 +5,7 @@ class ItemsController extends AppController {
 
 	function index() {
 		$this->Item->recursive = 0;
+		$this->set('title_for_layout', 'Alle enheder');			
 		$this->set('items', $this->paginate());
 	}
 
