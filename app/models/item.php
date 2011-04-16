@@ -1,36 +1,22 @@
 <?php
 class Item extends AppModel {
-    //var $actsAs = 'ExtendAssociations'; 
-	var $name = 'Item';
 
+	var $name = 'Item';
+	var $actsAs = array('WhoDidIt');
+	var $hasMany = "ItemsProject";
 	var $validate = array(
 		'title' => array(
 			'notempty' => array(
 				'rule' => array('notempty'),
-				'message' => 'Indtast enhedens navn ',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'message' => 'Indtast enhedens navn '
 			),
 		),
 		'power_usage' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
-				'message' => 'Indtast det estimerede strømforbrug for enheden',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'message' => 'Indtast det estimerede strømforbrug for enheden'
 			),
 		),
-	);
-
-	var $hasAndBelongsToMany = array(
-		'Project' => array(
-			'className' => 'Project',
-			'with'=>'ItemsProject'
-		)
 	);
 	
 	// Virtual field that concatenates title and power usage (used in dropdowns in views)

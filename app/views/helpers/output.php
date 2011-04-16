@@ -401,16 +401,27 @@ class OutputHelper extends AppHelper {
     }    
     
     
-    function project_list($type, $projects){    
+    function project_list($project_field, $projects){    
+    
+        //add item to specific project
+        if(count($projects)==1){
+        
+			//If creating a new item, add the project_id to project model. Else just add relation to ItemsProject model    					                         
+	        $project_id = $this->params["pass"][0];
+	        $assigned_to_project_string = "Tilknyttet til  ".$this->Html->link($projects[$project_id], array("controller"=>"projects", "action"=>"view", $project_id));						    
+	        $project_value = array('type'=>'hidden', 'value'=>$project_id);			                    	
+        	
+	        return $assigned_to_project_string.$this->Form->input($project_field, $project_value);                        
+            
 
-    					//If creating a new item, add the project_id to project model. Else just add relation to ItemsProject model    					
-    					$project_field = $type == "new" ? "Project" : "project_id";                         
-					    $project_id = $this->params["pass"][0];
-					    $assigned_to_project_string = "<strong>Tilknyttet til følgende projekt:</strong>  ".$this->Html->link($projects[$project_id], array("controller"=>"projects", "action"=>"view", $project_id));						    
-					    $project_value = array('type'=>'hidden', 'value'=>$project_id);			                    	
-                    	
-					    return $assigned_to_project_string.$this->Form->input($project_field, $project_value);
+        //show a list with all projects
+        }else{        
+    		echo $this->Form->input('ItemsProject.project_id', array('empty' => true, 'label'=>'Projekt', 'class'=>'showOnChange'));        
+        }
+
+
     }     
+
 
 }
 

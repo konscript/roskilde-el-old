@@ -54,28 +54,9 @@ class ItemsProjectsController extends AppController {
 		
 		if (!empty($this->data)) {
 			
-			//Create new item (cake creates relation automagically)
-		    if(isset($this->data["Item"])){
-		    	
-		        $this->data["Item"]["id"] = null; //set item_id to null, to be sure a new record is created
-                $this->ItemsProject->Item->create();
-                $success = $this->ItemsProject->Item->save($this->data);     
-                
-                //indsæt quantity
-                if($success){                    
-                    $item_id = $this->ItemsProject->Item->getLastInsertId();
-                    //sæt quantity ved alle rækker hvor $project_id $item_id
-                }
-                
-            //Use existing item (Only create relation)  
-		    }elseif(isset($this->data["ItemsProject"])){		    
-		    	$this->ItemsProject->create();
-	            $success = $this->ItemsProject->save($this->data);		    	
-		    }else{
-		    	$success = false;
-		    }			
+	    	$this->ItemsProject->create();
 			
-			if ($success) {
+			if ($this->ItemsProject->save($this->data)) {
 				$this->Session->setFlash(__('The items has been saved', true));
 				$this->redirect(array('controller'=>'projects', 'action' => 'view', $project_id));
 			} else {
@@ -85,7 +66,10 @@ class ItemsProjectsController extends AppController {
 		$items = $this->ItemsProject->Item->find('list', array(
 			"conditions" => array("Item.template"=>1)
 		));
-		$projects = $this->ItemsProject->Project->find('list');
+		
+    	//if project_id isset, only fetch this project. Else fetch all projects
+		$projects = isset($project_id) ? $this->ItemsProject->Project->find('list', array("conditions"=>array("Project.id"=>$project_id))) : $this->ItemsProject->Project->find('list');
+		
 		$this->set(compact('items', 'projects'));
 	}
 
