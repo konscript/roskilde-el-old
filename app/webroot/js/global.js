@@ -4,6 +4,12 @@ $(document).ready(function() {
     radioToggle();
     showOnChange();
     fadeMessages();
+    
+	//Toggle between two divs
+	checkboxToggle('div.input.checkbox input.toggleClass');
+	$('div.input.checkbox input.toggleClass').click(function(){
+		checkboxToggle(this);
+	});    
 
 });
 
@@ -44,4 +50,21 @@ $.fn.delay = function(time, callback){
     jQuery.fx.step.delay = function(){};
     // Return meaningless animation, (will be added to queue)
     return this.animate({delay:1}, time, callback);
+}
+
+// Toggle two divs based on a checkbox
+function checkboxToggle(checkbox){
+
+    var checkboxContainer = $(checkbox).parent();
+    var primary = $(checkboxContainer).next('div');
+    var secondary = $(primary).next('div');
+
+    //If checkbox is checked = show primary
+    if($(checkbox).is(':checked')){
+        $(primary).fadeIn();
+        $(secondary).hide();
+    }else{
+        $(primary).hide();
+        $(secondary).fadeIn();
+    }
 }

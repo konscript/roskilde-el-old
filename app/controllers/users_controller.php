@@ -2,11 +2,11 @@
 class UsersController extends AppController {
 
 	var $name = 'Users';
-	var $components = array('Utils');	
-
+	var $components = array('Utils');		
+	
 	function beforeFilter() {
 	    parent::beforeFilter();
-	    $this->Auth->allow('profile');	     
+	    //$this->Auth->allow('profile');	     
 	    $this->Auth->allow('login');
 	    $this->Auth->allow('logout');
 	}	
@@ -25,6 +25,37 @@ class UsersController extends AppController {
 	}
 
 	function index() {
+	
+        $this->paginate = array(
+            'recursive' => -1,
+            'limit' => 25,
+            'order' => array(
+                'User.title' => 'asc'
+            )
+        );	  
+	
+	    /* a group manager has limited access - only view project managers in his group */
+	    if($this->Auth->user('role_id') == 3 ){
+	        //get current users group_id
+            $groups = $this->User->Group->find("first", array(
+                "conditions" => array("Group.user_id"=>$this->Auth->user('id')),
+                "fields"=>"Group.id",
+                "recursive"=>-1
+            ));                            
+	
+	        //get user_id on project managers from current group
+            $projects = $this->User->Group->Project->find("list", array(
+	            "conditions"=>array("Project.group_id"=>$groups["Group"]["id"]),
+	            "fields"=>"Project.user_id",
+	            "recursive"=>-1
+	        ));
+	        
+	        //add conditions to paginate
+            $this->paginate = array(
+	            "conditions" => array("User.id"=>$projects)
+            );	    	        
+	    }	 
+	    	
 		$this->set('title_for_layout', 'Alle Brugere');	
 		$this->User->recursive = 0;
 		$this->set('users', $this->paginate());
@@ -32,7 +63,7 @@ class UsersController extends AppController {
 
 	function view($id = null) {
 		$this->set('title_for_layout', 'Se Bruger');
-		$this->User->recursive = 2;		
+		//$this->User->recursive = 2;		
 		if (!$id) {
 			$this->Session->setFlash(sprintf(__('Ugyldig %s.', true), 'bruger'), 'default', array('class' => 'notice'));
 			$this->redirect(array('action' => 'index'));
@@ -93,9 +124,6 @@ class UsersController extends AppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->data)) {
-			if (!$this->data['User']['changePassword']) {
-				unset($this->data['User']['password']);
-			}
 			if ($this->User->save($this->data)) {
 				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Brugeren'), 'default', array('class' => 'success'));
 				

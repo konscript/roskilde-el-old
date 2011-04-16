@@ -20,7 +20,7 @@ class ProjectsController extends AppController {
 				$this->redirect(array('action' => 'index'));			
 			}
         
-            $this->Project->recursive = 2;
+            $this->Project->recursive = 1;
             $data = $this->Project->read(null, $id);
             
             // generate the Excel sheet!
@@ -55,7 +55,7 @@ class ProjectsController extends AppController {
 		$this->set('title_for_layout', 'Se Projekt');
 		
 		// restrict the associated data fetched using recursive levels		
-		$this->Project->recursive = 2;		
+		//$this->Project->recursive = 2;		
 
 		// SPECIFICACL: Project-based permission check	
 		
@@ -91,7 +91,7 @@ class ProjectsController extends AppController {
             $this->data['Project']['status'] = 0;
             
             // creating a new user if the option is chosen
-            if($this->data['User']['createNew']) {
+            if($this->data['User']['toggleUser']=="new") {
 
                 $this->Project->set($this->data);
                 if ($this->Project->validates()) {

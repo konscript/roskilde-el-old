@@ -9,12 +9,27 @@ class ItemsController extends AppController {
 		$this->set('items', $this->paginate());
 	}
 
-	function view($id = null) {
+	function view($id = null) {		
+	
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid item', true));
 			$this->redirect(array('action' => 'index'));
 		}
-		$this->set('item', $this->Item->read(null, $id));
+		
+
+		//make HABTM binding to Projects
+	    $this->Item->bindModel(array(
+	        'hasAndBelongsToMany' => array('Project')
+	    ));
+
+        $this->Item->Behaviors->attach('Containable');	    
+		$item = $this->Item->find("first", array(
+		    "conditions"=>array("Item.id"=>$id),
+		    'contain' => 'Project'
+		));
+		
+	    $title_for_layout = "Se enhed";
+		$this->set(compact('item', 'title_for_layout'));
 	}
 	
 	
@@ -60,7 +75,7 @@ class ItemsController extends AppController {
 		if (empty($this->data)) {
 			$this->data = $this->Item->read(null, $id);
 		}
-		$projects = $this->Item->Project->find('list');
+		$projects = $this->Item->ItemsProject->Project->find('list');
 		$this->set(compact('projects'));
 	}
 

@@ -5,7 +5,7 @@ class Project extends AppModel {
 	var $name = 'Project';
 	// Ties projects to ACL, so each time a new project is created, it's also added to the ACOS table	
 	var $actsAs = array('Acl' => array('type' => 'controlled'), 'Containable', 'WhoDidIt');
-	var $recursive = 2;
+	//var $recursive = 2;
 
 	var $validate = array(
 		'title' => array(
@@ -67,7 +67,6 @@ class Project extends AppModel {
 			'order' => ''
 		)
 	);
-
 	var $hasAndBelongsToMany = 'Item';
 
     // Defines hierachy in the ACL/ACO structure

@@ -10,7 +10,9 @@
 
         echo $this->Form->input('changePassword', array('label' => 'Skift adgangskode', 'type' => 'checkbox', 'checked'=> 'false', 'class'=>'toggleClass'));
         ?><div><?php
-			echo $this->Form->input('password', array('label' => 'Adgangskode', 'value' => ''));                
+			echo $this->Form->input('password', array('label' => 'Adgangskode', 'value' => ''));
+			echo '<label for="UserPasswordConfirm">Bekræft adgangskode</label>';
+			echo $this->Form->password('password_confirm', array('label' => 'Bekræft adgangskode'));                                
         ?></div><div></div>
         
 	</fieldset>

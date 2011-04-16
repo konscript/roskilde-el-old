@@ -2,12 +2,12 @@
 
 class ExcelComponent extends Object {
 
-    function createExcel($data) {
+    function createExcel($data) {   
      
         //App::import('Vendor', 'PHPExcel/PHPExcel');
         //App::import('Vendor', 'PHPExcel/PHPExcel/IOFactory');
         /** Error reporting */
-        error_reporting(E_ALL);
+        //error_reporting(E_ALL);
 
         /** PHPExcel */
         require_once '../vendors/PHPExcel/PHPExcel.php';
@@ -71,7 +71,7 @@ class ExcelComponent extends Object {
         //enheder
         $no = 28;
         $total_power_usage = 0;
-        foreach($data["ProjectItem"] as $key=>$array) {
+        foreach($data["Item"] as $key=>$array) {
 
             if (!$array['item_id']) {
                 $title = $array["title"];

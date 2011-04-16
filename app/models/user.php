@@ -30,7 +30,11 @@ class User extends AppModel {
 				'rule' => 'notEmpty',
 				'message' => 'Adgangskoden må ikke være tom',
 				'allowEmpty' => false
-			)
+			),
+            'matchPasswords' => array( 
+                'rule' => array('matchPasswords', 'password_confirm' ), 
+                'message' => 'Passwords do not match' 
+             ) 			
 		),
 		'role_id' => array(
 			'numeric' => array(
@@ -40,6 +44,17 @@ class User extends AppModel {
 			)
 		)
 	);
+
+     
+         
+    function matchPasswords( $field=array(), $compare_field ){    
+        foreach( $field as $key => $value ){ 
+            $p1 = $value;
+        }
+        $p2 = security::hash($this->data[$this->name][$compare_field], null, true);
+         
+        return $p1 !== $p2 ? FALSE : TRUE; 
+    } 	
 
 	var $belongsTo = array(
 		'Role' => array(

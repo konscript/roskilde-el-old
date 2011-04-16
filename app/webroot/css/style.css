@@ -30,6 +30,7 @@ h2 {
 	color: #ec5400;	}
 
 h3 {
+    margin-bottom: 10px;
 	font-family: georgia, serif;
 	font-weight: normal;
 	font-size: 140%; }
@@ -55,7 +56,7 @@ hr {
 
 #container {
 	position: relative;
-	height: 100%;
+	/*height: 100%;*/
 	width: 100%; }
 
 	#header {
