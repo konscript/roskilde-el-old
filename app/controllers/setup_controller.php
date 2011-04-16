@@ -58,6 +58,7 @@ class SetupController extends AppController {
 		$groupmanagers = array('model'=>'Role','foreign_key'=>3);				
 		$this->Acl->deny($groupmanagers, 'Application');
 		$this->Acl->allow($groupmanagers, 'Application/Controllers/Users/add');
+		$this->Acl->allow($groupmanagers, 'Application/Controllers/Users/profile');
 		$this->Acl->allow($groupmanagers, 'Application/Controllers/Users/index');		
 		$this->Acl->allow($groupmanagers, 'Application/Controllers/Projects');
 		//$this->Acl->allow($groupmanagers, 'Application/Controllers/ItemsProjects');
@@ -69,6 +70,7 @@ class SetupController extends AppController {
 		// project managers
 		$projectmanagers = array('model'=>'Role','foreign_key'=>4);						
 		$this->Acl->deny($projectmanagers, 'Application');
+		$this->Acl->allow($groupmanagers, 'Application/Controllers/Users/profile');		
 		$this->Acl->allow($projectmanagers, 'Application/Controllers/Projects/index');
 		$this->Acl->allow($projectmanagers, 'Application/Controllers/Projects/view');
 		$this->Acl->allow($projectmanagers, 'Application/Controllers/Projects/edit');

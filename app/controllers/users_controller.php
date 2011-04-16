@@ -5,8 +5,7 @@ class UsersController extends AppController {
 	var $components = array('Utils');		
 	
 	function beforeFilter() {
-	    parent::beforeFilter();
-	    //$this->Auth->allow('profile');	     
+	    parent::beforeFilter();  
 	    $this->Auth->allow('login');
 	    $this->Auth->allow('logout');
 	}	
@@ -124,6 +123,12 @@ class UsersController extends AppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->data)) {
+		
+			//password shall not be changed
+			if($this->data['User']['changePassword']==0){
+			    unset($this->data['User']['password']);
+			}
+		
 			if ($this->User->save($this->data)) {
 				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Brugeren'), 'default', array('class' => 'success'));
 				
@@ -140,12 +145,17 @@ class UsersController extends AppController {
 	}
 
 	function profile() {
-		$this->set('title_for_layout', 'Rediger Profil');	
+		$this->set('title_for_layout', 'Rediger Profil');
+			
 		if (!empty($this->data)) {
 			$this->data['User']['role_id'] = $this->Auth->user('role_id');
-			if (!$this->data['User']['changePassword']) {
-				unset($this->data['User']['password']);
+			$this->data['User']['id'] = $this->Auth->user('id');		
+			
+			//password shall not be changed
+			if($this->data['User']['changePassword']==0){
+			    unset($this->data['User']['password']);
 			}
+			
 			if ($this->User->save($this->data)) {
 				$this->Session->setFlash(sprintf(__('Din %s er blevet opdateret', true), 'profil'), 'default', array('class' => 'success'));
 				$this->redirect('/', null, false);
