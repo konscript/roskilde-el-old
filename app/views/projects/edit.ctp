@@ -27,10 +27,13 @@
 			echo $this->Form->input('user_id', array('label' => 'Projektleder'));       	
        	} ?>
        	<div>
-			<?php if ($project['Project']['file_path'] != '') { ?>
+			<?php 
+			$thumb_path = '/attachments/photos/thumb/'.$project['Project']['file_path'];
+			if ($project['Project']['file_path'] != '' && fileExistsInPath($thumb_path)) { ?>
 	       		<label>Nuværende vedhæftede kort:</label>
-				<?php echo $html->link(
-							$html->image('/attachments/photos/thumb/'.$project['Project']['file_path']),
+				<?php 
+				echo $html->link(
+							$html->image($thumb_path),
 							'/attachments/photos/default/'.$project['Project']['file_path'],
 							array('escape' => false)); 
 			} else {

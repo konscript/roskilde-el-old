@@ -60,10 +60,11 @@
 		</dd>		
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Kort'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php if ($project['Project']['file_path'] != '') {
+			<?php 
+			$thumb_path = '/attachments/photos/thumb/'.$project['Project']['file_path'];
+			if ($project['Project']['file_path'] != '' && fileExistsInPath($thumb_path)) {
 				echo $html->link(
-							//$html->image('/attachments/photos/thumb/'.$project['Project']['file_path'])				
-							$this->Output->icon('020', 'large').'Se nuværende kort',
+							$html->image($thumb_path),
 							'/attachments/photos/default/'.$project['Project']['file_path'],
 							array('escape'=>false)); 
 			} else {
