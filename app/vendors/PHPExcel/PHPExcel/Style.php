@@ -2,71 +2,36 @@
 /**
  * PHPExcel
  *
- * Copyright (c) 2006 - 2010 PHPExcel
+ * Copyright (c) 2006 - 2011 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category   PHPExcel
  * @package    PHPExcel_Style
- * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2011 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.7.2, 2010-01-11
+ * @version    1.7.6, 2011-02-27
  */
 
-
-/** PHPExcel root directory */
-if (!defined('PHPEXCEL_ROOT')) {
-	/**
-	 * @ignore
-	 */
-	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../');
-}
-
-/** PHPExcel_Style_Color */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Style/Color.php';
-
-/** PHPExcel_Style_Font */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Style/Font.php';
-
-/** PHPExcel_Style_Fill */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Style/Fill.php';
-
-/** PHPExcel_Style_Borders */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Style/Borders.php';
-
-/** PHPExcel_Style_Alignment */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Style/Alignment.php';
-
-/** PHPExcel_Style_NumberFormat */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Style/NumberFormat.php';
-
-/** PHPExcel_Style_Conditional */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Style/Conditional.php';
-
-/** PHPExcel_Style_Protection */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Style/Protection.php';
-
-/** PHPExcel_IComparable */
-require_once PHPEXCEL_ROOT . 'PHPExcel/IComparable.php';
 
 /**
  * PHPExcel_Style
  *
  * @category   PHPExcel
  * @package    PHPExcel_Style
- * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2011 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
 class PHPExcel_Style implements PHPExcel_IComparable
 {
@@ -76,7 +41,7 @@ class PHPExcel_Style implements PHPExcel_IComparable
 	 * @var PHPExcel_Style_Font
 	 */
 	private $_font;
-	
+
 	/**
 	 * Fill
 	 *
@@ -90,28 +55,28 @@ class PHPExcel_Style implements PHPExcel_IComparable
 	 * @var PHPExcel_Style_Borders
 	 */
 	private $_borders;
-	
+
 	/**
 	 * Alignment
 	 *
 	 * @var PHPExcel_Style_Alignment
 	 */
 	private $_alignment;
-	
+
 	/**
 	 * Number Format
 	 *
 	 * @var PHPExcel_Style_NumberFormat
 	 */
 	private $_numberFormat;
-	
+
 	/**
 	 * Conditional styles
 	 *
 	 * @var PHPExcel_Style_Conditional[]
 	 */
 	private $_conditionalStyles;
-	
+
 	/**
 	 * Protection
 	 *
@@ -181,7 +146,7 @@ class PHPExcel_Style implements PHPExcel_IComparable
 		$this->_parent = $parent;
 		return $this;
 	}
-	
+
 	/**
 	 * Is this a supervisor or a real style component?
 	 *
@@ -204,14 +169,12 @@ class PHPExcel_Style implements PHPExcel_IComparable
 		$selectedCell = $this->getActiveCell(); // e.g. 'A1'
 
 		if ($activeSheet->cellExists($selectedCell)) {
-			$cell = $activeSheet->getCell($selectedCell);
-			$xfIndex = $cell->getXfIndex();
+			$xfIndex = $activeSheet->getCell($selectedCell)->getXfIndex();
 		} else {
 			$xfIndex = 0;
 		}
 
-		$activeStyle = $this->_parent->getCellXfByIndex($xfIndex);
-		return $activeStyle;
+		return $this->_parent->getCellXfByIndex($xfIndex);
 	}
 
 	/**
@@ -258,7 +221,7 @@ class PHPExcel_Style implements PHPExcel_IComparable
 
     /**
      * Apply styles from array
-     * 
+     *
      * <code>
      * $objPHPExcel->getActiveSheet()->getStyle('B2')->applyFromArray(
      * 		array(
@@ -289,9 +252,9 @@ class PHPExcel_Style implements PHPExcel_IComparable
      * 		)
      * );
      * </code>
-     * 
+     *
      * @param	array	$pStyles	Array containing style information
-     * @param 	boolean		$pAdvanced	Advanced mode for setting borders. 
+     * @param 	boolean		$pAdvanced	Advanced mode for setting borders.
      * @throws	Exception
      * @return PHPExcel_Style
      */
@@ -305,8 +268,6 @@ class PHPExcel_Style implements PHPExcel_IComparable
 				$pRange = strtoupper($pRange);
 
 				// Is it a cell range or a single cell?
-				$rangeA 	= '';
-				$rangeB 	= '';
 				if (strpos($pRange, ':') === false) {
 					$rangeA = $pRange;
 					$rangeB = $pRange;
@@ -373,7 +334,7 @@ class PHPExcel_Style implements PHPExcel_IComparable
 					// loop through up to 3 x 3 = 9 regions
 					for ($x = 1; $x <= $xMax; ++$x) {
 						// start column index for region
-						$colStart = ($x == 3) ? 
+						$colStart = ($x == 3) ?
 							PHPExcel_Cell::stringFromColumnIndex($rangeEnd[0])
 								: PHPExcel_Cell::stringFromColumnIndex($rangeStart[0] + $x - 1);
 
@@ -417,7 +378,7 @@ class PHPExcel_Style implements PHPExcel_IComparable
 
 							// build range for region
 							$range = $colStart . $rowStart . ':' . $colEnd . $rowEnd;
-							
+
 							// retrieve relevant style array for region
 							$regionStyles = $pStyles;
 							unset($regionStyles['borders']['inside']);
@@ -503,7 +464,7 @@ class PHPExcel_Style implements PHPExcel_IComparable
 					$style = $workbook->getCellXfByIndex($oldXfIndex);
 					$newStyle = clone $style;
 					$newStyle->applyFromArray($pStyles);
-					
+
 					if ($existingStyle = $workbook->getCellXfByHashCode($newStyle->getHashCode())) {
 						// there is already such cell Xf in our collection
 						$newXfIndexes[$oldXfIndex] = $existingStyle->getIndex();
@@ -579,7 +540,7 @@ class PHPExcel_Style implements PHPExcel_IComparable
     public function getFill() {
 		return $this->_fill;
     }
-    
+
     /**
      * Get Font
      *
@@ -609,7 +570,7 @@ class PHPExcel_Style implements PHPExcel_IComparable
     public function getBorders() {
 		return $this->_borders;
     }
-    
+
     /**
      * Get Alignment
      *
@@ -618,7 +579,7 @@ class PHPExcel_Style implements PHPExcel_IComparable
     public function getAlignment() {
 		return $this->_alignment;
     }
-    
+
     /**
      * Get Number Format
      *
@@ -627,7 +588,7 @@ class PHPExcel_Style implements PHPExcel_IComparable
     public function getNumberFormat() {
 		return $this->_numberFormat;
     }
-    
+
     /**
      * Get Conditional Styles. Only used on supervisor.
      *
@@ -636,7 +597,7 @@ class PHPExcel_Style implements PHPExcel_IComparable
     public function getConditionalStyles() {
 		return $this->getActiveSheet()->getConditionalStyles($this->getActiveCell());
     }
-       
+
     /**
      * Set Conditional Styles. Only used on supervisor.
      *
@@ -645,13 +606,11 @@ class PHPExcel_Style implements PHPExcel_IComparable
      */
     public function setConditionalStyles($pValue = null) {
 		if (is_array($pValue)) {
-			foreach (PHPExcel_Cell::extractAllCellReferencesInRange($this->getSelectedCells()) as $cellReference) {
-				$this->getActiveSheet()->setConditionalStyles($cellReference, $pValue);
-			}
+			$this->getActiveSheet()->setConditionalStyles($this->getSelectedCells(), $pValue);
 		}
 		return $this;
     }
-    
+
     /**
      * Get Protection
      *
@@ -660,30 +619,30 @@ class PHPExcel_Style implements PHPExcel_IComparable
     public function getProtection() {
 		return $this->_protection;
     }
-   
+
 	/**
 	 * Get hash code
 	 *
 	 * @return string	Hash code
-	 */	
+	 */
 	public function getHashCode() {
 		$hashConditionals = '';
 		foreach ($this->_conditionalStyles as $conditional) {
 			$hashConditionals .= $conditional->getHashCode();
 		}
-		
+
     	return md5(
-    		  $this->getFill()->getHashCode()
-    		. $this->getFont()->getHashCode()
-    		. $this->getBorders()->getHashCode()
-    		. $this->getAlignment()->getHashCode()
-    		. $this->getNumberFormat()->getHashCode()
+    		  $this->_fill->getHashCode()
+    		. $this->_font->getHashCode()
+    		. $this->_borders->getHashCode()
+    		. $this->_alignment->getHashCode()
+    		. $this->_numberFormat->getHashCode()
     		. $hashConditionals
-    		. $this->getProtection()->getHashCode()
+    		. $this->_protection->getHashCode()
     		. __CLASS__
     	);
     }
-    
+
 	/**
 	 * Get own index in style collection
 	 *
@@ -710,7 +669,7 @@ class PHPExcel_Style implements PHPExcel_IComparable
 	public function __clone() {
 		$vars = get_object_vars($this);
 		foreach ($vars as $key => $value) {
-			if (is_object($value)) {
+			if ((is_object($value)) && ($key != '_parent')) {
 				$this->$key = clone $value;
 			} else {
 				$this->$key = $value;

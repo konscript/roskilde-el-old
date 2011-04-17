@@ -49,7 +49,7 @@ class SetupController extends AppController {
 		$this->Acl->allow($sectionmanagers, 'Application/Controllers/Roles/index');
 		$this->Acl->allow($sectionmanagers, 'Application/Controllers/Roles/view');		
 		$this->Acl->allow($sectionmanagers, 'Application/Controllers/Projects');
-		//$this->Acl->allow($sectionmanagers, 'Application/Controllers/ItemsProjects');
+		$this->Acl->allow($sectionmanagers, 'Application/Controllers/ItemsProjects');
 		$this->Acl->allow($sectionmanagers, 'Application/Controllers/Items');
 		$this->Acl->allow($sectionmanagers, 'Application/Controllers/Projects/createExcel');				
 		echo "- Section Managers setup done<br />";
@@ -61,7 +61,7 @@ class SetupController extends AppController {
 		$this->Acl->allow($groupmanagers, 'Application/Controllers/Users/profile');
 		$this->Acl->allow($groupmanagers, 'Application/Controllers/Users/index');		
 		$this->Acl->allow($groupmanagers, 'Application/Controllers/Projects');
-		//$this->Acl->allow($groupmanagers, 'Application/Controllers/ItemsProjects');
+		$this->Acl->allow($groupmanagers, 'Application/Controllers/ItemsProjects');
 		$this->Acl->allow($groupmanagers, 'Application/Controllers/Items/index');
 		$this->Acl->allow($groupmanagers, 'Application/Controllers/Items/view');
 		$this->Acl->allow($groupmanagers, 'Application/Controllers/Projects/createExcel');				
@@ -70,11 +70,11 @@ class SetupController extends AppController {
 		// project managers
 		$projectmanagers = array('model'=>'Role','foreign_key'=>4);						
 		$this->Acl->deny($projectmanagers, 'Application');
-		$this->Acl->allow($groupmanagers, 'Application/Controllers/Users/profile');		
+		$this->Acl->allow($projectmanagers, 'Application/Controllers/Users/profile');		
 		$this->Acl->allow($projectmanagers, 'Application/Controllers/Projects/index');
 		$this->Acl->allow($projectmanagers, 'Application/Controllers/Projects/view');
 		$this->Acl->allow($projectmanagers, 'Application/Controllers/Projects/edit');
-		//$this->Acl->allow($projectmanagers, 'Application/Controllers/ItemsProjects');
+		$this->Acl->allow($projectmanagers, 'Application/Controllers/ItemsProjects');
 		$this->Acl->allow($projectmanagers, 'Application/Controllers/Items/index');
 		$this->Acl->allow($projectmanagers, 'Application/Controllers/Items/view');						
 		$this->Acl->allow($projectmanagers, 'Application/Controllers/Projects/createExcel');		

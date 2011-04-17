@@ -18,6 +18,7 @@ class ExcelComponent extends Object {
         //$objPHPExcel = new PHPExcel();
 
         //Load existing
+        //$objReader = PHPExcel_IOFactory::createReader("Excel2007");
         $objReader = PHPExcel_IOFactory::createReader("Excel5");
         $objPHPExcel = $objReader->load("../webroot/files/excelTemplate.xls");
 
