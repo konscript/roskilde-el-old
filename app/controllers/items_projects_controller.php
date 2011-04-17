@@ -99,12 +99,13 @@ class ItemsProjectsController extends AppController {
 			$this->Session->setFlash(__('Invalid id for items project', true));
 			$this->redirect(array('action'=>'index'));
 		}
+            
 		if ($this->ItemsProject->delete($id)) {
 			$this->Session->setFlash(__('Items project deleted', true));
-			$this->redirect(array('action'=>'index'));
+			$this->redirect($this->referer(array('action' => 'index')));
 		}
 		$this->Session->setFlash(__('Items project was not deleted', true));
-		$this->redirect(array('action' => 'index'));
+		$this->redirect($this->referer(array('action' => 'index')));
 	}
 }
 ?>

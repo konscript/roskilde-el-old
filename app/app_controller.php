@@ -20,5 +20,6 @@ class AppController extends Controller {
     	$currentuser = $this->Auth->user();
         $this->set('currentuser', $currentuser['User']);
 	}	  
+	
 }
 ?>

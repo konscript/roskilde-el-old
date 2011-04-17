@@ -33,7 +33,7 @@ class User extends AppModel {
 			),
             'matchPasswords' => array( 
                 'rule' => array('matchPasswords', 'password_confirm' ), 
-                'message' => 'Passwords do not match' 
+                'message' => 'Adgangskoderne matcher ikke' 
              ) 			
 		),
 		'role_id' => array(

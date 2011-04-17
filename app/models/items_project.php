@@ -17,7 +17,7 @@ class ItemsProject extends AppModel {
 		'project_id' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
-				'message' => 'Your custom message here'
+				'message' => 'Du skal vælge et projekt, som du vil tilknytte enheden til.'
 			),
 		),
 		'quantity' => array(
@@ -50,5 +50,44 @@ validate
                 } 
                 return $this->isUnique($tmp, false); 
         } 	
+        
+
+	// Finds a projects attached project items and sum the values which it returns
+	function SumByProject() {
+	
+	    $project_id = $this->data["ItemsProject"]["project_id"];   
+		$total = $this->find('first', array(
+		    'conditions' => array('ItemsProject.project_id' => $project_id), 
+		    'fields' => array('SUM(Item.power_usage*ItemsProject.quantity) as total')
+	    ));
+	    
+	    if(!$total[0]["total"]){
+	        $total[0]["total"] = 0;
+	    }
+	    
+		$this->Project->id = $project_id;
+		$this->Project->saveField('total_power_usage', $total[0]["total"]);	  
+	}	
+
+	// Updates the corresponding projects DB field with the a calculated total power usage of attached project items
+	function AfterSave() {
+		$this->SumByProject();
+	}
+	
+	function beforeDelete(){
+        	if(!isset($this->data["ItemsProject"]["project_id"])){
+                $ItemsProject = $this->find("first", array(
+                    "conditions" => array("ItemsProject.id" => $this->id),
+                    "fields" => "ItemsProject.project_id"
+                ));
+                   
+                $this->data["ItemsProject"]["project_id"] = $ItemsProject["ItemsProject"]["project_id"];
+            }
+            return true;
+	}
+		
+	function afterDelete() {
+		$this->SumByProject();
+	}	           
 }
 ?>

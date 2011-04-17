@@ -76,7 +76,8 @@ class SetupController extends AppController {
 		$this->Acl->allow($projectmanagers, 'Application/Controllers/Projects/edit');
 		$this->Acl->allow($projectmanagers, 'Application/Controllers/ItemsProjects');
 		$this->Acl->allow($projectmanagers, 'Application/Controllers/Items/index');
-		$this->Acl->allow($projectmanagers, 'Application/Controllers/Items/view');						
+		$this->Acl->allow($projectmanagers, 'Application/Controllers/Items/view');					
+		$this->Acl->allow($projectmanagers, 'Application/Controllers/Items/add');		
 		$this->Acl->allow($projectmanagers, 'Application/Controllers/Projects/createExcel');		
 		echo "- Project Managers setup done<br />";
 		

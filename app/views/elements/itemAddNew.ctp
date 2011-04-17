@@ -17,7 +17,7 @@
 		echo $this->Output->project_list("ItemsProject.0.project_id", $projects);
 		
         //show quantity by default, if project_id is set
-    	$hideQuantityField = (!empty($this->data['ItemsProject']["project_id"])) ? "" : "showOnChange";		
+    	$hideQuantityField = (!empty($this->data['ItemsProject'][0]["project_id"])) ? "" : "showOnChange";		
     	
 		echo "<div class='<?php echo $hideQuantityField ?>'>".$this->Form->input('ItemsProject.0.quantity', array("label"=>"Antal enheder"))."</div>";
 	?>

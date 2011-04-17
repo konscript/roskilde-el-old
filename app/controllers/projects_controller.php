@@ -183,7 +183,8 @@ class ProjectsController extends AppController {
 
         // SPECIFICACL: Project-based permission check
 		if (!$this->SpecificAcl->check("Project", $id)) {
-			$this->Session->setFlash('Du har ikke adgang til projektet', 'default', array('class' => 'error'));					$this->redirect(array('action' => 'index'));			
+			$this->Session->setFlash('Du har ikke adgang til projektet', 'default', array('class' => 'error'));					
+			$this->redirect(array('action' => 'index'));			
 		}
 
 		if (!$id && empty($this->data)) {
@@ -210,7 +211,7 @@ class ProjectsController extends AppController {
 
 				$this->Session->setFlash(sprintf(__('%s er blevet gemt!', true), 'Projektet'), 'default', array('class' => 'success'));
 				
-				$this->redirect(array('action' => 'index'));		
+				$this->redirect(array('action' => 'view', $id));		
 			} else {
 				$this->Session->setFlash(sprintf(__('%s kunne ikke gemmes. Forsøg igen.', true), 'Projektet'), 'default', array('class' => 'error'));
 			}

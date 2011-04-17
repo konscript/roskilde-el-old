@@ -92,7 +92,6 @@
 		"description" => "Beskrivelse",
 		"power_usage" => "Strømforbrug",
 		"quantity" => "Antal",
-		"type" => "Type",
 		"actions" => "Handlinger"	
 	);	
 	
@@ -105,10 +104,8 @@
 			"description" => $item['description'],		
 			"power_usage" => $item['power_usage'],
 			"quantity" => $item['ItemsProject']['quantity'],
-			"type" => "Egen",
 			"actions" => 
-			    $this->Output->edit(null, array('controller' => 'items_projects', 'action' => 'edit', $item['ItemsProject']['id'])).
-			    $this->Output->delete(null, array('controller' => 'items_projects', 'action' => 'delete', $item['ItemsProject']['id']))	
+			    $this->Output->delete("Fjern fra projekt", array('controller' => 'items_projects', 'action' => 'delete', $item['ItemsProject']['id']))	
 		);
 	}
 	echo $this->Output->index($header, $data, false, false);

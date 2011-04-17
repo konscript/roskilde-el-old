@@ -416,7 +416,7 @@ class OutputHelper extends AppHelper {
 
         //show a list with all projects
         }else{        
-    		echo $this->Form->input('ItemsProject.project_id', array('empty' => true, 'label'=>'Projekt', 'class'=>'showOnChange'));        
+    		echo $this->Form->input($project_field, array('empty' => true, 'label'=>'Projekt', 'class'=>'showOnChange'));        
         }
 
 

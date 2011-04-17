@@ -36,20 +36,29 @@ class ItemsController extends AppController {
 	
 	function add($project_id = null) {
 	
-
 		if (!empty($this->data)) {	
 				
-			$this->Item->create(); //attempt to save item	
+			//if the item is not related to any project, don't make association. Therefore remove ItemsProject key
+			if($this->data["ItemsProject"][0]["project_id"]==null){
+			    unset($this->data["ItemsProject"]);
+			}
+			
+			//remove validation for item_id to avoid errors
  	        unset($this->Item->ItemsProject->validate['item_id']);
+ 	        unset($this->Item->ItemsProject->validate['project_id']); 	        
+ 	        				
+            //attempt to save item					
+			$this->Item->create(); 		 	         	        
 			if ($this->Item->saveAll($this->data, array('validate'=>'first'))) { //item successfully save								
 		        $this->Session->setFlash(__('The item was saved and associated with the project', true));            	
-		        $this->redirect(array('action' => 'index'));							
+		        
+		        //redirect depends on referrer
+		        $redirect = $project_id != null ? array('controller'=>'projects', 'action' => 'view', $project_id) : array('action'=>'index');		        
+        		$this->redirect($redirect);
 			} else {
 				$this->Session->setFlash(__('The item could not be saved. Please, try again.', true));
 			}		
-		} //save end
-		
-        $project_value = array('type'=>'hidden', 'value'=>$project_id);			       
+		}
     	
     	//if project_id isset, only fetch this project. Else fetch all projects
 		$projects = isset($project_id) ? $this->Item->ItemsProject->Project->find('list', array("conditions"=>array("Project.id"=>$project_id))) : $this->Item->ItemsProject->Project->find('list');
