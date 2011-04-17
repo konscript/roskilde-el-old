@@ -195,7 +195,7 @@
 /**
  * A random string used in security hashing methods.
  */
-	Configure::write('Security.salt', 'roskilde');
+	Configure::write('Security.salt', 'somethingrandomhere');
 
 /**
  * A random numeric string (digits only) used to encrypt/decrypt strings.

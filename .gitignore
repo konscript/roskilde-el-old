@@ -1,4 +1,5 @@
 app/config/database.php
+app/config/core.php
 nbproject/*
 .DS_Store
 .settings/
