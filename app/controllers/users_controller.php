@@ -56,7 +56,8 @@ class UsersController extends AppController {
 			// which clears all the user's access rights
 			$this->data['User']['role_id'] = $userData['User']['role_id'];
 			
-			//debug($this->data);
+			//remove password validation
+			unset($this->User->validate['password']);
 			if($this->User->save($this->data)) {
 				// Send user his new password
 				$message = 'Dit nye kodeord er: ' . $password[1];
