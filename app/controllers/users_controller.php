@@ -6,9 +6,11 @@ class UsersController extends AppController {
 
 	function beforeFilter() {
 	    parent::beforeFilter();
-	    $this->Auth->allow('profile');	     
+	    //$this->Auth->allow('profile');	     
 	    $this->Auth->allow('login');
-	    $this->Auth->allow('logout');
+	    $this->Auth->allow('add');
+			$this->Auth->allow('logout');
+			$this->Auth->allow('resetPassword');
 	}	
 	
 	function login() {
@@ -22,6 +24,53 @@ class UsersController extends AppController {
 		$this->set('title_for_layout', 'Log Ud');	
 		$this->Session->setFlash('Du er nu logget ud.', 'default', array('class' => 'notice'));
 		$this->redirect($this->Auth->logout());
+	}
+	
+	// Generates a new password and sends it to the user
+	function resetPassword() {
+		if ($this->Auth->user()) {
+			$this->redirect(array('controller' => 'projects', 'action' => 'index'));
+		}
+		// Set title
+		$this->set('title_for_layout', 'Generer nyt password');
+		
+		// Only do something if data is passed in the form
+		if(!empty($this->data)) {
+			
+			// Get id and role_id for user 
+			$userData = $this->User->find('first', array(
+				'conditions' => array('User.username' => $this->data['User']['username']),
+				'recursive' => 0,
+				'fields' => array('User.id', 'User.role_id')
+			));
+			//debug($userData);
+			// Set user id so model knows where to save new data
+			$this->User->id = $userData['User']['id'];
+			
+			// Generate new password (hash and cleartext)
+			$password = $this->Utils->generateRandomPassword();
+			
+			// Set new hashed password
+			$this->data['User']['password'] = $password[0];
+			
+			// Set role_id - VERY IMPORTANT! If this isn't done, the role_id is reset to null,
+			// which clears all the user's access rights
+			$this->data['User']['role_id'] = $userData['User']['role_id'];
+			
+			//debug($this->data);
+			if($this->User->save($this->data)) {
+				// Send user his new password
+				$message = 'Dit nye kodeord er: ' . $password[1];
+				if(mail($this->data['User']['username'], 'Ny adgangskode på Roskilde El', $message)) {
+					// Display success message
+					$this->Session->setFlash('Dit nye kodeord blev sendt til din mail!');
+				}
+				//echo 'Horray! Your new password is: ' . $password[1];
+			}
+			else {
+				$this->Session->setFlash('Der skete en fejl. Prøv venligst igen.');
+			}
+		}
 	}
 
 	function index() {

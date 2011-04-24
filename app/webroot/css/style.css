@@ -376,6 +376,10 @@ form .submit input[type=submit]:hover {
 	text-decoration: none;
 }
 
+form #sesame {
+	/*float: left;*/	
+}
+
 fieldset .error label { color: red; }
 fieldset .error .error-message { color: red; }
 
