@@ -1,6 +1,5 @@
 <div class="roles index">
 	<?php
-	
 	$header = array(
 		"id" => "ID",
 		"title" => "Navn",

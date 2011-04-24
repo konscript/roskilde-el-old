@@ -29,7 +29,7 @@ class SetupController extends AppController {
 		// cake acl create aro Requesters Role.4						
 		// cake acl create aco root Application
 		// cake acl create aco Application Controllers
-		// cake acl create aco Application Content				
+		// cake acl create aco Application Content
 	
 	// assign roles the correct permission to controllers/actions in the ACL - necessary for a new setup!
 	function permissions_assign_controlleractions() {
@@ -141,6 +141,7 @@ class SetupController extends AppController {
 
     // builds the ACO structure (Controllers > Actions) and adds new if run again after a new action is created
 	function aco_build_controlleractions() {
+		echo 'Start!';
 		if (!Configure::read('debug')) {
 			return $this->_stop();
 		}
@@ -220,6 +221,7 @@ class SetupController extends AppController {
 				}
 			}
 		}
+		echo 'Done...';
 		if(count($log)>0) {
 			debug($log);
 		}

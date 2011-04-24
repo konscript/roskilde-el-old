@@ -1,13 +1,13 @@
 <?php
 class AppController extends Controller {
 
-    var $components = array('Acl', 'Auth', 'Session', 'Email', 'SwiftMailer');
+    var $components = array('Acl', 'Auth', 'Session', 'Email');
     var $helpers = array('Form', 'Session', 'Output');
 
     // Configures AuthComponent (for Authentication and ACL)
     function beforeFilter() {
         $this->Auth->authorize = 'actions';
-		$this->Auth->actionPath = 'Application/Controllers/';
+				$this->Auth->actionPath = 'Application/Controllers/';
         $this->Auth->loginAction = array('controller' => 'users', 'action' => 'login');
         $this->Auth->logoutRedirect = array('controller' => 'users', 'action' => 'login');
         $this->Auth->loginRedirect = array('controller' => 'projects', 'action' => 'index');
@@ -20,6 +20,5 @@ class AppController extends Controller {
     	$currentuser = $this->Auth->user();
         $this->set('currentuser', $currentuser['User']);
 	}	  
-	
 }
 ?>

@@ -117,23 +117,36 @@ class User extends AppModel {
 	    if (empty($this->data)) {
 	        $data = $this->read();
 	    }
-	    if (!$data['User']['role_id']) {
+	    if (!isset($data['User']['role_id'])) {
 	        return null;
 	    } else {
 	        return array('Role' => array('id' => $data['User']['role_id']));
 	    }
 	}
 	
+	function beforeSave() {
+		if(!isset($this->data['User']['role_id'])) {
+			return false;
+		} else {
+			return true;
+		}
+		return false;
+	}
+	
 	// Updates the ARO entry if it's parent_id (Role) has been changed		
 	function afterSave($created) {
-        if (!$created) {
+      	//debug($this->data);
+				if (!$created/* && isset($this->data['User']['role_id'])*/) {
             $parent = $this->parentNode();
             $parent = $this->node($parent);
             $node = $this->node();
             $aro = $node[0];
             $aro['Aro']['parent_id'] = $parent[0]['Aro']['id'];
             $this->Aro->save($aro);
+						//debug($this->data);
+						//echo 'Inside!';
         }
+				//echo 'Outside!';
 	}
 }
 ?>
