@@ -79,7 +79,7 @@
 		<div id="footer">
 			<div class="inside">
 				<div style="float: left;">
-					<div id="footer_object" class="button_beta" style="float: left;">beta<br />v1.3</div>
+					<div id="footer_object" class="button_beta" style="float: left;">beta<br />v1.4</div>
 					<div id="footer_text" style="float: left;">Roskilde Festival El-system 2010</div>
 				</div>
 				<div style="float: right;">
@@ -88,7 +88,7 @@
 				</div>
 			</div>
 		</div>
-	<?php echo $this->element('sql_dump'); ?>
+	<?php //echo $this->element('sql_dump'); ?>
 		
 	</div>
 
