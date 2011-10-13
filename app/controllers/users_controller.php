@@ -42,7 +42,7 @@ class UsersController extends AppController {
 				'recursive' => 0,
 				'fields' => array('User.id', 'User.role_id')
 			));
-			//debug($userData);
+			
 			// Set user id so model knows where to save new data
 			$this->User->id = $userData['User']['id'];
 			
@@ -52,9 +52,10 @@ class UsersController extends AppController {
 			// Set new hashed password
 			$this->data['User']['password'] = $password[0];
 			
+			
 			// Set role_id - VERY IMPORTANT! If this isn't done, the role_id is reset to null,
 			// which clears all the user's access rights
-			$this->data['User']['role_id'] = $userData['User']['role_id'];
+			$this->data['User']['role_id'] = $userData['User']['role_id'];		
 			
                         debug($userData);
 
@@ -74,7 +75,9 @@ class UsersController extends AppController {
 				}
 				//echo 'Horray! Your new password is: ' . $password[1];
 			}
-			else {
+			elseif(!$userData) {
+								$this->Session->setFlash('Den angivne email eksisterer ikke i systemet.');
+			}else{				
 				$this->Session->setFlash('Der skete en fejl. Prøv venligst igen.');
 			}
 		}

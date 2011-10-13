@@ -1,3 +1,8 @@
+<script type="text/javascript"src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<?php echo $html->script(array('jquery.fancybox-1.3.4.pack','google-maps')); ?>
+<?php echo $html->css(array('fancybox/jquery.fancybox-1.3.4')); ?>
+
+
 <div class="projects view">
 
 	<h3><?php echo $project['Project']['title']; ?></h3><br />
@@ -60,20 +65,22 @@
 		</dd>		
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Kort'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php 
-			$thumb_path = '/attachments/photos/thumb/'.$project['Project']['file_path'];
-			if ($project['Project']['file_path'] != '' && fileExistsInPath($thumb_path)) {
-				echo $html->link(
-							$html->image($thumb_path),
-							'/attachments/photos/default/'.$project['Project']['file_path'],
-							array('escape'=>false)); 
-			} else {
-				echo "<i>Der er endnu ikke vedhæftet noget kort til projektet</i>";
-			}
-			?>
+		
+<a id="openGmaps" title="Place markers on map">Add to map</a>
+
 		</dd>
 	</dl>
 </div>
+
+<div class="hidden">
+	<div id="gmaps">
+		<p>Choose a button</p>
+		<a class="button" id="blue" href="#">Blue</a> or <a class="button" id="red" href="#">Red</a>
+		<a href="#" class="save">Save</a>
+		<a href="#" class="delete">Delete</a>
+		<div id="map_canvas"></div>
+	</div>
+</div>		
 
 <div class="actions">
 	<h3><?php __('Handlinger'); ?></h3>
