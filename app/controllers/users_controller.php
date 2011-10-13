@@ -27,6 +27,8 @@ class UsersController extends AppController {
 	
 	// Generates a new password and sends it to the user
 	function resetPassword() {
+	
+		debug("asd");
 		if ($this->Auth->user()) {
 			$this->redirect(array('controller' => 'projects', 'action' => 'index'));
 		}
