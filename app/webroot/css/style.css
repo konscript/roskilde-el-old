@@ -721,3 +721,16 @@ div.code-coverage-results span.result-ok {
 div.code-coverage-results span.result-good {
 	color: #0a0;
 }
+
+
+
+/**
+ * add markers to google maps
+ **/ 
+#map_canvas { height: 100%; }
+.hidden { display:none; }
+#gmaps{ 
+	width:960px;
+	height:500px;
+	overflow:hidden; 
+} 
