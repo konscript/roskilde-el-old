@@ -28,8 +28,6 @@ class UsersController extends AppController {
 	// Generates a new password and sends it to the user
 	function resetPassword() {
 	
-		debug("asd");
-		debug("visti");
 		if ($this->Auth->user()) {
 			$this->redirect(array('controller' => 'projects', 'action' => 'index'));
 		}
@@ -60,12 +58,6 @@ class UsersController extends AppController {
 			// which clears all the user's access rights
 			$this->data['User']['role_id'] = $userData['User']['role_id'];		
 			
-                        debug($userData);
-
-	
-                        debug($this->data);
-
-
 			//remove password validation
 			unset($this->User->validate['password']);
 			if($this->User->save($this->data)) {
