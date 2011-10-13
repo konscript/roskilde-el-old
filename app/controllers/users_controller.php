@@ -29,6 +29,7 @@ class UsersController extends AppController {
 	function resetPassword() {
 	
 		debug("asd");
+		debug("visti");
 		if ($this->Auth->user()) {
 			$this->redirect(array('controller' => 'projects', 'action' => 'index'));
 		}
