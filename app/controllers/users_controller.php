@@ -56,12 +56,19 @@ class UsersController extends AppController {
 			// which clears all the user's access rights
 			$this->data['User']['role_id'] = $userData['User']['role_id'];
 			
+                        debug($userData);
+
+	
+                        debug($this->data);
+
+
 			//remove password validation
 			unset($this->User->validate['password']);
 			if($this->User->save($this->data)) {
 				// Send user his new password
 				$message = 'Dit nye kodeord er: ' . $password[1];
 				if(mail($this->data['User']['username'], 'Ny adgangskode på Roskilde El', $message)) {
+
 					// Display success message
 					$this->Session->setFlash('Dit nye kodeord blev sendt til din mail!');
 				}
